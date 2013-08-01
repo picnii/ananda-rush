@@ -1,0 +1,36 @@
+<section id="BillCtrl" ng-controller="BillCtrl">
+	<header class="header">
+		<div class="head">IDEO MORPH 38</div>
+		<div class="detail">
+			<p>บริษัท อนันดา ดีเวลลอปเม้นท์ ทูจำกัด</p>
+			<p>เลขที่ 99/4 หมุ่ที่ 14 ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ 10540</p>
+			<p>โทร.02-3171155 ต่อ 102-109, 121 โทรสาร.02-3160180-1</p>
+		</div>
+	</header>
+	<div class="container">
+		<h3>ค่าใช้จ่าย</h3>
+		เรียน {{getVar("percent") + getVar("bankload")}}
+		<table>
+			<thead>
+				<tr>
+					<td>ค่าใช้จ่าย<td>
+					<td>รายละเอียด</td>
+					<td>{{datas.paymentTypes[0]}}</td>
+					<td>{{datas.paymentTypes[1]}}</td>
+					<td>{{datas.paymentTypes[2]}}</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="payment in datas.payments">
+					<td>{{payment.name}}</td>
+					<td>{{payment.description}}</td>
+					<td>{{getFormulaValue(payment.formulas[0])}}</td>
+					<td>{{getFormulaValue(payment.formulas[1])}}</td>
+					<td>{{getFormulaValue(payment.formulas[2])}}</td>
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</section>
