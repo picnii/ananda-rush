@@ -1,10 +1,19 @@
 	{
 		"variables":[
-			{"percent":
-				{"name":"ค่าเปอร์เซนต์", "value":5}
+			{"documentName":
+				{"name":"ชื่อเอกสาร", "value":"ใบประเมินการค่าใช้จ่ายโอนกรรมสิทธิ์"}
 			},
-			{"bankload":
-				{"name":"ธนาคารออกให้", "value":5000000}
+			{"companyAddress":
+				{"name":"ที่อยู่", "value":"เลขที่ 99/4 หมุ่ที่ 14 ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ 10540"}
+			},
+			{"companyPhone":
+				{"name":"โทร", "value":"02-3171155 ต่อ 102-109, 121"}
+			},
+			{"companyFax":
+				{"name":"โทรสาร", "value":"02-3160180-1"}
+			},
+			{"unitNumber":
+				{"name":"UNIT NO.", "value":"MR9-0502"}
 			},
 			{"customerName":
 				{"name":"ลูกค้า", "value":"ปุณณตา ดิษฐพงศา"}
@@ -36,7 +45,12 @@
 			{
 				"contractSpace":
 					{"name":"พื้นที่ตามสัญญา", "value":35.39}
+			},
+			{
+				"houseAddress":
+					{"name":"บ้านเลขที่", "value":"88/239"}
 			}
+
 		],
 		"paymentTypes":[
 			"ธนาคาร",
@@ -56,7 +70,12 @@
 				"description":"asdasd",
 				"formulas":["","","500*{percent}"]
 			},
-
+			{
+				"type":[0,1,2],
+				"name":"ค่ามิเตอร์ไฟฟ้า",
+				"description":"asdasd",
+				"formulas":["","","2000*{contractSpace}"]
+			},
 		]
 
 

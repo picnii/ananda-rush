@@ -17,7 +17,7 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop)
 		return getFormulaValue($scope.datas.variables, formula);
 	}
 
-	$scope.getVar = $scope.getVariablesValue= function(varname)
+	$scope.getVar = $scope.getVariablesValue = function(varname)
 	{
 		return getVariablesValue($scope.datas.variables, varname)
 	}
@@ -25,6 +25,8 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop)
 	$scope.getName = function(varname)
 	{
 		var myvar =  getVariables($scope.datas.variables, varname);
+		if(myvar == undefined)
+			return undefined;
 		return myvar.name;
 	}
 

@@ -1,36 +1,211 @@
 <section id="BillCtrl" ng-controller="BillCtrl">
+	<br/>
+	<div align ="center" ><strong>
+					<p><font size=5>{{getVar("documentName")}}</font><p></strong>
+	</div>
 	<header class="header">
 		<div class="head">IDEO MORPH 38</div>
 		<div class="detail">
 			<p>บริษัท อนันดา ดีเวลลอปเม้นท์ ทูจำกัด</p>
-			<p>เลขที่ 99/4 หมุ่ที่ 14 ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ 10540</p>
-			<p>โทร.02-3171155 ต่อ 102-109, 121 โทรสาร.02-3160180-1</p>
+			<p>{{getVar("companyAddress")}}</p>
+			<p>{{getName("companyPhone")}}.{{getVar("companyPhone")}} {{getName("companyFax")}}.{{getVar("companyFax")}}</p>
 		</div>
 	</header>
-	<div class="container">
-		<h3>ค่าใช้จ่าย</h3>
-		เรียน {{getVar("percent") + getVar("bankload")}}
-		<table>
-			<thead>
-				<tr>
-					<td>ค่าใช้จ่าย<td>
-					<td>รายละเอียด</td>
-					<td>{{datas.paymentTypes[0]}}</td>
-					<td>{{datas.paymentTypes[1]}}</td>
-					<td>{{datas.paymentTypes[2]}}</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="payment in datas.payments">
-					<td>{{payment.name}}</td>
-					<td>{{payment.description}}</td>
-					<td>{{getFormulaValue(payment.formulas[0])}}</td>
-					<td>{{getFormulaValue(payment.formulas[1])}}</td>
-					<td>{{getFormulaValue(payment.formulas[2])}}</td>
+			
+		<div class="container" >
+			<p align ="right"><strong>UNIT NO.</strong>&nbsp;&nbsp;&nbsp; MR9-0502&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>บ้านเลขที่</strong>&nbsp;&nbsp;&nbsp; TH05-2-105002</p><br><br>
+
+			<div class="row">
+				<font size="2">
+					<div class="span1"><b>วันที่แจ้ง</b></div>
+					<div class="span5"><u>&nbsp;29 กรกฎาคม 2556&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+					</div>
+					<div class="span1"><b>จาก :<b></div>
+					<div class="span5"><u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+					</div><br>
+					<div class="span1"><b>วันนัดโอน</b></div>
+					<div class="span5"><u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+					</div>
+					<div class="span1"><b>เวลา :</b></div>
+					<div class="span5"><u>&nbsp;10.00&nbsp;&nbsp;&nbsp;น.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+					</div><br>
+					<div class="span1"><b>เรียน</b></div>
+					<div class="span5"><u>&nbsp;คุณทวีรัตน์ มุจลินทังกูร&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+					</div>
+					<div class="span1"><b>โทร. :</b></div>
+					<div class="span5"><u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
+					</div><br><br>
+				</font>
+					<div class="span1"><b><u>1.ราคา *</u></b></div>
+					<div class="span3">	ราคาต่อตารางเมตร <br>
+										ราคาตามสัญญา	<br>
+										หัก ส่วนลดพิเศษ	<br>
+										พื้นที่เพิ่ม (ลด)<br>
+										ราคาห้องชุด ณ วันโอน<br>
+										หัก ชำระแล้ว ณ 30/6/56<br>
+										ค่าห้องชุดส่วนที่ต้องชำระ
+					</div>
+					<div class="span2" align ="right" >	106,238.10 บาท<br>
+				 								   	2,231,000.00 บาท<br>
+				 									- บาท<br>
+													*ขึ้นอยู่กับพื้นที่จริง บาท<br>
+													2,231,000.00 บาท<br>
+				      								<u>267,000.00</u> บาท<br>
+				      								<u><span style="border-bottom: 1px double #000;">1,964,000.00</u></span> บาท
+				     </div>
+				     <div class="span1"><b><u>2.พื้นที่ *</u><br><br><br><u>3.สินเชื่อ</u></b></div>
+				     <div class="span2">	พื้นที่ตามสัญญา<br>
+				      									พื้นที่จริง<br>
+				      									ส่วนต่างพื้่นที่เพิ่ม (ลด)<br>
+				      									ธนาคาร/สาขา<br>
+				      									อนุมัติค่าห้อง<br>
+				      									อนุมัติวงเงินอื่นๆ<br>
+				      									รวมวงเงิน
+				     </div>
+				     <div class="span3" align ="right" >	21.00 ตร.ม.<br>
+			      										<u>&nbsp;&nbsp;*ขึ้นอยู่กับพื้นที่จริง</u> ตร.ม.<br>
+			      										<u><span style="border-bottom: 1px double #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</u></span> ตร.ม.<br><br>
+			      										- &nbsp;&nbsp;บาท<br>
+			      										<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</u> บาท<br>
+			      										<u><span style="border-bottom: 1px double #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</u></span> บาท<br>
+			      	</div>
+			</div><br>
+
+					<table border = "1" align="center" width ="100%" hight ="50%"  cellspacing = "0" >
+                 
+                    	 <thead>
+		                        <tr>
+		                          <th> 4. ค่าใช้จ่าย ณ วันโอน</th>
+		                          <th>อัตรา</th>
+		                          <th>ธนาคาร</th>
+		                          <th>บริษัท</th>
+		                          <th>ลูกค้า</th>
+		                        </tr>
+		                 </thead>
+		                          <tr>
+		                                    <td>1 ค่าห้องชุดส่วนที่ต้องชำระ</td>
+		                                    <TD>*อาจมีเพิ่ม/ลดตามพื้นที่จริง</TD>
+		                                    <TD></TD>
+		                                    <TD>-</TD>
+		                                    <TD>1,964,000.00</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>2 ค่ามิเตอร์ไฟฟ้า</td>
+		                                    <TD>15Amp</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                                    <TD>3,250.00</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>3 ค่าส่วนกลางเก็บล่วงหน้า 1 ปี</td>
+		                                    <TD>ตรม. ละ 45 บาท/เดือน</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                                    <TD>*ขึ้นกลับพื้นที่จริง</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>4 เงินสมทบกองทุนส่วนกลาง</td>
+		                                    <TD>ตรม. ละ 500 บาท (ครั้งเดียว)</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                                    <TD>*ขึ้นกลับพื้นที่จริง</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>5 ค่าธรรมเนียมโอน</td>
+		                                    <TD>1% ของราคาประเมิน</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                                    <TD>*ขึ้นอยู่กับราคาประเมิน</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>6 ค่าธรรมเนียมยจดจำนอง</td>
+		                                    <TD>1%ของยอดจำนอง</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>7 สินเชื่อสูงกว่าค่าใช้จ่าย (Bank จ่ายเช็คคืนลูกค้า)</td>
+		                                    <TD></TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                                    <TD>-</TD>
+		                          </tr>
+		                          <tr>
+		                                    <td>8 อื่นๆ</td>
+		                                    <td></td>
+		                                    <td></td>
+		                                    <td></td>
+		                                    <td>-</td>
+		                          </tr>
+		                          <tr>
+		                                    <td>9 </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                          </tr>
+		                          <tr>
+		                                    <td>10 </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                          </tr>
+		                           <tr>
+		                                    <td></td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                                    <td> </td>
+		                          </tr>
+                                            
+                            
+					</table>
+
+
+				<div class="row">
+					<div class="span7" align="right">รวมค่าใช้จ่ายเป็นเงินทั้งสิ้น (บาท)</div>
+					<div class="span2" align="right">ประมาณ</div>
+					<div class="span3" align="right"><u><span style="border-bottom: 1px double #000;"><b>1,967,250.00</b></span></u></div><br>
+					<div class="span9">
+				<font size="2">
+						<u>รายการชำระเงินที่ลูกค้าต้องเตรียมมาในวันโอนกรรมสิทธิ์ ดังนี้</u><br>
+						1. กรณีโอนสดแคชเชียร์เช็กสั่งจ่าย <b>"บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b>
+				
+						</div>
+						<div class="span3" align ="right"><br>1,967,250.00</div>
+						<div class="span3">2. ชำระค่าส่วนกลาง <br>3. ชำระเงินสมทบกองทุนส่วนกลาง</div>
+						<div class="span7">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม"</b><br>
+						เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม"</b>
+						</div>
+						<div class="span2" align ="right">*ขึ้นอยู่กับพื้นที่จริง<br>*ขึ้นอยู่กับพื้นที่จริง</div><br>
+						<div class ="span7">4. ชำระค่าธรรมเนียมโอน 1 % กรณีกู้+ค่าจำนองอีก 1%เป็นแคชเชียร์เช็คสั่งจ่าย</div>
+						<div class="span3"><b>"กระทรวงการคลัง"</b><br><b>และแบ่งเป็นเงินสด</b></div>
+						<div class ="span2" align ="center">#Value!<br><u>#Value!</u></div>
+						<div class ="span10" align = "right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
+						<div class ="span2" align ="center"><u><span style="border-bottom: 1px double #000;"><b>#Value!</b></span></u></div>
 					
-				</tr>
-			</tbody>
-		</table>
-	</div>
+					</div>
+						<br><b><u>*หมายเหตุ</u></b> ขอเป็นแคชเชียร์เช็คที่ทำให้ในกรุงเทพหรือปริมณฑลเท่านั้น ถ้าเป็นต่างจังหวัดต้องเป็นดร๊าฟ ที่่สามารถขึ้นเงินได้ทุกสาขาทั่วประเทศ เท่านั้น<br><br>
+						<p align ="center">***********************************************</p><br>
+						<u><b>เอกสารที่ใช้ในการโอนกรรมสิทธิ์</b></u><br>
+						1. บัตรประจำตัวประชาชน และทะเบียนบ้าน ฉบับจริง และสำเนา 3 ชุด<br>
+						2. ใบทะเบียนสมรส / หนังสือยินยอมคู่สมรส / ใบหย่า /ใบมรณะบัตร (ถ้ามี)<br>
+						3. ใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
+				</font>
+						<strong>
+							บัญชี &nbsp;"บริษัท อนันดา ดีเวลลอปเม้น ทู จำกัด " ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
+							หรือ &nbsp;&nbsp;&nbsp;"บริษัท อนันดา ดีเวลลอปเม้น ทู จำกัด " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
+							บัญชี:&nbsp; "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม" ธนาคาร...................สาขา.........................................(ออมทรัย์)เลขที่....................................<br><br>
+
+						</strong>
+
+			<div class= "row">
+						<div class="span12" align="center">**ใบประเมินการค่าใช้จ่ายนี้ คำนวนขากสัญญาจะซื้อจะขาย อาจจะมีการเปลี่ยนแปลงขึ้นอยู่กับพื้นที่จริง และราคาประเมินหลังได้ อช. แล้ว ซึ่งบริษัทจะแจ้งค่าใช้จ่ายที่แน่นอนให้ทราบอีกครั้ง เมื่อนัดโอนกรรมสิทธ์**
+						</div>
+			</div>
+		</div> 
+
 	
 </section>
