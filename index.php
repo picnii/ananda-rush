@@ -1,3 +1,4 @@
+<?php require('init.php'); ?>
 <!doctype html>
 <html ng-app="ananda">
 <head>
@@ -40,6 +41,8 @@
 </head>
 <body>
 	<div ng-view></div>
+    <div id="json-get-data" class="hide"><?php echo $jsonGetData; ?></div>
+    <div id="json-post-data"  class="hide"><?php echo $jsonPostData; ?></div>
 </body>
 
 </html>

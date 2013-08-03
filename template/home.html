@@ -1,5 +1,5 @@
 <section ng-controller="HomeCtrl" class="container">
-	
-	<a href="#bill/1">Bill id 1</a>
-
+	<div ng-repeat="unit_id in unit_ids">
+		<a  href="#bills/{{unit_id}}">Bill id {{unit_id}}</a>
+	</div>
 </section>
