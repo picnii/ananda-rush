@@ -5,7 +5,7 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location)
 
 }
 
-function BillCtrl($scope, $rootScope, $routeParams, $location, Npop)
+function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
 {
 	//$scope.datas = Npop.query();
 
@@ -95,7 +95,11 @@ function BillListCtrl($scope, $rootScope, $routeParams, $location, Template)
 
 	$scope.print = function()
 	{
-
+		var obj = $scope.getSelectedChoice();
+		var tid = obj.tid;
+		var uids = obj.uids;
+		saveTempData(uids);
+		$location.path('/bills/print/'+tid);
 	}
 
 	$scope.save = function()
@@ -127,9 +131,109 @@ function BillEditCtrl($scope, $rootScope, $routeParams, $location, Npop)
 
 }
 
-function BillPrintCtrl($scope, $rootScope, $routeParams, $location, Template)
+function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http)
 {
-	$scope.template = Template.get({tid: $routeParams.tid}, function(data) {
+	var uids = loadTempData();
+	$scope.url = 'service/index.php';
+	console.log(uids);
+	/*$scope.bills = Print.save({action:"bills", template_id:$routeParams.tid, unit_ids:uids}, function(data){
+		console.log(data)
+	})*/
+	var send_data = {action:"bills", template_id:$routeParams.tid, unit_ids:uids};
+
+	var ids_str ='';
+	for(var i=0; i< uids.length;i++)
+	{
+		if(i!=0)
+			ids_str +="&";
+		ids_str += "unit_ids[]=" + uids[i]
+	}
+	$http({
+                method: 'POST',
+                url: 'service/index.php',
+                data: 'action=bills&template_id='+$routeParams.tid+ids_str,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data, status) {
+                $scope.status = status;
+                	$scope.bills = data;
+                	console.log($scope.bills)
+ 					for(var i=0; i<$scope.bills.length;i++)
+ 					{
+ 						var variables =$scope.bills[i].variables;
+ 						var payments = $scope.bills[i].payments;
+						var bill =$scope.bills[i];
+ 						$scope.bills[i].getVar = function(varname)
+ 						{
+
+ 							return getVariablesValue(variables, varname);
+ 						}
+
+ 						$scope.bills[i].getName = function(varname)
+ 						{
+ 							var myvar =  getVariables(variables, varname);
+							if(myvar == undefined)
+								return undefined;
+							return myvar.name;
+ 						}
+
+ 						$scope.bills[i].getFormulaValue = function(formula)
+						{
+							return getFormulaValue(variables, formula);
+						}
+
+						/* additional get*/
+						$scope.bills[i].getSumCustomerPayment = function()
+						{
+
+							if(payments == undefined)
+								return null;
+							var sum = 0;
+							
+							
+							for(var i = 0;i < payments.length; i++)
+							{
+								var raw_formula = payments[i].formulas[CUSTOMER_INDEX];
+								
+								//$scope.datas.payments[i].formulas[index] = $scope.getFormulaValue(raw_formula);
+								var value = bill.getFormulaValue(raw_formula);;
+								
+								if(value !=null && typeof(value) != "string")
+									sum += value;
+								
+								
+							}
+							return sum;
+						}
+
+						$scope.bills[i].getFinalCustomerPayment = function()
+						{
+							var getVar  = bill.getVar;
+							var firstSum = bill.getSumCustomerPayment();
+							var commonCharge = getVar("commonFeeCharge");
+							if(typeof(commonCharge) != 'number')
+								commonCharge = 0;
+							var commonFund = getVar("commonFeeFund");
+							if(typeof(commonFund) != 'number')
+								commonFund = 0;
+							
+							return firstSum + commonFund + commonCharge + getVar("feeForMinistryOfFinance") + getVar("feeForTranferCash")
+						}
+
+						$scope.bills[i].getDiffArea = function(actual, contract)
+						{
+							if(actual == null)
+								return null;
+							else if(contract)
+								return null;
+							return contract - actual;
+						}
+
+
+ 					}
+               
+    });
+
+	/*$scope.template = Template.get({tid: $routeParams.tid}, function(data) {
    	 //$scope.mainImageUrl = phone.images[0];
-  	});
+  	});*/
 }

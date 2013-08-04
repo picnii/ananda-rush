@@ -43,6 +43,8 @@
 	<div ng-view></div>
     <div id="json-get-data" class="hide"><?php echo $jsonGetData; ?></div>
     <div id="json-post-data"  class="hide"><?php echo $jsonPostData; ?></div>
+    <div id="json-controller-data" class="hide">
+    </div>
 </body>
 
 </html>

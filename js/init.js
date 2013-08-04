@@ -90,4 +90,17 @@ Number.prototype.formatMoney = function(decPlaces, thouSeparator, decSeparator) 
     return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
 };
 
+function saveTempData(data)
+{
+	var json = JSON.stringify(data);
+	$('#json-controller-data').html(json);
+	return json;
+}
+
+function loadTempData()
+{
+	var json = $('#json-controller-data').html();
+	return JSON.parse(json);
+}
+
 		

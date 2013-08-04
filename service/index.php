@@ -1,5 +1,5 @@
 <?php
-	$response = array("Error"=> "none service exists");
+	$response = array("Error"=> "none service exists", "post"=>$_POST, "get"=>$_GET);
 	
 
 	$billActions = array('bills', 'bill');
@@ -34,7 +34,7 @@
 			include 'bill.php';
 		if($action == 'bill')
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
-
+	
 	}
 
 	/* Template Service */

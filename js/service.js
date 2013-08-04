@@ -5,11 +5,11 @@ angular.module('dataServices', ['ngResource']).
   });
 }).
     factory('Template', function($resource){
-  return $resource('service?action=template', {}, {
+  return $resource('service?action=templates', {}, {
     query: {method:'GET' , isArray:true}
   });
 }).factory('Print', function($resource){
-  return $resource('service', {}, {
+  return $resource('service/index.php', {}, {
     query: {method:'POST', params:{action:'bills', unit_ids:'all', template_id:'all'} }
   });
 });
