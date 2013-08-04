@@ -7,7 +7,12 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location)
 
 function BillCtrl($scope, $rootScope, $routeParams, $location, Npop)
 {
-	$scope.datas = Npop.query();
+	//$scope.datas = Npop.query();
+
+	$scope.datas = Npop.get({uid: $routeParams.uid, tid: $routeParams.tid}, function(data) {
+   	 //$scope.mainImageUrl = phone.images[0];
+  	});
+
 
 	var billId = $routeParams.bid;
 	$scope.billId = billId;
@@ -81,3 +86,50 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop)
 
 }
 
+function BillListCtrl($scope, $rootScope, $routeParams, $location, Template)
+{
+	var post_data =  getPostData();
+
+	$scope.unit_ids = post_data['unit_ids'];
+	$scope.templates = Template.query();
+
+	$scope.print = function()
+	{
+
+	}
+
+	$scope.save = function()
+	{
+		var obj = $scope.getSelectedChoice();
+		var tid = obj.tid;
+		var uids = obj.uids;
+		console.log(tid);
+		console.log(uids);
+	}
+
+	$scope.getSelectedChoice = function()
+	{
+		var tid = $('input[name="template_id"]:checked').val();
+		var uids = [] ;//= $('input[name="unit_ids[]"]:checked');
+
+		$('input[name="unit_ids[]"]:checked').each(function()
+		{
+		    // add $(this).val() to your array
+		    uids.push($(this).val());
+		});
+		return {uids:uids, tid:tid};
+	}
+
+}
+
+function BillEditCtrl($scope, $rootScope, $routeParams, $location, Npop)
+{
+
+}
+
+function BillPrintCtrl($scope, $rootScope, $routeParams, $location, Template)
+{
+	$scope.template = Template.get({tid: $routeParams.tid}, function(data) {
+   	 //$scope.mainImageUrl = phone.images[0];
+  	});
+}

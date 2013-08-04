@@ -1,0 +1,23 @@
+[
+	{
+		"id":1,
+		"name":"แบบที่หนึ่ง",
+		"color":"whitesmoke"
+	},
+	{
+		"id":2,
+		"name":"แบบจี๊ดๆ",
+		"color":"#00FACE"
+	},
+	{
+		"id":3,
+		"name":"แบบอ๊างๆ",
+		"color":"white"
+	},
+	{
+		"id":4,
+		"name":"แบบโฮ๊ๆ",
+		"color":"#FACE00"
+	}
+
+]

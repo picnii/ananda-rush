@@ -1,0 +1,34 @@
+<section ng-controller="BillListCtrl" class="container">
+	
+	<div class="row">
+		<div class="span8">
+			<table class="table">
+				<thead>
+					<tr>
+						<td>Unit ID</td>
+						<td>Name</td>
+						<td>Print - View</td>
+					</tr>
+				</thead>
+				<tbody>
+
+					<tr ng-repeat="unit_id in unit_ids">
+						<td><input type="checkbox" name="unit_ids[]" ng-model="unitIds" value="{{unit_id}}" /></td>
+						<td>ทดสอบชื่อ</td>
+						<td><a  href="#bills/{{unit_id}}" target="_blank">Bill id {{unit_id}}</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="span4">
+			<h2>Templates</h2>
+			<div ng-repeat="tp in templates" class="template thumb" style="background-color:{{tp.color}}">
+				<input type="radio" ng-model="templateId" name="template_id" value="{{tp.id}}" />{{tp.id}} {{tp.name}}
+			</div>
+		</div>
+	</div>
+	<button class="btn btn-inverse" ng-click="print()">Print</button>
+	<button class="btn btn-danger" ng-click="save()">Save</button>
+
+
+</section>
