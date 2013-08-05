@@ -1,5 +1,14 @@
 <?php
 
+function testCon()
+{
+	echo "testCon";
+}
+
+include "Model/Transaction.php";
+
+
+
 function getPaymentsByTemplateId($template_id)
 {
 	$payments =  array();

@@ -1,5 +1,6 @@
 <?php
 	require_once('util.php');
+	//use for preview what bills will be liked
 	function actionBills($unit_ids, $template_id)
 	{
 		$samples = array();
@@ -8,6 +9,35 @@
 		$samples[2] = getSampleBill();
 
 		return $samples;
+	}
+
+	function actionCreateBills($unit_ids, $template_id)
+	{
+		$transaction_ids  = array();
+		for($i = 0;$i < count($unit_ids); $i++)
+		{
+			
+			$created_id = createTransaction($unit_ids[$i], $template_id);
+
+			array_push($transaction_ids, $created_id);
+			
+		}
+		return $transaction_ids;
+	}
+
+	function actionDeleteBills($transaction_ids)
+	{
+		$result = array(
+			0 => true,
+			1 => false
+		);
+		return $result;
+	}	
+
+	function actionUpdateBill($unit_id, $args)
+	{
+		$sample = getSampleBill();
+		return $sample;
 	}
 
 	function actionBill($unit_id, $template_id)
