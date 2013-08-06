@@ -49,11 +49,10 @@ function findTransaction($q)
 	 $row = DB_fetch_array($result);
 	if($row > 0){
         return array(
-            'id'=>$row[0]["id"],
-            'unit_payment_id'=>$row[0]["unit_payment_id"],
-            'template_id'=>$row[0]["template_id"],
-            'create_time'=>$row[0]["create_time"],
-            'unit_payment_unit_id'=>$row[0]["unit_payment_unit_id"]
+            'id'=>$row["id"],
+            'unit_payment_id'=>$row["unit_payment_id"],
+            'template_id'=>$row["template_id"],
+            'create_time'=>$row["create_time"]
         );
     }else{
        return false;
