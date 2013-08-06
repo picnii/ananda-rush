@@ -1,0 +1,34 @@
+<section ng-controller="PaymentCtrl" class="container">
+
+	<h2>Create Payment</h2>
+	<form>
+		<input type="text" required placeholder="Payment Name" ng-model="paymentName">
+		<input type="text" required placeholder="Payment Description" ng-model="paymentDescription">
+		<input type="text" required placeholder="Bank Formula" ng-model="formulaBank">
+		<input type="text" required placeholder="Company Formula" ng-model="formulaCompany">
+		<input type="text" required placeholder="Client Formula" ng-model="formulaClient">
+
+		<button class="btn" ng-click="create()">Create</button>
+	</form>
+	<h2>Payments</h2><a href="#/variables" class="btn btn-danger">ตัวแปร</a>
+	<table class="table">
+		
+			<tr>
+				<td>Name</td>
+				<td>Description</td>
+				<td>Formula Bank</td>
+				<td>Formula Company</td>
+				<td>Formula Client</td>
+			</tr>
+		
+			<tr ng-repeat="payment in payments | orderBy:'-id'">
+				<td>{{payment.id}}</td>
+				<td>{{payment.name}}</td>
+				<td>{{payment.description}}</td>
+				<td>{{payment.formulas[0]}}</td>
+				<td>{{payment.formulas[1]}}</td>
+				<td>{{payment.formulas[2]}}</td>
+
+			</tr>
+	</table>
+</section>

@@ -1,0 +1,12 @@
+<section ng-controller="TemplateCtrl" class="container">
+	<header>
+		<a href="#/templates/create" class="btn">สร้าง Template</a>
+		<a href="#/payments" class="btn">จัดการ ค่าใช้จ่าย</a>
+		<a href="#/variables" class="btn">จัดการ ตัวแปร</a>
+	</header>
+	<h2>Templates</h2>
+	<div ng-repeat="tp in templates" class="template thumb" style="background-color:{{tp.color}}">
+				<a href='/#templates/{{tp.id}}/edit'>{{tp.id}} {{tp.name}}</a>
+	</div>
+
+</section>

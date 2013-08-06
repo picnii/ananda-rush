@@ -6,6 +6,8 @@ var app = angular.module('ananda', ['dataServices','areaFilters']).
 		      when('/bills/preview/:tid/:uid', {templateUrl: 'template/bill.html',   controller: BillCtrl}).
 		      when('/bills', {templateUrl: 'template/bills.html',   controller: BillListCtrl}).
 		      when('/bills/:bid/edit', {templateUrl: 'template/bill-edit.html',   controller: BillEditCtrl}).
+          when('/payments', {templateUrl: 'template/payment.html',   controller: PaymentCtrl}).
+          when('/templates', {templateUrl: 'template/template.html',   controller: TemplateCtrl}).
 		      otherwise({redirectTo: '/'});
 		}]);
 

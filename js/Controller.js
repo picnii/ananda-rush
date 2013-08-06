@@ -2,6 +2,37 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location)
 {
 	var post_data =  getPostData();
 	$scope.unit_ids = post_data['unit_ids'];
+	$scope.units = [
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":9},
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8}
+	];
+
+	$scope.search = function()
+	{
+		$scope.units.pop();
+	}
+
+	$scope.print = function()
+	{
+		var uids=[];
+		var tids = [];
+		$('input[name="unit_ids[]"]:checked').each(function()
+		{
+		    // add $(this).val() to your array
+		    uids.push($(this).val());
+		});
+
+		$('input[name="template_ids[]"]:checked').each(function()
+		{
+		    // add $(this).val() to your array
+		    tids.push($(this).val());
+		});
+
+		saveTempData({uids:uids, tids:tids});
+		$location.path('/bills/print/all');
+	}
 
 }
 
@@ -133,13 +164,22 @@ function BillEditCtrl($scope, $rootScope, $routeParams, $location, Npop)
 
 function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http)
 {
-	var uids = loadTempData();
+	
 	$scope.url = 'service/index.php';
-	console.log(uids);
+	
 	/*$scope.bills = Print.save({action:"bills", template_id:$routeParams.tid, unit_ids:uids}, function(data){
 		console.log(data)
 	})*/
-	var send_data = {action:"bills", template_id:$routeParams.tid, unit_ids:uids};
+	if($routeParams.tid == 'all')
+	{
+		var obj = loadTempData();
+		var uids = obj.uids;
+		var template_ids = obj.tids;
+	}else
+	{
+		var uids = loadTempData();
+		var send_data = {action:"bills", template_id:$routeParams.tid, unit_ids:uids};
+	}
 
 	var ids_str ='';
 	for(var i=0; i< uids.length;i++)
@@ -236,4 +276,33 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http)
 	/*$scope.template = Template.get({tid: $routeParams.tid}, function(data) {
    	 //$scope.mainImageUrl = phone.images[0];
   	});*/
+}
+
+function PaymentCtrl($scope, $rootScope, $location, Payment)
+{
+	$scope.payments = Payment.query();
+	$scope.create = function()
+	{
+		console.log($scope.paymentName);
+		console.log($scope.paymentDescription);
+		console.log($scope.formulaBank);
+		console.log($scope.formulaCompany);
+		console.log($scope.formulaClient);
+
+		$scope.payments.push({
+			"id":88,
+			"name":$scope.paymentName,
+			"description":$scope.paymentDescription,
+			"formulas":[
+				$scope.formulaBank,
+				$scope.formulaCompany,
+				$scope.formulaClient
+			]
+		});
+	}
+}
+
+function TemplateCtrl($scope, $rootScope, Template, $location)
+{
+	$scope.templates = Template.query();
 }

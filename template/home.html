@@ -1,4 +1,32 @@
 <section ng-controller="HomeCtrl" class="container">
-	This is demo 
-	<a href="simulate-call.php">จำลองการใช้งาน</a>
+	This is demo
+	<ul>
+		<li><a href="simulate-call.php">จำลองการโดนเรียกจาก ระบบคัดกรองลูกค้า</a></li>
+		<li><a href="simulate-call.php">ดู Report ยาวโพดๆ</a></li>
+		<li><a href="#/templates">จัดการ Template</a></li>
+	</ul>
+
+	<h2>Search</h2>
+	<form>
+		<input type="text" placeholder="โครงการ">
+		<input type="text" placeholder="Room Type">
+		<input type="text" placeholder="Blablabla">
+		<button class="btn" ng-click="search()">Search</button>
+	</form>
+	<h2>Unit from transaction</h2>
+	<form>
+		<table>
+			<tr ng-repeat="unit in units">
+
+				<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
+					<input type="hidden" name=
+					"template_ids[]" value="{{unit.template_id}}"/>
+				</td>
+				<td>{{unit.name}}</td>
+				<td><a href="#/bills/{{unit.billId}}/edit">edit</a></td>
+			</tr>
+		</table>
+		<button ng-click="print()">Print</button>
+	</form>
+
 </section>
