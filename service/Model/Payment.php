@@ -19,6 +19,22 @@ function getPayments()
 
 }
 
+function createPayment($name, $description, $formulas)
+{
+
+	return $payment_id;
+}
+
+function updatePayment($payment_id, $args)
+{
+	return $payment_id;
+}
+
+function deletePayment($payment_id)
+{
+	
+}
+
 
 function getPaymentsByTemplateId($template_id)
 {
