@@ -306,3 +306,8 @@ function TemplateCtrl($scope, $rootScope, Template, $location)
 {
 	$scope.templates = Template.query();
 }
+
+function TemplateEditCtrl($scope, $rootScope, Template, $location)
+{
+	$scope.template = Template.get({template_id: $routeParams.tid});
+}

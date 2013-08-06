@@ -5,8 +5,9 @@ angular.module('dataServices', ['ngResource']).
   });
 }).
     factory('Template', function($resource){
-  return $resource('service?action=templates', {}, {
-    query: {method:'GET' , isArray:true}
+  return $resource('service/index.php', {}, {
+    query: {method:'GET', params:{action:'templates'} , isArray:true},
+    Get: {method:'GET', params:{action:'template', template_id:"all"} }
   });
 }).factory('Print', function($resource){
   return $resource('service/index.php', {}, {

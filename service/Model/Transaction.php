@@ -128,5 +128,63 @@ function deleteTransaction($q)
 	return true;
 }
 
+//find lastes transaction in bill form
+function findBillByUnitId($unit_id)
+{
+    return array(
+        "transaction_id"=>20,
+        "unit_id"=>$unit_id,
+        "template_id"=>50,
+        "payments"=>array(
+            array(
+                "name"=>"payment1",
+                "description"=>"desc1",
+                "formulas"=>array(
+                    "",
+                    "",
+                    "{bankLoan}*2"
+                ),
+            )
+        ),
+        "variables"=>array(
+            array(
+                array("name"=>"bankLoan", "value"=>5000),
+                array("name"=>"bankSide", "value"=>10000)
+            )
+        )
+    );
+}
+
+function findBillByTransactionId($transaction_id)
+{
+
+    return array(
+        "transaction_id"=>$transaction_id,
+        "unit_id"=>50,
+        "template_id"=>50,
+        "payments"=>array(
+            array(
+                "name"=>"payment1",
+                "description"=>"desc1",
+                "formulas"=>array(
+                    "",
+                    "",
+                    "{bankLoan}*2"
+                ),
+            )
+        ),
+        "variables"=>array(
+            array(
+                array("name"=>"bankLoan", "value"=>5000),
+                array("name"=>"bankSide", "value"=>10000)
+            )
+        )
+    );
+}
+
+function findAllBill($q)
+{
+
+}
 
 ?>

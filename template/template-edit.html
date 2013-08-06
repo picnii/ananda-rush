@@ -1,0 +1,17 @@
+<section ng-controller="TemplateEditCtrl" class="container">
+
+
+	Name <input type="text" ng-model="template.name">
+	Color <input type="color" ng-model="template.color">
+	
+	<table>
+		<tr ng-repeat="payment in template.payments">
+			<td>{{payment.name}}</td>
+			<td>{{payment.description}}</td>
+			<td>{{payment.formulas[0]}}</td>
+			<td>{{payment.formulas[1]}}</td>
+			<td>{{payment.formulas[2]}}</td>
+		</tr>
+	</table>
+
+</section>
