@@ -85,6 +85,11 @@ function updateTransaction($transaction_id, $args)
 	);
 }
 
+function findAllLastTransaction($unit_ids)
+{
+    //find all Lastest transaction from unit_id
+}
+
 function deleteTransactionById($transaction_id)
 {
 
@@ -95,5 +100,6 @@ function deleteTransaction($q)
 {
 	return true;
 }
+
 
 ?>
