@@ -64,8 +64,14 @@ function findTransaction($q)
 */
 function findAllTransaction($q)
 {
-	//if none $q return all 
-	//if haave $q add where
+	$sql = "SELECT * FROM tranfer_transaction WHERE where id = $q";
+    $result = DB_query($connect,$SQL);
+	 $row = DB_fetch_array($result);
+	if($row > 0){
+        return $row;
+    }else{
+       return false;
+    }
 }
 
 function updateTransaction($transaction_id, $args)
