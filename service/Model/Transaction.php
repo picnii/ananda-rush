@@ -94,27 +94,34 @@ function updateTransaction($transaction_id, $args)
 function findAllLastTransaction($unit_ids)
 {
     //find all Lastest transaction from unit_id
-    return array(
-        array(
-            'id'=>$row["id"],
-            'unit_payment_id'=>$row["unit_payment_id"],
-            'template_id'=>$row["template_id"],
-            'create_time'=>$row["create_time"]
-        ),
-        array(
-            'id'=>$row["id"],
-            'unit_payment_id'=>$row["unit_payment_id"],
-            'template_id'=>$row["template_id"],
-            'create_time'=>$row["create_time"]
-        ),
-        array(
-            'id'=>$row["id"],
-            'unit_payment_id'=>$row["unit_payment_id"],
-            'template_id'=>$row["template_id"],
-            'create_time'=>$row["create_time"]
-        )
+    $sql = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
+    $result = DB_query($connect,$SQL);
+	 $row = DB_fetch_array($result);
+	if($row > 0){
+        return array(
+            array(
+                'id'=>$row["id"],
+                'unit_payment_id'=>$row["unit_payment_id"],
+                'template_id'=>$row["template_id"],
+                'create_time'=>$row["create_time"]
+            ),
+            array(
+                'id'=>$row["id"],
+                'unit_payment_id'=>$row["unit_payment_id"],
+                'template_id'=>$row["template_id"],
+                'create_time'=>$row["create_time"]
+            ),
+            array(
+                'id'=>$row["id"],
+                'unit_payment_id'=>$row["unit_payment_id"],
+                'template_id'=>$row["template_id"],
+                'create_time'=>$row["create_time"]
+            )
 
-    );
+        );
+    }else{
+       return false;
+    }
 }
 
 function deleteTransactionById($transaction_id)
