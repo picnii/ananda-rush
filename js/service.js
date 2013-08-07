@@ -19,7 +19,12 @@ angular.module('dataServices', ['ngResource']).
   });
 }).factory('Type', function($resource){
   return $resource('service/index.php', {}, {
-    getRoomType: {method:'GET', params:{action:'type', type:'room'}, isArray:true }
+    getRoomType: {method:'GET', params:{action:'type', type:'room'}, isArray:true },
+    getProjectsList: {method:'GET', params:{action:'type', type:'projects'}, isArray:true }
+  });
+}).factory('Unit', function($resource){
+  return $resource('service/index.php', {}, {
+    query: {method:'GET', params:{action:'units', q:'*'}, isArray:true }
   });
 })
     //, params:{unitId:'data'}, isArray:false

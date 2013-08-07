@@ -1,18 +1,57 @@
-function HomeCtrl($scope, $rootScope, $routeParams, $location, Type)
+function HomeCtrl($scope, $rootScope, $routeParams, $location, Type, Template, Unit)
 {
 	var post_data =  getPostData();
-	var room_types = Type.getRoomType();
+	$scope.room_types = Type.getRoomType();
+	$scope.project_types = Type.getProjectsList();
+	$scope.templates = Template.query();
 	$scope.unit_ids = post_data['unit_ids'];
-	$scope.units = [
+	$scope.units = Unit.query();
+
+/*
+	[
 		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},
 		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},
 		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":9},
 		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8}
-	];
+	];*/
 
 	$scope.search = function()
 	{
-		$scope.units.pop();
+		var ss= $scope.search;
+		var query = "";
+		var params_name = ['unit_id', 'project_id', 'room_type', 'template_id'];
+		var check_params = [ss.unit, ss.project, ss.type, ss.template];
+		var params_count = 0;
+		for(var i =0; i < params_name.length; i++)
+		{
+			
+			if(check_params[i] != "" && check_params[i] != "*" && typeof(check_params[i]) == "string")
+			{
+				//console.log('check' + typeof(check_params[i]));
+				//console.log(check_params[i]);
+				if(params_count > 0)
+					query += ".";
+				query += params_name[i] + "=" + check_params[i];
+				
+				params_count++;
+			}
+		}
+		if(params_count == 0)
+			query = "*";
+		console.log(query);
+		$scope.units = Unit.query({'q':query})
+	}
+
+	$scope.match = function()
+	{
+		var uids=[];
+		$('input[name="unit_ids[]"]:checked').each(function()
+		{
+		    // add $(this).val() to your array
+		    uids.push($(this).val());
+		    saveTempData(uids);
+		    $location.path('/bills');
+		});
 	}
 
 	$scope.print = function()
@@ -118,12 +157,23 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
 
 }
 
-function BillListCtrl($scope, $rootScope, $routeParams, $location, Template)
+function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Template)
 {
-	var post_data =  getPostData();
+	//var post_data =  getPostData();
 
-	$scope.unit_ids = post_data['unit_ids'];
+	//$scope.unit_ids = post_data['unit_ids'];
+	$scope.unit_ids = loadTempData();
 	$scope.templates = Template.query();
+
+	var unit_id_str = convertUnitIdsToStr($scope.unit_ids);
+	$http({
+                method: 'POST',
+                url: 'service/index.php',
+                data: 'action=units&'+unit_id_str,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data, status) {
+            	$scope.units = data;
+            });
 
 	$scope.print = function()
 	{
@@ -141,6 +191,21 @@ function BillListCtrl($scope, $rootScope, $routeParams, $location, Template)
 		var uids = obj.uids;
 		console.log(tid);
 		console.log(uids);
+		console.log('saving');
+		var unit_id_str = convertUnitIdsToStr(obj.uids);
+		$http({
+                method: 'POST',
+                url: 'service/index.php',
+                data: 'action=createBills&template_id='+tid+unit_id_str,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).success(function(data, status) {
+        		console.log('status')
+        		console.log(status)
+            	//$location.path('/bills/print/'+tid);
+        });
+
+		
+
 	}
 
 	$scope.getSelectedChoice = function()
@@ -326,4 +391,16 @@ function BillPrintTestCtrl($scope, $http)
             });
 
 
+}
+
+function convertUnitIdsToStr(uids)
+{
+	var ids_str ='';
+	for(var i=0; i< uids.length;i++)
+	{
+		if(i!=0)
+			ids_str +="&";
+		ids_str += "unit_ids[]=" + uids[i]
+	}
+	return ids_str;
 }

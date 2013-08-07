@@ -2,21 +2,26 @@
 	
 	<div class="row">
 		<div class="span8">
+			<h2>Units</h2>
 			<table class="table">
 				<thead>
 					<tr>
 						<td>Unit ID</td>
 						<td>Name</td>
+						<td>is mark</td>
 						<td>Print - View</td>
 					</tr>
 				</thead>
 				<tbody>
+					<tr ng-repeat="unit in units">
 
-					<tr ng-repeat="unit_id in unit_ids">
-						<td><input type="checkbox" name="unit_ids[]" ng-model="unitIds" value="{{unit_id}}" /></td>
-						<td>ทดสอบชื่อ</td>
-						<td></td>
+						<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
+						</td>
+						<td>{{unit.client_name}}</td>
+						<td>{{unit.is_match_bill}}</td>
+						<td><a href="#/bills/{{unit.billId}}/edit">edit</a></td>
 					</tr>
+					
 				</tbody>
 			</table>
 		</div>
@@ -27,7 +32,7 @@
 			</div>
 		</div>
 	</div>
-	<button class="btn btn-inverse" ng-click="print()">Print</button>
+	<button class="btn btn-inverse" ng-click="print()">Preview</button>
 	<button class="btn btn-danger" ng-click="save()">Save</button>
 
 
