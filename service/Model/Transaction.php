@@ -142,7 +142,8 @@ function findAllLastTransaction($unit_ids)
 
 function deleteTransactionById($transaction_id)
 {
-
+    $SQL  = " DELETE FROM tranfer_transaction WHERE id = $transaction_id ";
+    $result = DB_query($connect,$SQL);
 	return true;
 }
 
