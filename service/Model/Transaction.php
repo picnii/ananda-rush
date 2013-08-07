@@ -82,14 +82,29 @@ function updateTransaction($transaction_id, $args)
 	)
 	update only change field
 	*/
-    $SQL = "update tranfer_transaction set  ";
-	return array(
-		'id'=>20,
-		'unit_payment_id'=>30,
-		'template_id'=>1,
-		'create_time'=>'2009-12-20',
-		'unit_payment_unit_id'=>30
-	);
+            if($transaction_id != ""){
+                $sql ="UPDATE tranfer_transaction SET ";
+            }if($args['unit_payment_id'] != ""){
+                $sql.="unit_payment_id='".$args['unit_payment_id']."', ";
+            }if($args['template_id'] != ""){
+                $sql.="template_id='".$args['template_id']."' ";
+            }
+                $sql.="WHERE id='".$transaction_id."' ";
+                $rs = DB_query($connect,$sql); 
+            if($rs >0){
+                $SQL  = "SELECT * from tranfer_transaction where id = $transaction_id ";
+                $result = DB_query($connect,$SQL);
+                $row = DB_fetch_array($result);
+                return array(
+                    'id'=>$row["id"],
+                    'unit_payment_id'=>$row["unit_payment_id"],
+                    'template_id'=>$row["template_id"],
+                    'create_time'=>$row["create_time"]
+                );
+            }else{
+                return false;
+            }
+	
 }
 
 function findAllLastTransaction($unit_ids)
