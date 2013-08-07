@@ -44,7 +44,7 @@ function findTransactionById($id)
 function findTransaction($q)
 {
 
-	$sql = "SELECT * FROM tranfer_transaction WHERE where id = $q";
+	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
     $result = DB_query($connect,$SQL);
 	 $row = DB_fetch_array($result);
 	if($row > 0){
@@ -64,7 +64,7 @@ function findTransaction($q)
 */
 function findAllTransaction($q)
 {
-	$sql = "SELECT * FROM tranfer_transaction WHERE where id = $q";
+	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
     $result = DB_query($connect,$SQL);
 	 $row = DB_fetch_array($result);
 	if($row > 0){
@@ -82,6 +82,7 @@ function updateTransaction($transaction_id, $args)
 	)
 	update only change field
 	*/
+    $SQL = "update tranfer_transaction set  ";
 	return array(
 		'id'=>20,
 		'unit_payment_id'=>30,
@@ -94,7 +95,7 @@ function updateTransaction($transaction_id, $args)
 function findAllLastTransaction($unit_ids)
 {
     //find all Lastest transaction from unit_id
-    $sql = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
+    $SQL = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
     $result = DB_query($connect,$SQL);
 	 $row = DB_fetch_array($result);
 	if($row > 0){
