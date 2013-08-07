@@ -3,8 +3,11 @@
 	{
 		$template_id = 5;
 		$payments = getPaymentsByTemplateId($template_id);
+        $SQL  = "select template_id from tranfer_transaction where id = $transaction_id";
+        $result = DB_query($connect,$SQL);
+        $row = DB_fetch_array($result);
 		return array(
-			"template_id"=>$template_id,
+			"template_id"=>$row['template_id'],
 			"payments"=>$payments
 		);
 	}
@@ -13,7 +16,18 @@
 	{
 		//create
 		$template_id = 99;
-		return $template_id;
+		$is_show = 0;
+        $SQL  = "INSERT INTO tranfer_template(name,description,is_show)  VALUES ('$name', '$description','$is_show'); SELECT SCOPE_IDENTITY()";
+        $result = DB_query($connect,$SQL);
+        if($result){
+            sqlsrv_next_result($result); 
+            sqlsrv_fetch($result); 
+            $template_id = sqlsrv_get_field($result, 0); 
+            return $template_id;
+        }else{
+            return false;
+        }
+		
 	}
 
 	function updateTemplate($template_id, $args)
