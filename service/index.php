@@ -15,10 +15,15 @@
 		}
 		return false;
 	}
+	foreach (glob("RequestManager/*.php") as $filename)
+	{
+	    include $filename;
+	}/*
 	include 'RequestManager/Bill.php';
 	include 'RequestManager/Template.php';
 	include 'RequestManager/Payment.php';
 	include 'RequestManager/Type.php';
+	include 'RequestManager/Unit.php';*/
 
 	$response = json_encode($response);
 	echo $response;

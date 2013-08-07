@@ -8,6 +8,12 @@
 $id = 22;
 function createTransaction($unit_id, $template_id)
 {
+    /*
+    *IF EXISTS (SELECT * FROM Table1 WHERE Column1='SomeValue')
+    UPDATE Table1 SET (...) WHERE Column1='SomeValue'
+ELSE
+    INSERT INTO Table1 VALUES (...)
+    */
 	$SQL  = "INSERT INTO tranfer_transaction(unit_payment_id,template_id)  VALUES ('$unit_id', '$template_id'); SELECT SCOPE_IDENTITY()";
      $result = DB_query($connect,$SQL);
     if($result){

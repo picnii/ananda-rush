@@ -1,5 +1,5 @@
 <?php
-	$FIX_TYPE = 0, $PROJECT_TYPE = 2, $UNIT_TYPE = 3;
+	$FIX_TYPE = 0; $PROJECT_TYPE = 2; $UNIT_TYPE = 3;
 
 	function findVariableById($id, $args)
 	{
@@ -57,10 +57,10 @@
 	{
 		return array(
 			array(
-				"id":5,
-				"name"10:
+				"id"=>5,
+				"name"=>10
 			)
-		)
+		);
 	}
 
 ?>
