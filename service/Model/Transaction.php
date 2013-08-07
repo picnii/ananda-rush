@@ -8,7 +8,7 @@
 $id = 22;
 function createTransaction($unit_id, $template_id)
 {
-	$SQL  = "INSERT INTO tranfer_transaction(unit_payment_id,template_id)  VALUES ('$unit_id', '$template_id'); SELECT SCOPE_IDENTITY()";
+	$SQL  = "INSERT INTO tranfer_transaction(unit_payment_id,template_id,create_time)  VALUES ('$unit_id', '$template_id',GETDATE()); SELECT SCOPE_IDENTITY()";
      $result = DB_query($connect,$SQL);
     if($result){
         sqlsrv_next_result($result); 
@@ -87,8 +87,9 @@ function updateTransaction($transaction_id, $args)
             }if($args['unit_payment_id'] != ""){
                 $sql.="unit_payment_id='".$args['unit_payment_id']."', ";
             }if($args['template_id'] != ""){
-                $sql.="template_id='".$args['template_id']."' ";
+                $sql.="template_id='".$args['template_id']."', ";
             }
+                $sql.="create_time= GETDATE() ";
                 $sql.="WHERE id='".$transaction_id."' ";
                 $rs = DB_query($connect,$sql); 
             if($rs >0){
