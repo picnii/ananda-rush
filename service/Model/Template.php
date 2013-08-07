@@ -58,6 +58,8 @@
 	function deleteTemplate($template_id)
 	{
 		//return result of delete
+        $SQL  = " DELETE FROM tranfer_template WHERE id = $template_id ";
+        $result = DB_query($connect,$SQL);
 		return true;
 	}
 
