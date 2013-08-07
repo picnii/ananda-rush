@@ -3,7 +3,20 @@
 
 	function findVariableById($id, $args)
 	{
-
+             $SQL  = "select * from tranfer_variable where id = $id";
+             $result = DB_query($connect,$SQL);
+             $row = DB_fetch_array($result);
+             if($row > 0){
+                return array(
+                    'id'=>$row["id"],
+                    'codename'=>$row["codename"],
+                    'name'=>$row["name"],
+                    'value'=>$row["value"],
+                    'variable_type_id'=>$row["variable_type_id"]
+                );
+            }else{
+               return false;
+            }
 	}
 
 	function craeteVariable($name, $codename, $description, $type, $value)
