@@ -149,6 +149,8 @@ function deleteTransactionById($transaction_id)
 
 function deleteTransaction($q)
 {
+    $SQL  = " DELETE FROM tranfer_transaction WHERE id = $q ";
+    $result = DB_query($connect,$SQL);
 	return true;
 }
 
