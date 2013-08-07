@@ -311,3 +311,18 @@ function TemplateEditCtrl($scope, $rootScope, Template, $location)
 {
 	$scope.template = Template.get({template_id: $routeParams.tid});
 }
+
+function BillPrintTestCtrl($scope, $http)
+{
+	$http({
+                method: 'POST',
+                url: 'service/index.php',
+                data: 'action=bills&template_id=all',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data, status) {
+                $scope.status = status;
+                $scope.bills = data;
+            });
+
+
+}
