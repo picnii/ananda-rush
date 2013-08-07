@@ -18,6 +18,7 @@
 	include 'RequestManager/Bill.php';
 	include 'RequestManager/Template.php';
 	include 'RequestManager/Payment.php';
+	include 'RequestManager/Type.php';
 
 	$response = json_encode($response);
 	echo $response;

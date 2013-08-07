@@ -1,6 +1,7 @@
-function HomeCtrl($scope, $rootScope, $routeParams, $location)
+function HomeCtrl($scope, $rootScope, $routeParams, $location, Type)
 {
 	var post_data =  getPostData();
+	var room_types = Type.getRoomType();
 	$scope.unit_ids = post_data['unit_ids'];
 	$scope.units = [
 		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},

@@ -17,5 +17,9 @@ angular.module('dataServices', ['ngResource']).
   return $resource('service/index.php', {}, {
     query: {method:'GET', params:{action:'payments'}, isArray:true }
   });
-});
+}).factory('Type', function($resource){
+  return $resource('service/index.php', {}, {
+    getRoomType: {method:'GET', params:{action:'type', type:'room'}, isArray:true }
+  });
+})
     //, params:{unitId:'data'}, isArray:false
