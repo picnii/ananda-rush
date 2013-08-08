@@ -87,6 +87,11 @@ function deletePayment($payment_id)
 
 function getPaymentsByTemplateId($template_id)
 {
+    $SQL  = "select *,* from tranfer_payment INNER JOIN ";
+    $SQL .="tranfer_template_payment on tranfer_template_payment.payment_id = tranfer_payment.id where tranfer_template_payment.template_id = $template_id";
+	$result = DB_query($connect,$SQL);
+	$row = DB_fetch_array($result);
+    if($row >0){
 	$payments =  array();
 	$payments[0] = new stdClass;
 	$payments[0]->order = 1;
@@ -98,6 +103,9 @@ function getPaymentsByTemplateId($template_id)
 			"{priceOnContact} - {paidAmount}"
 		);
 	return $payments;
+    }else{
+        return false;
+    }
 }
 
 ?>
