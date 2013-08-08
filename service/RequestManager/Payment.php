@@ -6,7 +6,7 @@
 	{
 		$action = $_GET['action'];
 		if(gotAction($action, $paymentActions))
-			include 'Controller/PaymentController.php';
+			require_once 'Controller/PaymentController.php';
 		if($action == 'payments')
 			$response = actionPayments();
 		

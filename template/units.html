@@ -1,0 +1,52 @@
+<h2>Search</h2>
+	<form>
+		<label>UNIT ID</label>
+		<input type="text" ng-model="search.unit" />
+		<label>Project</label>
+		<select ng-model="search.project" >
+			<option  value="*">
+				ALL
+			</option>
+			<option ng-repeat="type in project_types" value="{{type.value}}">
+				{{type.name}}
+			</option>
+		</select>
+		<label>Room Type</label>
+		<select ng-model="search.type" >
+			<option  value="*">
+				ALL
+			</option>
+			<option ng-repeat="type in room_types" value="{{type.value}}">
+				{{type.name}}
+			</option>
+		</select>
+		<label>Template</label>
+		<select ng-model="search.template" >
+			<option  value="*">
+				ALL
+			</option>
+			<option ng-repeat="type in templates" value="{{type.id}}">
+				{{type.name}}
+			</option>
+		</select>
+		<button class="btn" ng-click="search()">Search</button>
+		search query is {{search.unit}} {{search.project}} {{search.type}}
+	</form>
+	<h2>Unit from transaction</h2>
+	<form>
+		<table>
+			<tr ng-repeat="unit in units">
+
+				<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
+					<input type="hidden" name=
+					"template_ids[]" value="{{unit.template_id}}"/>
+				</td>
+				<td>{{unit.client_name}}</td>
+				<td>{{unit.is_match_bill}}</td>
+				<td><a href="#/bills/{{unit.billId}}/edit">edit</a></td>
+			</tr>
+		</table>
+		<button ng-click="print()">Print</button>
+		<button ng-click="save()">Save Transaction</button>
+
+	</form>

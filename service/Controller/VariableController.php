@@ -8,7 +8,7 @@
 
 	function actionVariables($type=null)
 	{
-		if($type ==null)
+		/*if($type ==null)
 			return array(
 				getSampleVariable(),
 				getSampleVariable(),
@@ -22,12 +22,16 @@
 				getSampleVariable(),
 				getSampleVariable(),
 				getSampleVariable()
-			);
+			);*/
+		return findAllVariables($type);
 	}
 
-	function actionVariable()
+	function actionVariable($codeNameOrId)
 	{
-		return getSampleVariable();
+		if(is_numeric($codeNameOrId))
+			return findVariableById($codeNameOrId);
+		else
+			return findVariableByCodeName($codeNameOrId);
 	}
 
 	function actionUpdateVariable($variable_id, $value)
@@ -37,13 +41,12 @@
 
 	function actionCreateVariable($name, $codename, $description, $type, $value)
 	{
-		return true;
-		//return createVariable($name, $codename, $description, $type, $value);
+		return createVariable($name, $codename, $description, $type, $value);
 	}
 
-	function actionDeleteVariable()
+	function actionDeleteVariable($variable_id)
 	{
-		return true;
+		return deleteVariable($variable_id);
 	}
 
 

@@ -5,7 +5,7 @@ $templateActions = array('templates', 'template', 'updateTemplate');
 	{
 		$action = $_GET['action'];
 		if(gotAction($action, $templateActions))
-			include 'Controller/TemplateController.php';
+			require_once 'Controller/TemplateController.php';
 		if($action == 'templates')
 			$response = actionTemplates();
 		if($action == 'template')
@@ -17,7 +17,7 @@ $templateActions = array('templates', 'template', 'updateTemplate');
 	{
 		$action = $_POST['action'];
 		if(gotAction($action, $templateActions))
-			include 'Controller/TemplateController.php';
+			require_once 'Controller/TemplateController.php';
 		if($action == 'updateTemplate')
 			$response = actionUpdateTemplate($_POST['template_id'], $_POST['args']);
 	}

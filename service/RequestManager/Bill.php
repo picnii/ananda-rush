@@ -7,7 +7,7 @@
 	{
 		$action = $_POST['action'];
 		if(gotAction($action, $billActions))
-			include 'Controller/BillController.php';
+			require_once 'Controller/BillController.php';
 		if($action == 'bills')
 			$response = actionBills($_POST['unit_ids'], $_POST['template_id']);
 		else if($action =='createBills')
@@ -20,7 +20,7 @@
 	{
 		$action = $_GET['action'];
 		if(gotAction($action, $billActions))
-			include 'Controller/BillController.php';
+			require_once 'Controller/BillController.php';
 		if($action == 'bill')
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
 		

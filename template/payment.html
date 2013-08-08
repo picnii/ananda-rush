@@ -14,6 +14,7 @@
 	<table class="table">
 		
 			<tr>
+				<td>ID</td>
 				<td>Name</td>
 				<td>Description</td>
 				<td>Formula Bank</td>
@@ -21,14 +22,39 @@
 				<td>Formula Client</td>
 			</tr>
 		
-			<tr ng-repeat="payment in payments | orderBy:'-id'">
-				<td>{{payment.id}}</td>
-				<td>{{payment.name}}</td>
-				<td>{{payment.description}}</td>
-				<td>{{payment.formulas[0]}}</td>
-				<td>{{payment.formulas[1]}}</td>
-				<td>{{payment.formulas[2]}}</td>
+			<tr id="payment-{{payment.id}}" ng-click="edit('payment-'+payment.id, payment.id)" class="payment" ng-repeat="payment in payments | orderBy:'-id'">
+				<td>
+					<span>{{payment.id}}</span>
+					<input type="button" value="Close" ng-click="editSubmit('payment-'+payment.id, payment.id)"/>
+				</td>
+				<td>
+					<span>{{payment.name}}</span>
+					<input ng-model="payment.name"/>
+				</td>
+				<td>
+					<span>{{payment.description}}</span>
+					<input ng-model="payment.description"/>
+				</td>
+				<td>
+					<span>{{payment.formulas[0]}}</span>
+					<input ng-model="payment.formulas[0]"/>
+				</td>
+				<td>
+					<span>{{payment.formulas[1]}}</span>
+					<input ng-model="payment.formulas[1]"/>
+				</td>
+				<td>
+					<span>{{payment.formulas[2]}}</span>
+					<input ng-model="payment.formulas[2]"/>
+				</td>
 
 			</tr>
 	</table>
 </section>
+<style>
+	.payment input
+	{
+		display: none;
+	}
+
+</style>

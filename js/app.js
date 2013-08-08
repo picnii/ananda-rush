@@ -2,12 +2,14 @@ var app = angular.module('ananda', ['dataServices','areaFilters',]).
 		  config(['$routeProvider', function($routeProvider) {
 		  $routeProvider.
 		  	  when('/', {templateUrl: 'template/home.html',   controller: HomeCtrl}).
+          when('/units', {templateUrl: 'template/units.html',   controller: UnitListCtrl}).
 		  	  when('/bills/print/:tid', {templateUrl: 'template/print.html',   controller: BillPrintCtrl}).
 		      when('/bills/preview/:tid/:uid', {templateUrl: 'template/bill.html',   controller: BillCtrl}).
 		      when('/bills', {templateUrl: 'template/bills.html',   controller: BillListCtrl}).
 		      when('/bills/:bid/edit', {templateUrl: 'template/bill-edit.html',   controller: BillEditCtrl}).
           when('/payments', {templateUrl: 'template/payment.html',   controller: PaymentCtrl}).
           when('/templates', {templateUrl: 'template/template.html',   controller: TemplateCtrl}).
+           when('/templates/create', {templateUrl: 'template/template-create.html',   controller: TemplateCreateCtrl}).
           when('/templates/:tid/edit', {templateUrl: 'template/template-edit.html',   controller: TemplateEditCtrl}).
           when('/variables', {templateUrl: 'template/variables.html',   controller: VariablesListCtrl}).
           when('/variables/create', {templateUrl: 'template/variable-create.html',   controller: VariableCreateCtrl}).

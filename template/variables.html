@@ -11,18 +11,20 @@
 	<input type="text" ng-model="variable.value" placeholder="Default Variable Value"/>
 	<button ng-click="create()">Create</button>
 	<h2>Variables List</h2>
-	<table clas="table">
+	<table class="table">
 		<tr>
 			<td>Name</td>
 			<td>CodeName</td>
 			<td>Type</td>
 			<td>Value</td>
+			<td></td>
 		</tr>
 		<tr ng-repeat="variable in variables">
 			<td><a href="#/variables/{{variable.id}}">{{variable.name}}</a></td>
 			<td>{{variable.codename}}</td>
 			<td>{{variable.type | variableType}}</td>
 			<td>{{variable.value}}</td>
+			<td><button class="btn" ng-click="delete(variable)">X</button></td>
 		</tr>
 	</table>
 </section>

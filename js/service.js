@@ -30,7 +30,8 @@ angular.module('dataServices', ['ngResource']).
   return $resource('service/index.php', {}, {
     getAllTypes: {method:'GET', params:{action:'variablesType'}, isArray:true },
     query:{method:'GET', params:{action:'variables'}, isArray:true},
-    create:{method:'POST', params:{action:'createVariable',description:'none'}}
+    create:{method:'POST', params:{action:'createVariable',description:'none', codename:"-", name:"-", type:"-", value:"-"}},
+    delete:{method:'POST', params:{action:'deleteVariable'}}
   });
 })
     //, params:{unitId:'data'}, isArray:false

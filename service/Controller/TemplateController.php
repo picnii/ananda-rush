@@ -30,7 +30,7 @@
 		$template->id = 5;
 		$template->name = "เท็มเพลตเกรียน";
 		$template->color ="#FFACE0";
-		$template->payments = getPaymentsByTemplateId($template->id);
+		$template->payments = getSamplePayments(3);//getPaymentsByTemplateId($template->id);
 
 		return $template;
 	}

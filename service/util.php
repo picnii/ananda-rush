@@ -38,6 +38,7 @@ function getWhereClauseFromQuery($q)
 	return $sql;
 }
 
+
 foreach (glob("Model/*.php") as $filename)
 {
     include $filename;

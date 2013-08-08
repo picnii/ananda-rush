@@ -2,7 +2,7 @@
 	$FIX_TYPE = 0; $PROJECT_TYPE = 1; $UNIT_TYPE = 2;
 	$PROJECT_ATTRIBUTE = 3; $UNIT_ATTRIBUTE = 4;
 
-	function findVariableById($id, $args)
+	function findVariableById($id)
 	{
              $SQL  = "select * from tranfer_variable where id = $id";
              $result = DB_query($GLOBALS['connect'],$SQL);
@@ -13,7 +13,41 @@
                     'codename'=>$row["codename"],
                     'name'=>$row["name"],
                     'value'=>$row["value"],
-                    'variable_type_id'=>$row["variable_type_id"]
+                    'type'=>$row["variable_type_id"]
+                );
+            }else{
+               return false;
+            }
+	}
+
+	function findAllVariables($type = null)
+	{
+		if($type == null)
+			$SQL = "SELECT * FROM tranfer_variable";
+		else
+			$SQL = "SELECT * FROM tranfer_variable WHERE variable_type_id = {$type}";
+		$result = DB_query($GLOBALS['connect'],$SQL);
+		$variables = array();
+		while($row = DB_fetch_array($result))
+		{
+			array_push($variables, $row);
+		}
+		return $variables;
+	}
+
+	function findVariableByCodename($codename)
+	{
+		 $SQL  = "select * from tranfer_variable where codename = '$codename'";
+		
+		  $result = DB_query($GLOBALS['connect'],$SQL);
+             $row = DB_fetch_array($result);
+             if($row > 0){
+                return array(
+                    'id'=>$row["id"],
+                    'codename'=>$row["codename"],
+                    'name'=>$row["name"],
+                    'value'=>$row["value"],
+                    'type'=>$row["variable_type_id"]
                 );
             }else{
                return false;
@@ -22,6 +56,8 @@
 
 	function createVariable($name, $codename, $description, $type, $value)
 	{
+		$FIX_TYPE = 0; $PROJECT_TYPE = 1; $UNIT_TYPE = 2;
+		$PROJECT_ATTRIBUTE = 3; $UNIT_ATTRIBUTE = 4;
 		if($type == $FIX_TYPE)
 			return createFixVariable($name, $codename, $description, $value);
 		else if($type == $PROJECT_TYPE)
@@ -33,15 +69,65 @@
 		}
 	}
 
+	function updateVariable($id, $type, $args)
+	{
+		return updateFixVariable($id, $args);
+	}
+
+	function deleteVariable($id, $type)
+	{
+		return deleteFixVariable($id);
+	}
+
 	function createFixVariable($name, $codename, $description, $value)
 	{
-
+		$SQL = "INSERT INTO tranfer_variable(codename,name, variable_type_id ,value) VALUES ('{$codename}', '{$name}', 0 ,'{$value}')";
+		//echo $SQL."<br/>";
+		$result = DB_query($GLOBALS['connect'],$SQL);
+		$row = DB_fetch_array($result);
+		if($result)
+			return true;
+		else
+			return false;
 	}
 
-	function updateFixVariable($id, $name, $codename, $description, $value)
+	function updateFixVariable($id, $args)
 	{
+		$SQL = "UPDATE tranfer_variable SET ";
+		$isFirst = true;
+		foreach ($args as $key => $value)
+    	{
+    		if($isFirst)
+    			$isFirst = false;
+    		else
+    			$SQL = $SQL.", ";
+    		$SQL = $SQL.$key." = ";
+    		if(is_numeric($value))
+    			$SQL = $SQL.$value;
+    		else
+    			$SQL = $SQL."'{$value}'";
+    	}
 
+		$SQL = $SQL."  WHERE id = {$id}";
+		$result = DB_query($GLOBALS['connect'],$SQL);
+		$row = DB_fetch_array($result);
+		if($result)
+			return true;
+		else
+			return false;
 	}
+
+	function deleteFixVariable($id)
+	{
+		$SQL = "DELETE FROM tranfer_variable WHERE id = {$id}";
+		$result = DB_query($GLOBALS['connect'],$SQL);
+		$row = DB_fetch_array($result);
+		if($result)
+			return true;
+		else
+			return false;
+	}
+
 
 	function createDefaultProjectVariables($name, $codename, $description, $value)
 	{
@@ -82,8 +168,9 @@
         }
 	}
 
-	function updateUnitVariable($unit_id, $name, $codename, $description,  $value)
+	function updateUnitVariable($unit_id, $args)
 	{
+		
 
 	}
 

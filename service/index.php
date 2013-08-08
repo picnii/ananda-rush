@@ -1,8 +1,8 @@
 <?php
 	include 'system/allfunction.php';
-
-	$response = array("Error"=> "none service exists", "post"=>$_POST, "get"=>$_GET);
-	
+	//json_decode(file_get_contents('php://input'))
+	$response = array("Error"=> "none service exists", "post"=>$_POST, "get"=>$_GET, "reqBody"=>json_decode(file_get_contents('php://input')));
+	$reqBody =json_decode(file_get_contents('php://input'));
 
 	
 	

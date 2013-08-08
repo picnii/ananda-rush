@@ -366,6 +366,22 @@ function PaymentCtrl($scope, $rootScope, $location, Payment)
 			]
 		});
 	}
+
+	$scope.edit = function(tr_id, payment_id)
+	{
+		
+		$('#'+tr_id+ ' span').hide();
+		$('#'+tr_id+ ' input').show();
+	}
+
+	$scope.editSubmit = function(tr_id, payment_id)
+	{
+		console.log('do:'+tr_id)
+		console.log('#'+tr_id+ ' span');
+		console.log('#'+tr_id+ ' input');
+		$('#'+tr_id+ ' span').show();
+		$('#'+tr_id+ ' input').hide();
+	}
 }
 
 function TemplateCtrl($scope, $rootScope, Template, $location)
@@ -373,11 +389,84 @@ function TemplateCtrl($scope, $rootScope, Template, $location)
 	$scope.templates = Template.query();
 }
 
-function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location)
+function TemplateCreateCtrl($scope, $routeParams, $rootScope, Template, $location, Payment)
+{
+	$scope.template = {};
+	$scope.template.payments = [];
+	$scope.payments = Payment.query();
+	$scope.removePaymentById = function(payment_id)
+	{
+		console.log($scope.template.payments)
+		$scope.template.payments.pop();
+		//$scope.findPaymentById(payment_id));
+	}
+
+	$scope.findPaymentById = function(payment_id)
+	{
+		
+		for(var i =0; i < $scope.payments.length; i++)
+		{
+
+			if($scope.payments[i].id == payment_id)
+				return $scope.payments[i];
+		}
+		return null;
+	}
+
+	$scope.addPayment = function(payment_id)
+	{
+		var payment = $scope.findPaymentById(payment_id);
+		console.log('add:'+payment_id);
+		console.log(payment);
+		$scope.template.payments.push(payment);
+	}
+
+	$scope.create = function()
+	{
+		$location.path('/templates')
+	}
+}
+
+function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location, Payment)
 {
 	$scope.template = Template.get({template_id: $routeParams.tid}, function(data){
 		console.log(data);
 	});
+
+	$scope.payments = Payment.query();
+
+	$scope.removePayment = function(payment_id)
+	{
+		console.log(payment_id);
+		$scope.removePaymentById(payment_id);
+	}
+
+	$scope.removePaymentById = function(payment_id)
+	{
+		console.log($scope.template.payments)
+		$scope.template.payments.pop();
+		//$scope.findPaymentById(payment_id));
+	}
+
+	$scope.findPaymentById = function(payment_id)
+	{
+		
+		for(var i =0; i < $scope.payments.length; i++)
+		{
+
+			if($scope.payments[i].id == payment_id)
+				return $scope.payments[i];
+		}
+		return null;
+	}
+
+	$scope.addPayment = function(payment_id)
+	{
+		var payment = $scope.findPaymentById(payment_id);
+		console.log('add:'+payment_id);
+		console.log(payment);
+		$scope.template.payments.push(payment);
+	}
 }
 
 function BillPrintTestCtrl($scope, $http)
@@ -412,7 +501,20 @@ function VariablesListCtrl($scope, $rootScope, $location, Variable)
 		console.log($scope.variable.codename);
 		console.log($scope.variable.type);
 		console.log($scope.variable.value);
-		Variable.create({name:$scope.variable.name, codename:$scope.variable.codename, type:$scope.variable.type, value:$scope.variable.value})
+		Variable.create({action:'createVariable', name:$scope.variable.name, codename:$scope.variable.codename, type:$scope.variable.type, value:$scope.variable.value} , function(data){
+			console.log(data);
+			//$scope.variables.push($scope.variable)
+			//temp
+			$scope.variables = Variable.query();
+		})
+	}
+
+	$scope.delete = function(var_data)
+	{
+		Variable.delete({action:'deleteVariable', id:var_data.id}, function(data){
+			//temp
+			$scope.variables = Variable.query();
+		})
 	}
 }
 
@@ -426,7 +528,55 @@ function VariableCreateCtrl($scope, $rootScope, $location, Variable)
 
 }
 
+function UnitListCtrl($scope, $rootScope, $location, Type, Template, Unit)
+{
+	var post_data =  getPostData();
+	$scope.room_types = Type.getRoomType();
+	$scope.project_types = Type.getProjectsList();
+	$scope.templates = Template.query();
+	$scope.unit_ids = post_data['unit_ids'];
+	$scope.units = Unit.query();
 
+/*
+	[
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8},
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":9},
+		{"id":1234, "name":"ทดสอบ", "billId":5, "template_id":8}
+	];*/
+
+	$scope.search = function()
+	{
+		var ss= $scope.search;
+		var query = "";
+		var params_name = ['unit_id', 'project_id', 'room_type', 'template_id'];
+		var check_params = [ss.unit, ss.project, ss.type, ss.template];
+		var params_count = 0;
+		for(var i =0; i < params_name.length; i++)
+		{
+			
+			if(check_params[i] != "" && check_params[i] != "*" && typeof(check_params[i]) == "string")
+			{
+				//console.log('check' + typeof(check_params[i]));
+				//console.log(check_params[i]);
+				if(params_count > 0)
+					query += ".";
+				query += params_name[i] + "=" + check_params[i];
+				
+				params_count++;
+			}
+		}
+		if(params_count == 0)
+			query = "*";
+		console.log(query);
+		$scope.units = Unit.query({'q':query})
+	}
+
+	$scope.print = function()
+	{
+
+	}
+}
 
 
 function convertUnitIdsToStr(uids)

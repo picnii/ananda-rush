@@ -21,6 +21,16 @@ function getPayments()
 
 }
 
+function getAllPayments()
+{
+    return array(
+        getSamplePayments(),
+         getSamplePayments(),
+          getSamplePayments()
+
+    );
+}
+
 function createPayment($name, $description, $formulas)
 {   
     $formula1 = $formulas[0];
@@ -94,29 +104,55 @@ function getPaymentsByTemplateId($template_id)
 	$result = DB_query($GLOBALS['connect'],$SQL);
 	$row = DB_fetch_array($result);
     if($row >0){
-	$payments =  array();
-	$payments[0] = new stdClass;
-	$payments[0]->order = 1;
-	$payments[0]->name = "ค่าห้องชุดส่วนที่ต้องชำระ";
-	$payments[0]->description = "*อาจมีเพิ่ม/ลดตามพื้นที่จริง";
-	$payments[0]->formulas = array(
-			"",
-			"",
-			"{priceOnContact} - {paidAmount}"
-		);
-	$payments[1] = new stdClass;
-	$payments[1]->order = 1;
-	$payments[1]->name = "ค่าห้องชุดส่วนที่ต้องชำระ";
-	$payments[1]->description = "*อาจมีเพิ่ม/ลดตามพื้นที่จริง";
-	$payments[1]->formulas = array(
-			"",
-			"",
-			"{priceOnContact} - {paidAmount}"
-		);
-	return $payments;
+    	$payments =  array();
+
+    	$payments[0] = new stdClass;
+    	$payments[0]->order = 1;
+    	$payments[0]->name = "ค่าห้องชุดส่วนที่ต้องชำระ";
+    	$payments[0]->description = "*อาจมีเพิ่ม/ลดตามพื้นที่จริง";
+    	$payments[0]->formulas = array(
+    			"",
+    			"",
+    			"{priceOnContact} - {paidAmount}"
+    		);
+    	$payments[1] = new stdClass;
+    	$payments[1]->order = 1;
+    	$payments[1]->name = "ค่าห้องชุดส่วนที่ต้องชำระ";
+    	$payments[1]->description = "*อาจมีเพิ่ม/ลดตามพื้นที่จริง";
+    	$payments[1]->formulas = array(
+    			"",
+    			"",
+    			"{priceOnContact} - {paidAmount}"
+    		);
+    	return $payments;
     }else{
         return false;
     }
 }
+
+function getSamplePayments($count)
+    {
+        $payments =  array();
+        for($i = 0; $i < $count ;$i++)
+        {
+            $payments[$i] = new stdClass;
+            $payments[$i]->order = ($i + 1);
+            $payments[$i]->id = rand();
+            $payments[$i]->name = "Payment".rand();
+            $payments[$i]->description = "*อาจมีเพิ่ม/ลดตามพื้นที่จริง";
+            $payments[$i]->formulas = array(
+                    "",
+                    "",
+                    "{priceOnContact} - {paidAmount}"
+                );
+            $payments[$i]->is_shows = array(
+                    0,
+                    0,
+                    1
+            ); 
+        }
+
+        return $payments;
+    }
 
 ?>
