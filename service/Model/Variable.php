@@ -56,9 +56,19 @@
 
 	function createDefaultUnitVariables($name, $codename, $description, $value)
 	{
-
-
-		return $row_effect;
+        $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value)  VALUES ('$codename', '$name',$'description','$value')";
+         $result = DB_query($connect,$SQL);
+        if($result){
+        sqlsrv_next_result($result); 
+        sqlsrv_fetch($result); 
+        $variable_id = sqlsrv_get_field($result, 0); 
+        $SQL  = "select * from tranfer_variable where id = $variable_id";
+        $result = DB_query($connect,$SQL);
+        $row = DB_fetch_array($result);
+        return $row;
+        }else{
+            return false;
+        }
 	}
 
 	function updateUnitVariable($unit_id, $name, $codename, $description,  $value)
