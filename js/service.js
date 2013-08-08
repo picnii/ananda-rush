@@ -29,7 +29,8 @@ angular.module('dataServices', ['ngResource']).
 }).factory('Variable', function($resource){
   return $resource('service/index.php', {}, {
     getAllTypes: {method:'GET', params:{action:'variablesType'}, isArray:true },
-    query:{modeth:'GET', params:{action:'variables'}, isArray:true}
+    query:{method:'GET', params:{action:'variables'}, isArray:true},
+    create:{method:'POST', params:{action:'createVariable',description:'none'}}
   });
 })
     //, params:{unitId:'data'}, isArray:false

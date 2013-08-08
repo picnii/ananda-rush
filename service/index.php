@@ -1,4 +1,6 @@
 <?php
+	include 'system/allfunction.php';
+
 	$response = array("Error"=> "none service exists", "post"=>$_POST, "get"=>$_GET);
 	
 

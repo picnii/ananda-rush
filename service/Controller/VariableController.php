@@ -35,9 +35,10 @@
 		return true;
 	}
 
-	function actionCreateVariable()
+	function actionCreateVariable($name, $codename, $description, $type, $value)
 	{
 		return true;
+		//return createVariable($name, $codename, $description, $type, $value);
 	}
 
 	function actionDeleteVariable()

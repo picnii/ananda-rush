@@ -1,6 +1,6 @@
 <?php
 
-    $variableActions = array('variables', 'variable', 'variablesType');
+    $variableActions = array('variables', 'variable', 'variablesType', 'createVariable');
 
 	if(isset($_GET['action']))
 	{
@@ -13,8 +13,16 @@
 			$response = actionVariables($_GET['type']);	
 		else if($action =="variables")
 			$response = actionVariables();
+	}
 
+	if(isset($_POST['action']))
+	{
+		$action = $_POST['action'];
+		if(gotAction($action, $variableActions))
+			include 'Controller/VariableController.php';
 	
+		if($action == 'createVariable')
+			$response = actionCreateVariable($_POST['name'], $_POST['codename'], $_POST['description'], $_POST['type'], $_POST['value']);	
 	}
 
 

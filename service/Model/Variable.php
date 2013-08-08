@@ -20,7 +20,7 @@
             }
 	}
 
-	function craeteVariable($name, $codename, $description, $type, $value)
+	function createVariable($name, $codename, $description, $type, $value)
 	{
 		if($type == $FIX_TYPE)
 			return createFixVariable($name, $codename, $description, $value);
@@ -48,13 +48,13 @@
         $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value)  VALUES ('$codename', '$name',$'description','$value')";
         $result = DB_query($GLOBALS['connect'],$SQL);
         if($result){
-        sqlsrv_next_result($result); 
-        sqlsrv_fetch($result); 
-        $variable_id = sqlsrv_get_field($result, 0); 
-        $SQL  = "select * from tranfer_variable where id = $variable_id";
-        $result = DB_query($GLOBALS['connect'],$SQL);
-        $row = DB_fetch_array($result);
-        return $row;
+	        sqlsrv_next_result($result); 
+	        sqlsrv_fetch($result); 
+	        $variable_id = sqlsrv_get_field($result, 0); 
+	        $SQL  = "select * from tranfer_variable where id = $variable_id";
+	        $result = DB_query($GLOBALS['connect'],$SQL);
+	        $row = DB_fetch_array($result);
+	        return $row;
         }else{
             return false;
         }
@@ -70,13 +70,13 @@
         $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value)  VALUES ('$codename', '$name',$'description','$value')";
          $result = DB_query($GLOBALS['connect'],$SQL);
         if($result){
-        sqlsrv_next_result($result); 
-        sqlsrv_fetch($result); 
-        $variable_id = sqlsrv_get_field($result, 0); 
-        $SQL  = "select * from tranfer_variable where id = $variable_id";
-        $result = DB_query($GLOBALS['connect'],$SQL);
-        $row = DB_fetch_array($result);
-        return $row;
+	        sqlsrv_next_result($result); 
+	        sqlsrv_fetch($result); 
+	        $variable_id = sqlsrv_get_field($result, 0); 
+	        $SQL  = "select * from tranfer_variable where id = $variable_id";
+	        $result = DB_query($GLOBALS['connect'],$SQL);
+	        $row = DB_fetch_array($result);
+	        return $row;
         }else{
             return false;
         }

@@ -403,6 +403,17 @@ function VariablesListCtrl($scope, $rootScope, $location, Variable)
 		$scope.variablesType = data;
 		
 	});
+
+	$scope.create = function()
+	{
+		//
+		console.log('going to create');
+		console.log($scope.variable.name);
+		console.log($scope.variable.codename);
+		console.log($scope.variable.type);
+		console.log($scope.variable.value);
+		Variable.create({name:$scope.variable.name, codename:$scope.variable.codename, type:$scope.variable.type, value:$scope.variable.value})
+	}
 }
 
 function VariableCreateCtrl($scope, $rootScope, $location, Variable)
