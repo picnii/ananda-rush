@@ -19,11 +19,17 @@
 		return $template;
 	}
 
+	function actionUpdateTemplate($template_id, $args)
+	{
+		return true;
+	}
+
 	function getSampleTemplate()
 	{
 		$template = new StdClass;
 		$template->id = 5;
 		$template->name = "เท็มเพลตเกรียน";
+		$template->color ="#FFACE0";
 		$template->payments = getPaymentsByTemplateId($template->id);
 
 		return $template;

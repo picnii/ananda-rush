@@ -104,6 +104,15 @@ function getPaymentsByTemplateId($template_id)
 			"",
 			"{priceOnContact} - {paidAmount}"
 		);
+	$payments[1] = new stdClass;
+	$payments[1]->order = 1;
+	$payments[1]->name = "ค่าห้องชุดส่วนที่ต้องชำระ";
+	$payments[1]->description = "*อาจมีเพิ่ม/ลดตามพื้นที่จริง";
+	$payments[1]->formulas = array(
+			"",
+			"",
+			"{priceOnContact} - {paidAmount}"
+		);
 	return $payments;
     }else{
         return false;

@@ -373,9 +373,11 @@ function TemplateCtrl($scope, $rootScope, Template, $location)
 	$scope.templates = Template.query();
 }
 
-function TemplateEditCtrl($scope, $rootScope, Template, $location)
+function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location)
 {
-	$scope.template = Template.get({template_id: $routeParams.tid});
+	$scope.template = Template.get({template_id: $routeParams.tid}, function(data){
+		console.log(data);
+	});
 }
 
 function BillPrintTestCtrl($scope, $http)
@@ -392,6 +394,29 @@ function BillPrintTestCtrl($scope, $http)
 
 
 }
+
+function VariablesListCtrl($scope, $rootScope, $location, Variable)
+{
+	$scope.variables = Variable.query();
+	Variable.getAllTypes({}, function(data){
+		console.log(data);
+		$scope.variablesType = data;
+		
+	});
+}
+
+function VariableCreateCtrl($scope, $rootScope, $location, Variable)
+{
+	var type = Variable.getAllTypes({}, function(data){
+		console.log(data);
+		$scope.variablesType = data;
+		
+	});
+
+}
+
+
+
 
 function convertUnitIdsToStr(uids)
 {

@@ -3,8 +3,7 @@
 	
 
 	
-	$templateActions = array('templates', 'template');
-
+	
 	/* util */
 	function gotAction($action, $actions)
 	{

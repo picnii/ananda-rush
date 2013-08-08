@@ -1,4 +1,4 @@
-var app = angular.module('ananda', ['dataServices','areaFilters']).
+var app = angular.module('ananda', ['dataServices','areaFilters',]).
 		  config(['$routeProvider', function($routeProvider) {
 		  $routeProvider.
 		  	  when('/', {templateUrl: 'template/home.html',   controller: HomeCtrl}).
@@ -9,6 +9,8 @@ var app = angular.module('ananda', ['dataServices','areaFilters']).
           when('/payments', {templateUrl: 'template/payment.html',   controller: PaymentCtrl}).
           when('/templates', {templateUrl: 'template/template.html',   controller: TemplateCtrl}).
           when('/templates/:tid/edit', {templateUrl: 'template/template-edit.html',   controller: TemplateEditCtrl}).
+          when('/variables', {templateUrl: 'template/variables.html',   controller: VariablesListCtrl}).
+          when('/variables/create', {templateUrl: 'template/variable-create.html',   controller: VariableCreateCtrl}).
           when('/testprint', {templateUrl:'template/print-test.html', controller: BillPrintTestCtrl}).
 		      otherwise({redirectTo: '/'});
 		}]);
@@ -39,6 +41,25 @@ angular.module('areaFilters', []).filter('up2area', function() {
   return function(input) {
   	if( input == 0)
   		return "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;";
+    return input ;
+  };
+}).filter('variableType', function() {
+  return function(input) {
+    switch(input)
+    {
+      case 0: return "Fix";
+        break;
+      case 1: return "Fix per Project";
+        break;
+      case 2: return "Fix per unit";
+        break;
+      case 3: return "Project attributes";
+        break;
+      case 4: return "Unit attributes";
+        break;
+    }
+    
+
     return input ;
   };
 })

@@ -7,7 +7,7 @@ angular.module('dataServices', ['ngResource']).
     factory('Template', function($resource){
   return $resource('service/index.php', {}, {
     query: {method:'GET', params:{action:'templates'} , isArray:true},
-    Get: {method:'GET', params:{action:'template', template_id:"all"} }
+    get: {method:'GET', params:{action:'template', template_id:"all"} }
   });
 }).factory('Print', function($resource){
   return $resource('service/index.php', {}, {
@@ -25,6 +25,11 @@ angular.module('dataServices', ['ngResource']).
 }).factory('Unit', function($resource){
   return $resource('service/index.php', {}, {
     query: {method:'GET', params:{action:'units', q:'*'}, isArray:true }
+  });
+}).factory('Variable', function($resource){
+  return $resource('service/index.php', {}, {
+    getAllTypes: {method:'GET', params:{action:'variablesType'}, isArray:true },
+    query:{modeth:'GET', params:{action:'variables'}, isArray:true}
   });
 })
     //, params:{unitId:'data'}, isArray:false

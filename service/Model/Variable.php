@@ -1,5 +1,6 @@
 <?php
-	$FIX_TYPE = 0; $PROJECT_TYPE = 2; $UNIT_TYPE = 3;
+	$FIX_TYPE = 0; $PROJECT_TYPE = 1; $UNIT_TYPE = 2;
+	$PROJECT_ATTRIBUTE = 3; $UNIT_ATTRIBUTE = 4;
 
 	function findVariableById($id, $args)
 	{
@@ -94,6 +95,32 @@
 				"name"=>10
 			)
 		);
+	}
+
+	function getVariablesType()
+	{
+		$types = array();
+		$fix_types = array("fix", "fix per project", "fix per unit", "project attribute", "unit attribute");
+
+		for($i = 0; $i < count($fix_types); $i++)
+		{
+			$types[$i] = new stdClass;
+			$types[$i]->value = $i;
+			$types[$i]->name = $fix_types[$i];
+		}
+
+		return $types;
+	}
+
+	function getSampleVariable()
+	{
+		$variable = new stdClass;
+		$variable->id = rand();
+		$variable->name = "Bank Loan";
+		$variable->codename ="bankLoan";
+		$variable->type = 1;
+		$variable->value = 5000;
+		return $variable;
 	}
 
 ?>
