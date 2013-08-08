@@ -49,10 +49,17 @@
 			
 		}
 
-		$example_sql = "UPDATE table_name ({$keys}) VALUES({$values})";
-		echo $example_sql;
-
-		return $template_id;
+		$sql = "UPDATE tranfer_template SET ({$keys}) VALUES({$values})";
+		$result = DB_query($connect,$sql);
+        echo $sql;
+         if($result){
+            sqlsrv_next_result($result); 
+            sqlsrv_fetch($result); 
+            $template_id = sqlsrv_get_field($result, 0); 
+            return $template_id;
+        }else{
+            return false;
+        }
 	}
 
 	function deleteTemplate($template_id)
