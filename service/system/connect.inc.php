@@ -16,7 +16,8 @@ $database = 'TMS_ananda';
  $connect = DB_connect($hostname,$username,$password,$database);
 
 
-
+$connect = DB_connect($hostname,$username,$password,$database);
+$GLOBALS['connect'] = $connect;
 if(!$connect)
 {
 	
@@ -58,7 +59,9 @@ function DB_connect($hostname_l,$username_l,$password_l,$database_l)
 		mysql_query("SET character_set_connection=utf8");
 		
 	}
+
 	$GLOBAL['connect'] = $conn;
+
 	return $conn;
 }
 

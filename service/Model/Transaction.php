@@ -31,8 +31,9 @@ function findTransactionById($id)
 {
      $SQL  = "select * from tranfer_transaction where id = $id";
 	 $result = DB_query($GLOBALS['connect'],$SQL);
+     $numrow = DB_num_rows($result);
 	 $row = DB_fetch_array($result);
-     if($row > 0){
+     if($numrow > 0){
         return array(
             'id'=>$row["id"],
             'unit_payment_id'=>$row["unit_payment_id"],
@@ -53,8 +54,9 @@ function findTransaction($q)
 
 	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
     $result = DB_query($GLOBALS['connect'],$SQL);
+    $numrow = DB_num_rows($result);
 	 $row = DB_fetch_array($result);
-	if($row > 0){
+	if($numrow > 0){
         return array(
             'id'=>$row["id"],
             'unit_payment_id'=>$row["unit_payment_id"],
@@ -73,8 +75,9 @@ function findAllTransaction($q)
 {
 	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
     $result = DB_query($GLOBALS['connect'],$SQL);
-	 $row = DB_fetch_array($result);
-	if($row > 0){
+    $numrow = DB_num_rows($result);
+	$row = DB_fetch_array($result);
+	if($numrow > 0){
         return $row;
     }else{
        return false;
@@ -120,8 +123,9 @@ function findAllLastTransaction($unit_ids)
     //find all Lastest transaction from unit_id
     $SQL = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
     $result = DB_query($GLOBALS['connect'],$SQL);
+    $numrow = DB_num_rows($result);
 	 $row = DB_fetch_array($result);
-	if($row > 0){
+	if($numrow > 0){
         return array(
             array(
                 'id'=>$row["id"],
