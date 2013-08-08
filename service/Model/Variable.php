@@ -4,7 +4,7 @@
 	function findVariableById($id, $args)
 	{
              $SQL  = "select * from tranfer_variable where id = $id";
-             $result = DB_query($connect,$SQL);
+             $result = DB_query($GLOBALS['connect'],$SQL);
              $row = DB_fetch_array($result);
              if($row > 0){
                 return array(
@@ -44,9 +44,19 @@
 
 	function createDefaultProjectVariables($name, $codename, $description, $value)
 	{
-
-
-		return $row_effect;
+        $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value)  VALUES ('$codename', '$name',$'description','$value')";
+        $result = DB_query($GLOBALS['connect'],$SQL);
+        if($result){
+        sqlsrv_next_result($result); 
+        sqlsrv_fetch($result); 
+        $variable_id = sqlsrv_get_field($result, 0); 
+        $SQL  = "select * from tranfer_variable where id = $variable_id";
+        $result = DB_query($GLOBALS['connect'],$SQL);
+        $row = DB_fetch_array($result);
+        return $row;
+        }else{
+            return false;
+        }
 	}
 
 	function updateProjectVariable($project_id, $name, $codename, $description,  $value)
@@ -57,13 +67,13 @@
 	function createDefaultUnitVariables($name, $codename, $description, $value)
 	{
         $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value)  VALUES ('$codename', '$name',$'description','$value')";
-         $result = DB_query($connect,$SQL);
+         $result = DB_query($GLOBALS['connect'],$SQL);
         if($result){
         sqlsrv_next_result($result); 
         sqlsrv_fetch($result); 
         $variable_id = sqlsrv_get_field($result, 0); 
         $SQL  = "select * from tranfer_variable where id = $variable_id";
-        $result = DB_query($connect,$SQL);
+        $result = DB_query($GLOBALS['connect'],$SQL);
         $row = DB_fetch_array($result);
         return $row;
         }else{

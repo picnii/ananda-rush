@@ -16,7 +16,7 @@ ELSE
     INSERT INTO Table1 VALUES (...)
     */
 	$SQL  = "INSERT INTO tranfer_transaction(unit_payment_id,template_id,create_time)  VALUES ('$unit_id', '$template_id',GETDATE()); SELECT SCOPE_IDENTITY()";
-     $result = DB_query($connect,$SQL);
+     $result = DB_query($GLOBALS['connect'],$SQL);
     if($result){
         sqlsrv_next_result($result); 
         sqlsrv_fetch($result); 
@@ -30,7 +30,7 @@ ELSE
 function findTransactionById($id)
 {
      $SQL  = "select * from tranfer_transaction where id = $id";
-	 $result = DB_query($connect,$SQL);
+	 $result = DB_query($GLOBALS['connect'],$SQL);
 	 $row = DB_fetch_array($result);
      if($row > 0){
         return array(
@@ -52,7 +52,7 @@ function findTransaction($q)
 {
 
 	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
-    $result = DB_query($connect,$SQL);
+    $result = DB_query($GLOBALS['connect'],$SQL);
 	 $row = DB_fetch_array($result);
 	if($row > 0){
         return array(
@@ -72,7 +72,7 @@ function findTransaction($q)
 function findAllTransaction($q)
 {
 	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
-    $result = DB_query($connect,$SQL);
+    $result = DB_query($GLOBALS['connect'],$SQL);
 	 $row = DB_fetch_array($result);
 	if($row > 0){
         return $row;
@@ -98,10 +98,10 @@ function updateTransaction($transaction_id, $args)
             }
                 $sql.="create_time= GETDATE() ";
                 $sql.="WHERE id='".$transaction_id."' ";
-                $rs = DB_query($connect,$sql); 
+                $rs = DB_query($GLOBALS['connect'],$sql); 
             if($rs >0){
                 $SQL  = "SELECT * from tranfer_transaction where id = $transaction_id ";
-                $result = DB_query($connect,$SQL);
+                $result = DB_query($GLOBALS['connect'],$SQL);
                 $row = DB_fetch_array($result);
                 return array(
                     'id'=>$row["id"],
@@ -119,7 +119,7 @@ function findAllLastTransaction($unit_ids)
 {
     //find all Lastest transaction from unit_id
     $SQL = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
-    $result = DB_query($connect,$SQL);
+    $result = DB_query($GLOBALS['connect'],$SQL);
 	 $row = DB_fetch_array($result);
 	if($row > 0){
         return array(
@@ -151,14 +151,14 @@ function findAllLastTransaction($unit_ids)
 function deleteTransactionById($transaction_id)
 {
     $SQL  = " DELETE FROM tranfer_transaction WHERE id = $transaction_id ";
-    $result = DB_query($connect,$SQL);
+    $result = DB_query($GLOBALS['connect'],$SQL);
 	return true;
 }
 
 function deleteTransaction($q)
 {
     $SQL  = " DELETE FROM tranfer_transaction WHERE id = $q ";
-    $result = DB_query($connect,$SQL);
+    $result = DB_query($GLOBALS['connect'],$SQL);
 	return true;
 }
 

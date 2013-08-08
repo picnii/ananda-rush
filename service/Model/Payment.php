@@ -2,7 +2,7 @@
 function getPayments()
 {
     $SQL  = "select * from tranfer_payment";
-    $result = DB_query($connect,$SQL);
+    $result = DB_query($GLOBALS['connect'],$SQL);
     $row = DB_fetch_array($result);
 	$payments =  array();
 	for($i =0; $i< 10; $i++)
@@ -28,7 +28,7 @@ function createPayment($name, $description, $formulas)
      $formula3 = $formulas[2];
     
     $SQL  = "INSERT INTO tranfer_template(name,description,formula1,formula2,formula3,is_show1,is_show2,is_show3)  VALUES ('$name', '$description','$formula1','$formula2','$formula3'); SELECT SCOPE_IDENTITY()";
-     $result = DB_query($connect,$SQL);
+     $result = DB_query($GLOBALS['connect'],$SQL);
     if($result){
             sqlsrv_next_result($result); 
             sqlsrv_fetch($result); 
@@ -61,10 +61,10 @@ function updatePayment($payment_id, $args)
             }
                 $sql.="is_show3='".$args['is_show3']."' ";
                 $sql.="WHERE id='".$payment_id."' ";
-                $rs = DB_query($connect,$sql); 
+                $rs = DB_query($GLOBALS['connect'],$sql); 
             if($rs >0){
                 $SQL  = "SELECT * from tranfer_payment where id = $payment_id ";
-                $result = DB_query($connect,$SQL);
+                $result = DB_query($GLOBALS['connect'],$SQL);
                 $row = DB_fetch_array($result);
                  return $payment_id;
                 /* return array(
@@ -82,7 +82,7 @@ function updatePayment($payment_id, $args)
 function deletePayment($payment_id)
 {
 	    $SQL  = " DELETE FROM tranfer_payment WHERE id = $payment_id ";
-        $result = DB_query($connect,$SQL);
+        $result = DB_query($GLOBALS['connect'],$SQL);
 		return true;
 }
 
@@ -91,7 +91,7 @@ function getPaymentsByTemplateId($template_id)
 {
     $SQL  = "select *,* from tranfer_payment INNER JOIN ";
     $SQL .="tranfer_template_payment on tranfer_template_payment.payment_id = tranfer_payment.id where tranfer_template_payment.template_id = $template_id";
-	$result = DB_query($connect,$SQL);
+	$result = DB_query($GLOBALS['connect'],$SQL);
 	$row = DB_fetch_array($result);
     if($row >0){
 	$payments =  array();
