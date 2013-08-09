@@ -76,9 +76,13 @@ function findAllTransaction($q)
 	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
     $result = DB_query($GLOBALS['connect'],$SQL);
     $numrow = DB_num_rows($result);
-	$row = DB_fetch_array($result);
 	if($numrow > 0){
-        return $row;
+        $data = array(); 
+        while($res =  DB_fetch_array($result))
+		{
+            array_push($data,$res);
+        }
+        return $data;
     }else{
        return false;
     }
@@ -102,7 +106,7 @@ function updateTransaction($transaction_id, $args)
                 $sql.="create_time= GETDATE() ";
                 $sql.="WHERE id='".$transaction_id."' ";
                 $rs = DB_query($GLOBALS['connect'],$sql); 
-            if($rs >0){
+            if($rs){
                 $SQL  = "SELECT * from tranfer_transaction where id = $transaction_id ";
                 $result = DB_query($GLOBALS['connect'],$SQL);
                 $row = DB_fetch_array($result);
@@ -124,29 +128,13 @@ function findAllLastTransaction($unit_ids)
     $SQL = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
     $result = DB_query($GLOBALS['connect'],$SQL);
     $numrow = DB_num_rows($result);
-	 $row = DB_fetch_array($result);
 	if($numrow > 0){
-        return array(
-            array(
-                'id'=>$row["id"],
-                'unit_payment_id'=>$row["unit_payment_id"],
-                'template_id'=>$row["template_id"],
-                'create_time'=>$row["create_time"]
-            ),
-            array(
-                'id'=>$row["id"],
-                'unit_payment_id'=>$row["unit_payment_id"],
-                'template_id'=>$row["template_id"],
-                'create_time'=>$row["create_time"]
-            ),
-            array(
-                'id'=>$row["id"],
-                'unit_payment_id'=>$row["unit_payment_id"],
-                'template_id'=>$row["template_id"],
-                'create_time'=>$row["create_time"]
-            )
-
-        );
+         $data = array(); 
+        while($res =  DB_fetch_array($result))
+		{
+            array_push($data,$res);
+        }
+        return $data;
     }else{
        return false;
     }
