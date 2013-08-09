@@ -6,27 +6,22 @@ if($_GET['action'] == 'test')
 	include "util.php";
 	//include "Model/Variable.php";
 	//$result = findVariableById(34);//findVariableByCodename("testBank");
-	$result = findAllVariables();
-	$result = deleteVariable(50);
-	$response = $result;
-    function findTransactionById()
-{           $id = 15;
-     $SQL  = "select * from tranfer_transaction where id = $id";
-    print_r($GLOBALS['connect']);
-	 //$result = DB_query($GLOBALS['connect'],$SQL);
-	/*  $row = DB_fetch_array($result);
-     if($row > 0){
-        return array(
-            'id'=>$row["id"],
-            'unit_payment_id'=>$row["unit_payment_id"],
-            'template_id'=>$row["template_id"],
-            'create_time'=>$row["create_time"]
-        );
-    }else{
-       return false;
-    } */
-}
-print_r($GLOBALS['connect']);
+
+	$payments = array();
+	$payments[0] = new stdClass;
+	$payments[0]->id = 2;
+	$payments[0]->order = 1;
+	$payments[1] = new stdClass;
+	$payments[1]->id = 4;
+	$payments[1]->order = 2;
+	$payments[2] = new stdClass;
+	$payments[2]->id = 5;
+	$payments[2]->order = 3;
+
+	//$response = _createTemplatePayment(4, 2, 1);
+
+	$response = createTemplate('test createtemplate', 'kak', $payments);
+//print_r($GLOBALS['connect']);
 
 
 

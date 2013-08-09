@@ -2,26 +2,39 @@
 	require_once 'util.php';
 	function actionTemplates()
 	{
-		$templates = array();
-		for($i =0; $i < 9;$i++)
-		{
-			$templates[$i] = new stdClass;
-			$templates[$i]->id = $i + 1;
-			$templates[$i]->name = 'รูปแบบที่ '.($i + 1);
-			$templates[$i]->color = '#FACE'.$i.'0';
-		}
+		$templates = findAllTemplates();
 		return $templates;
 	}
 
 	function actionTemplate($template_id)
 	{
-		$template = getSampleTemplate();
+		$template = findTemplate($template_id);//getSampleTemplate();
 		return $template;
 	}
 
-	function actionUpdateTemplate($template_id, $args)
+	function actionCreateTemplate($reqBody)
 	{
-		return true;
+		return createTemplate($reqBody->name, $reqBody->description, $reqBody->payments);
+	}
+
+	function actionUpdateTemplate($reqBody)
+	{
+		return updateTemplate($reqBody->id, $reqBody->name, $reqBody->description);
+	}
+
+	function actionDeleteTemplatePayment($reqBody)
+	{
+		return deleteTemplatePayment($reqBody->template_id, $reqBody->payment_id);
+	}
+
+	function actionCreateTemplatePayment($reqBody)
+	{
+		return createTemplatePayment($reqBody->template_id, $reqBody->payment_id, $reqBody->order);
+	}
+
+	function actionDeleteTemplate($reqBody)
+	{
+		return deleteTemplate($reqBody->id);
 	}
 
 	function getSampleTemplate()

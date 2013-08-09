@@ -346,42 +346,98 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http)
 
 function PaymentCtrl($scope, $rootScope, $location, Payment)
 {
-	$scope.payments = Payment.query();
+	function getAllPayments()
+	{
+		return Payment.query(function(data){
+			for(var i =0 ; i < data.length ; i++)
+			{
+				var id = data[i].id;
+				data[i].update = function(callback)
+				{
+					console.log('update:'+this.id);
+					this.action = "updatePayment";
+					Payment.updatePayment(this, function(rs){
+						console.log(rs);
+						callback(rs);
+					})
+					
+				}
+
+				data[i].delete = function(callback)
+				{
+					this.action = "deletePayment";
+					Payment.deletePayment(this, function(rs){
+						console.log(rs);
+						callback(rs);
+					})
+				}
+			}
+		});
+	}
+
+	$scope.payments = getAllPayments();
+	$scope.payment ={}
+	$scope.payment.formulas = [];
+	$scope.payment.is_shows = ["1","1","1"];
+	$scope.payment.is_add_in_cheque = "0";
+	$scope.payment.is_compare_with_repayment ="0";
 	$scope.create = function()
 	{
-		console.log($scope.paymentName);
-		console.log($scope.paymentDescription);
-		console.log($scope.formulaBank);
-		console.log($scope.formulaCompany);
-		console.log($scope.formulaClient);
-
-		$scope.payments.push({
-			"id":88,
-			"name":$scope.paymentName,
-			"description":$scope.paymentDescription,
-			"formulas":[
-				$scope.formulaBank,
-				$scope.formulaCompany,
-				$scope.formulaClient
-			]
-		});
+		var payment = $scope.payment;
+		payment.action = 'createPayment';
+		Payment.createPayment(payment, function(data){
+			console.log(data);
+			$scope.payments = getAllPayments();
+		})
 	}
 
 	$scope.edit = function(tr_id, payment_id)
 	{
 		
-		$('#'+tr_id+ ' span').hide();
-		$('#'+tr_id+ ' input').show();
+		
+		$('#'+tr_id+ ' .show-input').show();
+		$('#'+tr_id+ ' .show-text').hide();
+		var selector1 = '.show-payment-bill-'+payment_id;
+		var selector2 = '.show-payment-cheque-'+payment_id;
+		var selector3 = '.show-payment-repayment-'+payment_id;
+		$(selector1).show();
+		$(selector2).show();
+		$(selector3).show();
+
 	}
 
-	$scope.editSubmit = function(tr_id, payment_id)
+	$scope.deletePayment = function(tr_id, payment)
+	{
+		if(confirm("Are you sure you going to delete "+payment.name))
+		{
+			payment.delete(function(){
+				$scope.refresh();
+			});
+		}
+	}
+
+	$scope.editSubmit = function(tr_id, payment)
 	{
 		console.log('do:'+tr_id)
 		console.log('#'+tr_id+ ' span');
+
 		console.log('#'+tr_id+ ' input');
-		$('#'+tr_id+ ' span').show();
-		$('#'+tr_id+ ' input').hide();
+		console.log(angular.element('#'+tr_id+' span'));
+		
+		console.log($scope.payments);
+		$('#'+tr_id).addClass('doing');
+		payment.update(function(){
+			$('#'+tr_id).removeClass('doing');
+			$('#'+tr_id).addClass('done');
+		});
+		//$scope.payments = Payment.query();
 	}
+
+	$scope.refresh = function()
+	{
+		$scope.payments = getAllPayments();
+	}
+	
 }
 
 function TemplateCtrl($scope, $rootScope, Template, $location)
@@ -392,13 +448,39 @@ function TemplateCtrl($scope, $rootScope, Template, $location)
 function TemplateCreateCtrl($scope, $routeParams, $rootScope, Template, $location, Payment)
 {
 	$scope.template = {};
+	$scope.template.indexOrder = 1;
 	$scope.template.payments = [];
-	$scope.payments = Payment.query();
-	$scope.removePaymentById = function(payment_id)
+	$scope.payments = Payment.query(function(data){
+		for(var i =0; i < data.length ;i++)
+		{
+			data[i].index = i;
+			data[i].removeFromList = function()
+			{
+				$scope.payments.splice(this.index,1); 
+			}
+		}
+
+	});
+	$scope.removePayment = function(remove_payment)
 	{
+		console.log('remove');
+		console.log(remove_payment)
 		console.log($scope.template.payments)
-		$scope.template.payments.pop();
+		
+
+		//var remove_payment = $scope.template.payments.pop();
+		remove_payment.index = $scope.payments.length;
+		$scope.template.payments.splice(remove_payment.templateIndex, 1);
+		$scope.updateTemplateIndex();
 		//$scope.findPaymentById(payment_id));
+	}
+
+	$scope.updateTemplateIndex = function()
+	{
+		for(var i =0; i < $scope.template.payments.length ;i++)
+		{
+			$scope.template.payments[i].templateIndex = i;
+		}
 	}
 
 	$scope.findPaymentById = function(payment_id)
@@ -413,17 +495,46 @@ function TemplateCreateCtrl($scope, $routeParams, $rootScope, Template, $locatio
 		return null;
 	}
 
+	$scope.isPaymentInTemplate = function(payment)
+	{
+		for(var i=0; i < $scope.template.payments.length ;i++)
+		{
+			var tpayment = $scope.template.payments[i];
+			if(payment.id == tpayment.id)
+				return true;
+		}
+		return false;
+	}
+
 	$scope.addPayment = function(payment_id)
 	{
 		var payment = $scope.findPaymentById(payment_id);
-		console.log('add:'+payment_id);
-		console.log(payment);
-		$scope.template.payments.push(payment);
+		if(!$scope.isPaymentInTemplate(payment))
+		{
+			payment.order = $scope.template.indexOrder;
+			$scope.template.indexOrder++;
+			
+			console.log('add:'+payment_id);
+			console.log(payment);
+			payment.removeFromTemplate = function()
+			{
+				$scope.template.payments.splice(this.templateIndex, 1);
+				//this.templateIndex
+			}
+			$scope.template.payments.push(payment);
+			$scope.updateTemplateIndex();
+		}
+
+		
 	}
 
 	$scope.create = function()
 	{
-		$location.path('/templates')
+		$scope.template.action = 'createTemplate';
+		Template.createTemplate($scope.template, function(data){
+			$location.path('/templates');
+		} );
+		//$location.path('/templates')
 	}
 }
 
@@ -431,21 +542,46 @@ function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location,
 {
 	$scope.template = Template.get({template_id: $routeParams.tid}, function(data){
 		console.log(data);
+		$scope.lastOrder = data.payments[0].order;
+		for(var i=0; i < data.payments.length ;i++)
+		{
+			var payment = data.payments[i];
+			if(payment.order > $scope.lastOrder)
+				$scope.lastOrder = payment.order;
+		}
 	});
 
-	$scope.payments = Payment.query();
+	$scope.payments = Payment.query(function(data){
+		for(var i =0; i < data.length ;i++)
+		{
+			data[i].index = i;
+			data[i].removeFromList = function()
+			{
+				$scope.payments.splice(this.index,1); 
+			}
 
-	$scope.removePayment = function(payment_id)
+		}
+
+	});
+
+	$scope.removePayment = function(remove_payment)
 	{
-		console.log(payment_id);
-		$scope.removePaymentById(payment_id);
+		Template.deleteTemplatePayment({action:'deleteTemplatePayment', template_id:$scope.template.id, payment_id:remove_payment.id}, function(data){
+			remove_payment.index = $scope.payments.length;
+			$scope.template.payments.splice(remove_payment.templateIndex, 1);
+			$scope.updateTemplateIndex();
+		})
+		//var remove_payment = $scope.template.payments.pop();
+		
+		//$scope.findPaymentById(payment_id));
 	}
 
-	$scope.removePaymentById = function(payment_id)
+	$scope.updateTemplateIndex = function()
 	{
-		console.log($scope.template.payments)
-		$scope.template.payments.pop();
-		//$scope.findPaymentById(payment_id));
+		for(var i =0; i < $scope.template.payments.length ;i++)
+		{
+			$scope.template.payments[i].templateIndex = i;
+		}
 	}
 
 	$scope.findPaymentById = function(payment_id)
@@ -460,13 +596,57 @@ function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location,
 		return null;
 	}
 
+	$scope.isPaymentInTemplate = function(payment)
+	{
+		for(var i=0; i < $scope.template.payments.length ;i++)
+		{
+			var tpayment = $scope.template.payments[i];
+			if(payment.id == tpayment.id)
+				return true;
+		}
+		return false;
+	}
+
 	$scope.addPayment = function(payment_id)
 	{
 		var payment = $scope.findPaymentById(payment_id);
-		console.log('add:'+payment_id);
-		console.log(payment);
-		$scope.template.payments.push(payment);
+		if(!$scope.isPaymentInTemplate(payment))
+		{
+			console.log('template')
+			payment.order = $scope.lastOrder +1;
+			Template.createTemplatePayment({action:'createTemplatePayment', template_id:$scope.template.id, payment_id:payment.id, order:payment.order}, function(){
+
+				$scope.template.indexOrder++;
+				console.log('add:'+payment_id);
+				console.log(payment);
+				payment.removeFromTemplate = function()
+				{
+					$scope.template.payments.splice(this.templateIndex, 1);
+					//this.templateIndex
+				}
+				$scope.template.payments.push(payment);
+				$scope.updateTemplateIndex();
+			});			
+		}	
 	}
+
+	$scope.update = function()
+	{
+		$scope.template.action ='updateTemplate';
+		$scope.template.description = $scope.template.color;
+		Template.updateTemplate($scope.template, function(){
+
+		})
+	}
+
+	$scope.deleteTemplate = function()
+	{
+		if(confirm("Are you sure you want to delete this template"))
+			Template.deleteTemplate({action:'deleteTemplate', id:$scope.template.id}, function(data){
+				$location.path('/templates');
+			});
+	}
+
 }
 
 function BillPrintTestCtrl($scope, $http)

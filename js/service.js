@@ -7,7 +7,13 @@ angular.module('dataServices', ['ngResource']).
     factory('Template', function($resource){
   return $resource('service/index.php', {}, {
     query: {method:'GET', params:{action:'templates'} , isArray:true},
-    get: {method:'GET', params:{action:'template', template_id:"all"} }
+    get: {method:'GET', params:{action:'template', template_id:"all"} },
+    createTemplate:{method:'POST'},
+    updateTemplate:{method:'POST'},
+    deleteTemplate:{method:'POST'},
+    deleteTemplatePayment:{method:'POST'},
+    createTemplatePayment:{method:'POST'}
+
   });
 }).factory('Print', function($resource){
   return $resource('service/index.php', {}, {
@@ -15,7 +21,10 @@ angular.module('dataServices', ['ngResource']).
   });
 }).factory('Payment', function($resource){
   return $resource('service/index.php', {}, {
-    query: {method:'GET', params:{action:'payments'}, isArray:true }
+    query: {method:'GET', params:{action:'payments'}, isArray:true },
+    createPayment:{method:'POST', params:{action:'createPayment'} },
+    updatePayment:{method:'POST', params:{action:'updatePayment'} },
+    deletePayment:{method:'POST', params:{action:'deletePayment'} }
   });
 }).factory('Type', function($resource){
   return $resource('service/index.php', {}, {

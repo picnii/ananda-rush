@@ -5,13 +5,13 @@
 	Color <input type="color" ng-model="template.color">
 	
 	<table>
-		<tr ng-repeat="payment in template.payments">
+		<tr ng-repeat="payment in template.payments | orderBy:'order'">
 			<td>{{payment.name}}</td>
 			<td>{{payment.description}}</td>
 			<td>{{payment.formulas[0]}}</td>
 			<td>{{payment.formulas[1]}}</td>
 			<td>{{payment.formulas[2]}}</td>
-			<td><button ng-click="removePayment(payment.id)" class="btn btn-danger">X</button>
+			<td><button ng-click="removePayment(payment)" class="btn btn-danger">X</button>
 		</tr>
 	</table>
 	
@@ -21,6 +21,7 @@
 		</option>
 	</select>
 	<button ng-click="addPayment(select_payment_id)">Add Payment</button>
-	<button ng-click="save()">Save</button>
+	<button ng-click="update()">Save</button>
+	<button ng-click="deleteTemplate()">Delete</button>
 
 </section>

@@ -45,6 +45,24 @@ angular.module('areaFilters', []).filter('up2area', function() {
   		return "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;";
     return input ;
   };
+}).filter('isShowPayment', function() {
+  return function(input) {
+    if( input == "0")
+      return "NOT SHOW";
+    return "SHOW" ;
+  };
+}).filter('isAddCheque', function() {
+  return function(input) {
+    if( input == "0")
+      return "NOT ADD TO CHEQUE";
+    return "ADD TO CHEQUE" ;
+  };
+}).filter('checkWithRepayment', function() {
+  return function(input) {
+    if( input == "0")
+      return "NOT CHECK WITH REPAYMENT";
+    return " CHECK WITH REPAYMENT" ;
+  };
 }).filter('variableType', function() {
   return function(input) {
     switch(input)

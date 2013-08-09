@@ -2,15 +2,34 @@
 
 	<h2>Create Payment</h2>
 	<form>
-		<input type="text" required placeholder="Payment Name" ng-model="paymentName">
-		<input type="text" required placeholder="Payment Description" ng-model="paymentDescription">
-		<input type="text" required placeholder="Bank Formula" ng-model="formulaBank">
-		<input type="text" required placeholder="Company Formula" ng-model="formulaCompany">
-		<input type="text" required placeholder="Client Formula" ng-model="formulaClient">
+		<input type="text" required placeholder="Payment Name" ng-model="payment.name">
+		<input type="text" required placeholder="Payment Description" ng-model="payment.description">
+		<br/>
+		<!-- Bank -->
+		<input type="text" required placeholder="Bank Formula" ng-model="payment.formulas[0]">
+		<input type="checkbox" ng-model="payment.is_shows[0]" ng-true-value="1" ng-false-value="0" />
+		{{payment.is_shows[0] | isShowPayment}}
+		<input type="checkbox" ng-model="payment.is_add_in_cheque"  ng-true-value="1" ng-false-value="0" />
+		{{payment.is_add_in_cheque | isAddCheque}}
+		<!-- Company -->
+		<br/>
+		<input type="text" required placeholder="Company Formula" ng-model="payment.formulas[1]">
+		<input type="checkbox" ng-model="payment.is_shows[1]" ng-true-value="1" ng-false-value="0" />
+		{{payment.is_shows[1] | isShowPayment}}
+		<br/>
+		<!-- Client -->
+		<input type="text" required placeholder="Client Formula" ng-model="payment.formulas[2]">
+		<input type="checkbox" ng-model="payment.is_shows[2]" ng-true-value="1" ng-false-value="0" />
+		{{payment.is_shows[2] | isShowPayment}}
+		<input  type="checkbox" ng-model="payment.is_compare_with_repayment"  ng-true-value="1" ng-false-value="0" />
+		{{payment.is_compare_with_repayment | checkWithRepayment}}
+		<br/>
 
 		<button class="btn" ng-click="create()">Create</button>
 	</form>
-	<h2>Payments</h2><a href="#/variables" class="btn btn-danger">ตัวแปร</a>
+	<h2>Payments</h2>
+	<a href="#/variables" class="btn btn-danger">ตัวแปร</a>
+	<button ng-click="refresh()" class="btn">Refresh</button>
 	<table class="table">
 		
 			<tr>
@@ -24,37 +43,67 @@
 		
 			<tr id="payment-{{payment.id}}" ng-click="edit('payment-'+payment.id, payment.id)" class="payment" ng-repeat="payment in payments | orderBy:'-id'">
 				<td>
-					<span>{{payment.id}}</span>
-					<input type="button" value="Close" ng-click="editSubmit('payment-'+payment.id, payment.id)"/>
+					<span class="show-text">{{payment.id}}</span>
+					<input class="show-input" type="button" value="Update" ng-click="editSubmit('payment-'+payment.id, payment)" />
+					<input class="show-input btn btn-danger" type="button" value="Delete" ng-click="deletePayment('payment-'+payment.id, payment)" />
 				</td>
 				<td>
-					<span>{{payment.name}}</span>
-					<input ng-model="payment.name"/>
+					<span  class="show-text">{{payment.name}}</span>
+					<input class="show-input"  type="text" ng-model="payment.name"/>
 				</td>
 				<td>
-					<span>{{payment.description}}</span>
-					<input ng-model="payment.description"/>
+					<span  class="show-text">{{payment.description}}</span>
+					<input class="show-input"  type="text" ng-model="payment.description"/>
 				</td>
 				<td>
-					<span>{{payment.formulas[0]}}</span>
-					<input ng-model="payment.formulas[0]"/>
+					<span class="show-text">{{payment.formulas[0]}}</span>
+					<input class="show-input"  type="text" ng-model="payment.formulas[0]"/><br/>
+					<input class="show-input"  type="checkbox" ng-model="payment.is_shows[0]" ng-true-value="1" ng-false-value="0" />
+					<span class="show-payment show-payment-bill-{{payment.id}}">{{payment.is_shows[0] | isShowPayment}}
+					</span>
+					<br/>
+					<input class="show-input" type="checkbox" ng-model="payment.is_add_in_cheque"  ng-true-value="1" ng-false-value="0" />
+					<span class="show-payment show-payment-cheque-{{payment.id}}">{{payment.is_add_in_cheque | isAddCheque}}
+					</span>
 				</td>
 				<td>
-					<span>{{payment.formulas[1]}}</span>
-					<input ng-model="payment.formulas[1]"/>
+					<span class="show-text">{{payment.formulas[1]}}</span>
+					<input class="show-input"  type="text" ng-model="payment.formulas[1]"/><br/>
+					<input class="show-input"  type="checkbox" ng-model="payment.is_shows[1]" ng-true-value="1" ng-false-value="0" />
+					<span class="show-payment show-payment-bill-{{payment.id}}">
+					{{payment.is_shows[1] | isShowPayment}}
+					</span>
 				</td>
 				<td>
-					<span>{{payment.formulas[2]}}</span>
-					<input ng-model="payment.formulas[2]"/>
+					<span class="show-text">{{payment.formulas[2]}}</span>
+					<input class="show-input"  type="text" ng-model="payment.formulas[2]" ng-true-value="1" ng-false-value="0"/><br/>
+					<input class="show-input"  type="checkbox" ng-model="payment.is_shows[2]"  ng-true-value="1" ng-false-value="0" />
+					<span class="show-payment show-payment-bill-{{payment.id}}">
+					{{payment.is_shows[2] | isShowPayment}}
+					</span>
+					<br/>
+					<input class="show-input" type="checkbox" ng-model="payment.is_compare_with_repayment"  ng-true-value="1" ng-false-value="0" />
+					<span class="show-payment show-payment-repayment-{{payment.id}}">{{payment.is_compare_with_repayment | checkWithRepayment}}
+					</span>
 				</td>
 
 			</tr>
 	</table>
 </section>
 <style>
-	.payment input
+	.payment input, .show-payment
 	{
 		display: none;
 	}
+
+	tr.done
+	{
+		background: #FACE00;
+	}
+
+	tr.doing
+	{
+		background: #333;
+	}	
 
 </style>
