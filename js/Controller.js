@@ -542,7 +542,11 @@ function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location,
 {
 	$scope.template = Template.get({template_id: $routeParams.tid}, function(data){
 		console.log(data);
-		$scope.lastOrder = data.payments[0].order;
+		if(typeof(data.payments[0]) == 'undefined')
+			$scope.lastOrder = 0;
+		else
+			$scope.lastOrder = data.payments[0].order;
+		console.log('lastOrder:'+$scope.lastOrder);
 		for(var i=0; i < data.payments.length ;i++)
 		{
 			var payment = data.payments[i];
@@ -550,7 +554,7 @@ function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location,
 				$scope.lastOrder = payment.order;
 		}
 	});
-
+	
 	$scope.payments = Payment.query(function(data){
 		for(var i =0; i < data.length ;i++)
 		{
@@ -612,7 +616,6 @@ function TemplateEditCtrl($scope, $routeParams, $rootScope, Template, $location,
 		var payment = $scope.findPaymentById(payment_id);
 		if(!$scope.isPaymentInTemplate(payment))
 		{
-			console.log('template')
 			payment.order = $scope.lastOrder +1;
 			Template.createTemplatePayment({action:'createTemplatePayment', template_id:$scope.template.id, payment_id:payment.id, order:payment.order}, function(){
 
