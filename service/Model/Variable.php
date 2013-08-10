@@ -5,6 +5,7 @@
 	function findVariableById($id)
 	{
              $SQL  = "select * from tranfer_variable where id = $id";
+             //echo $SQL;
              $result = DB_query($GLOBALS['connect'],$SQL);
              $row = DB_fetch_array($result);
              if($row > 0){
@@ -81,12 +82,16 @@
 
 	function createFixVariable($name, $codename, $description, $value)
 	{
-		$SQL = "INSERT INTO tranfer_variable(codename,name, variable_type_id ,value) VALUES ('{$codename}', '{$name}', 0 ,'{$value}')";
+		$SQL = "INSERT INTO tranfer_variable(codename,name, variable_type_id ,value) VALUES ('{$codename}', '{$name}', 0 ,'{$value}'); SELECT SCOPE_IDENTITY()";
 		//echo $SQL."<br/>";
 		$result = DB_query($GLOBALS['connect'],$SQL);
 		$row = DB_fetch_array($result);
 		if($result)
-			return true;
+		{
+			sqlsrv_next_result($result); 
+            sqlsrv_fetch($result); 
+            return sqlsrv_get_field($result, 0);
+		}
 		else
 			return false;
 	}

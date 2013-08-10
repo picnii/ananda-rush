@@ -18,7 +18,10 @@
 	}
 	foreach (glob("RequestManager/*.php") as $filename)
 	{
-	    include $filename;
+		if($filename != "RequestManager/Testing.php")
+	   	 include $filename;
+	   	else if($_GET['force'] == "1")
+	   	  include $filename;
 	}/*
 	include 'RequestManager/Bill.php';
 	include 'RequestManager/Template.php';

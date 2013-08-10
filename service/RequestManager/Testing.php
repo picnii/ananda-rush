@@ -1,29 +1,54 @@
 <?php
-if($_GET['action'] == 'test')
+include "util.php";
+$testResult = array();
+function assertEquals($expect, $value)
 {
-
-	//do test here
-	include "util.php";
-	//include "Model/Variable.php";
-	//$result = findVariableById(34);//findVariableByCodename("testBank");
-
-	$payments = array();
-	$payments[0] = new stdClass;
-	$payments[0]->id = 2;
-	$payments[0]->order = 1;
-	$payments[1] = new stdClass;
-	$payments[1]->id = 4;
-	$payments[1]->order = 2;
-	$payments[2] = new stdClass;
-	$payments[2]->id = 5;
-	$payments[2]->order = 3;
-
-	//$response = _createTemplatePayment(4, 2, 1);
-
-	$response = createTemplate('test createtemplate', 'kak', $payments);
-//print_r($GLOBALS['connect']);
-
-
-
+//	echo "assertEquals";
+	if($expect == $value)
+	{
+		echo "P";
+	}else
+	{
+		echo "F(";
+		$fail = new stdClass;
+		$fail->result = "F";
+		$fail->expect = $expect;
+		$fail->value = $value;
+		print_r($fail);
+		echo ")";
+	}
+	
 }
+
+function assertContains($expect, $container)
+{
+	for($i = 0; $i < count($container); $i++)
+		if($expect == $container[$i])
+		{
+			echo "P";
+			return true;
+		}
+	echo "F(";
+	$fail = new stdClass;
+	$fail->result = "F";
+	$fail->expect = $expect;
+	$fail->value = $container;
+	print_r($fail);
+	echo ")";
+	return false;
+}
+
+if(isset($_GET['action']))
+{
+	$testName =  substr($_GET['action'], 4 );
+	$evalStr = "include 'test/{$testName}.php';";
+	eval($evalStr);
+}
+/*
+if($_GET['action'] == 'testVariable')
+{
+	include "test/Variable.php";
+}*/
+
+$response = $testResult;
 ?>

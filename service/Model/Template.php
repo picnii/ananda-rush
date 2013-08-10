@@ -19,8 +19,12 @@
 		$templates = array();
 		while($row = DB_fetch_array($result))
 		{
-			$template = _getTemplateFromRow($row);
-			array_push($templates, $template);
+			if(isset($row['id']))
+			{
+				$template = _getTemplateFromRow($row);
+				array_push($templates, $template);
+			}
+			
 		}
 		return $templates;
 	}
@@ -40,8 +44,15 @@
 		$result = DB_query($GLOBALS['connect'], $SQL);
 		$row = DB_fetch_array($result);
 		$template = _getTemplateFromRow($row);
+		if(!isset($row['id']))
+			return false;
 		$template->payments = getPaymentsByTemplateId($template->id);
 		return $template;
+	}
+
+	function findTemplateById($id)
+	{
+		return findTemplate($id);
 	}
 
 	function createTemplate($name, $description, $payments)
@@ -61,13 +72,13 @@
             return false;
         }*/
         $result = array();
-        $result['template_id'] =  $template_id = _createTemplate($name, $description, true);
+        $template_id = _createTemplate($name, $description, true);
 
 		for($i = 0; $i < count($payments) ;$i++)
 		{
 			createTemplatePayment($template_id, $payments[$i]->id, $payments[$i]->order);
 		}
-		return true;
+		return $template_id;
 	}
 
 	function _createTemplate($name, $description, $is_show)
