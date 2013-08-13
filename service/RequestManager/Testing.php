@@ -17,7 +17,6 @@ function assertEquals($expect, $value)
 		print_r($fail);
 		echo ")";
 	}
-	
 }
 
 function assertContains($expect, $container)
@@ -35,6 +34,24 @@ function assertContains($expect, $container)
 	$fail->value = $container;
 	print_r($fail);
 	echo ")";
+	return false;
+}
+
+function assertNotContains($expect, $container)
+{
+	for($i = 0; $i < count($container); $i++)
+		if($expect == $container[$i])
+		{
+			echo "F(";
+			$fail = new stdClass;
+			$fail->result = "F";
+			$fail->expect = $expect;
+			$fail->value = $container;
+			print_r($fail);
+			echo ")";
+			return false;
+		}
+	echo "P";
 	return false;
 }
 

@@ -40,18 +40,25 @@
 		<button class="btn" ng-click="search()">Search</button>
 		search query is {{search.unit}} {{search.project}} {{search.type}}
 	</form>
-	<h2>Unit from transaction</h2>
+	<h2>Unit</h2>
+	<button ng-click="next()">Next</button>
+	<button ng-click="back()">Back</button>
 	<form>
-		<table>
+		<table class="table">
 			<tr ng-repeat="unit in units">
 
 				<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
 					<input type="hidden" name=
 					"template_ids[]" value="{{unit.template_id}}"/>
 				</td>
-				<td>{{unit.client_name}}</td>
-				<td>{{unit.is_match_bill}}</td>
-				<td><a href="#/bills/{{unit.billId}}/edit">edit</a></td>
+				<td>{{unit.item_id}}</td>
+				<td>{{unit.item_name}}</td>
+				<td>{{unit.floor}}</td>
+				<td>{{unit.unit_no}}</td>
+				<td>{{unit.status}}</td>
+				<td>{{unit.house_size}}</td>
+				<td>{{unit.land_size}}</td>
+				<td><!--<a href="#/bills/{{unit.billId}}/edit">edit</a>--></td>
 			</tr>
 		</table>
 		<button ng-click="match()">Match With Template</button>

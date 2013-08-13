@@ -5,8 +5,77 @@
 	"template_id"=> 2
   )
 */
+
+function fetchBillInformation($transaction_ids)
+{
+    $sql = "SELECT * FROM master_transaction LEFT JOIN Sale_Transection 
+    on master_transaction.ItemId = Sale_Transection.ItemID 
+    LEFT JOIN preapprove ON Sale_Transection.InvoiceAccount = preapprove.InvoiceAccount 
+    WHERE ";
+
+    for($i = 0; $i < count($transaction_ids); $i++)
+    {
+        $id = $transaction_ids[$i];
+        $sql .= "transaction_id = {$id}";   
+        if(!($i + 1 == count($transaction_ids)))
+            $sql .= " OR ";
+    }
+
+    $result = DB_query($GLOBALS['connect'],$sql);
+    $rows = array();
+    while( $row = DB_fetch_array($result) )
+        array_push($rows, $row);
+    return $rows;
+}
+
+
+function getSaleDatas($unit_ids)
+{
+    //print_r($unit_ids);
+    $bill_datas = fetchBillInformation($unit_ids);
+   // print_r($bill_datas);
+    $sale_datas = array();
+    foreach ($bill_datas as $bill) {
+        # code...
+        
+        $sale_data = new StdClass;
+        $sale_data->unit_id = $bill['transaction_id'];
+        $sale_data->unit_number = $bill['UnitNo'];
+        $sale_data->item_id = $bill['ItemId'];
+        $sale_data->item_name = $bill['ItemName'];
+        $sale_data->project_name = $bill['ProjectName'];
+        $sale_data->floor = $bill['Floor'];
+        $sale_data->room_no = $bill['RoomNo'];
+        $sale_data->email = $bill['Email'];
+        $sale_data->address = $bill['Address'];
+        $sale_data->delivery_address = $bill['DeliveryAdress'];
+        $sale_data->item_type = $bill['ItemType'];
+        $sale_data->invoice_account = $bill['InvoiceAccount'];
+        $sale_data->door = $bill['Direction'];
+        $sale_data->so = $bill['SO'];
+        $sale_data->so_status = $bill['SOStatus'];
+        $sale_data->company = $bill['Company'];
+        $sale_data->sale_name = $bill['SalesName'];
+        $sale_data->phone = $bill['Phone'];
+        $sale_data->mobile = $bill['Mobile'];
+        $sale_data->disc_amount = $bill['DiscAmount'];
+        $sale_data->base_price = $bill['BasePrice'];
+        $sale_data->sell_price = $bill['SellPrice'];
+        $sale_data->sqm = $bill['SQM'];
+        $sale_data->sett_amount = $bill['SETTAMOUNT'];
+        $sale_data->outstanding = $bill['OUTSTANDING'];
+        array_push($sale_datas, $sale_data);
+    }
+    return $sale_datas;
+}
+
+function getVariableUnits($sale_datas)
+{
+    return $sale_datas;
+}
+
 $id = 22;
-function createTransaction($unit_id, $template_id)
+function createTransaction($unit_id, $template_id, $payments_json, $variables_json)
 {
 
     /*
@@ -15,7 +84,9 @@ function createTransaction($unit_id, $template_id)
 ELSE
     INSERT INTO Table1 VALUES (...)
     */
-	$SQL  = "INSERT INTO tranfer_transaction(unit_payment_id,template_id,create_time)  VALUES ('$unit_id', '$template_id',GETDATE()); SELECT SCOPE_IDENTITY()";
+	$SQL  = "INSERT INTO tranfer_transaction(unit_id,template_id,create_time, payments, variables)  VALUES ('$unit_id', '$template_id',GETDATE(), '{$payments_json}' ,'{$variables_json}'); SELECT SCOPE_IDENTITY()";
+    //echo $SQL;
+    //echo "<br/><br/>";
      $result = DB_query($GLOBALS['connect'],$SQL);
     if($result){
         sqlsrv_next_result($result); 
@@ -27,6 +98,68 @@ ELSE
     }
 }
 
+function findAllLastTransactions($selector = "*")
+{
+    $sql = "SELECT {$selector} FROM tranfer_transaction WHERE id IN ( SELECT MAX(id) as id from tranfer_transaction  GROUP BY unit_id, template_id ) ";
+    $result = DB_query($GLOBALS['connect'],$sql);
+    /*$numrow = DB_num_rows($result);
+    if(!($numrow > 0))
+        return array();*/
+    $transactions = array();
+    while($row = DB_fetch_array($result))
+    {
+       //$test = convertToTransaction($row);
+       //print_r($test);
+        array_push($transactions, $row);
+    }
+    return $transactions;
+}
+
+function findAllLastTransactionsByUnitIds($unit_ids)
+{
+    $sql = "SELECT *
+        FROM tranfer_transaction
+        WHERE id IN
+        (
+        SELECT MAX(id) as id from tranfer_transaction WHERE ".getIdClauseFromParams($unit_ids, 'unit_id')." GROUP BY unit_id, template_id
+        )
+        ";
+    $result = DB_query($GLOBALS['connect'],$sql);
+    /*$numrow = DB_num_rows($result);
+    if(!($numrow > 0))
+        return array();*/
+    $transactions = array();
+    while($row = DB_fetch_array($result))
+    {
+        array_push($transactions, convertToTransaction($row));
+    }
+    return $transactions;
+}
+
+function findLastTransactionByUnitId($unit_id)
+{
+    $sql = "SELECT * FROM tranfer_transaction WHERE id IN ( SELECT MAX(id) as id from tranfer_transaction WHERE unit_id = {$unit_id}  GROUP BY unit_id, template_id ) ";
+    $result = DB_query($GLOBALS['connect'],$sql);
+    $row = DB_fetch_array($result);
+    if(!isset($row['id']))
+        return false;
+    else 
+        return convertToTransaction($row);
+}
+
+function convertToTransaction($row)
+{
+    $transaction = new stdClass;
+    foreach($row as $key =>$value)
+    {
+        $transaction->$key = $row[$key];
+    }
+    return $transaction;
+}
+
+
+
+
 function findTransactionById($id)
 {
      $SQL  = "select * from tranfer_transaction where id = $id";
@@ -34,12 +167,7 @@ function findTransactionById($id)
      $numrow = DB_num_rows($result);
 	 $row = DB_fetch_array($result);
      if($numrow > 0){
-        return array(
-            'id'=>$row["id"],
-            'unit_payment_id'=>$row["unit_payment_id"],
-            'template_id'=>$row["template_id"],
-            'create_time'=>$row["create_time"]
-        );
+        return $row;
     }else{
        return false;
     }
@@ -59,7 +187,7 @@ function findTransaction($q)
 	if($numrow > 0){
         return array(
             'id'=>$row["id"],
-            'unit_payment_id'=>$row["unit_payment_id"],
+            'unit_id'=>$row["unit_id"],
             'template_id'=>$row["template_id"],
             'create_time'=>$row["create_time"]
         );
@@ -71,9 +199,9 @@ function findTransaction($q)
 /*
 *
 */
-function findAllTransaction($q)
+function findAllTransaction()
 {
-	$SQL = "SELECT * FROM tranfer_transaction WHERE where id = $q";
+	$SQL = "SELECT * FROM tranfer_transaction";
     $result = DB_query($GLOBALS['connect'],$SQL);
     $numrow = DB_num_rows($result);
 	if($numrow > 0){
@@ -98,8 +226,8 @@ function updateTransaction($transaction_id, $args)
 	*/
             if($transaction_id != ""){
                 $sql ="UPDATE tranfer_transaction SET ";
-            }if($args['unit_payment_id'] != ""){
-                $sql.="unit_payment_id='".$args['unit_payment_id']."', ";
+            }if($args['unit_id'] != ""){
+                $sql.="unit_id='".$args['unit_id']."', ";
             }if($args['template_id'] != ""){
                 $sql.="template_id='".$args['template_id']."', ";
             }
@@ -112,7 +240,7 @@ function updateTransaction($transaction_id, $args)
                 $row = DB_fetch_array($result);
                 return array(
                     'id'=>$row["id"],
-                    'unit_payment_id'=>$row["unit_payment_id"],
+                    'unit_id'=>$row["unit_id"],
                     'template_id'=>$row["template_id"],
                     'create_time'=>$row["create_time"]
                 );
@@ -125,7 +253,7 @@ function updateTransaction($transaction_id, $args)
 function findAllLastTransaction($unit_ids)
 {
     //find all Lastest transaction from unit_id
-    $SQL = "SELECT * FROM tranfer_transaction WHERE where unit_payment_id = $unit_ids order by crate_time ";
+    $SQL = "SELECT * FROM tranfer_transaction WHERE where unit_id = $unit_ids order by crate_time ";
     $result = DB_query($GLOBALS['connect'],$SQL);
     $numrow = DB_num_rows($result);
 	if($numrow > 0){

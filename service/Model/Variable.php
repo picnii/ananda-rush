@@ -59,15 +59,15 @@
 	{
 		$FIX_TYPE = 0; $PROJECT_TYPE = 1; $UNIT_TYPE = 2;
 		$PROJECT_ATTRIBUTE = 3; $UNIT_ATTRIBUTE = 4;
-		if($type == $FIX_TYPE)
-			return createFixVariable($name, $codename, $description, $value);
-		else if($type == $PROJECT_TYPE)
+		//if($type == $FIX_TYPE)
+		return createFixVariable($name, $codename, $description, $value, $type);
+		/*else if($type == $PROJECT_TYPE)
 		{
 			return createDefaultProjectVariables($name, $codename, $description, $value);
 		}else if($type == $UNIT_TYPE)
 		{
 			return createDefaultUnitVariables($name, $codename, $description, $value);
-		}
+		}*/
 	}
 
 	function updateVariable($id, $type, $args)
@@ -80,9 +80,9 @@
 		return deleteFixVariable($id);
 	}
 
-	function createFixVariable($name, $codename, $description, $value)
+	function createFixVariable($name, $codename, $description, $value, $type)
 	{
-		$SQL = "INSERT INTO tranfer_variable(codename,name, variable_type_id ,value) VALUES ('{$codename}', '{$name}', 0 ,'{$value}'); SELECT SCOPE_IDENTITY()";
+		$SQL = "INSERT INTO tranfer_variable(codename,name, variable_type_id ,value) VALUES ('{$codename}', '{$name}', {$type} ,'{$value}'); SELECT SCOPE_IDENTITY()";
 		//echo $SQL."<br/>";
 		$result = DB_query($GLOBALS['connect'],$SQL);
 		$row = DB_fetch_array($result);
@@ -133,20 +133,22 @@
 			return false;
 	}
 
-
-	function createDefaultProjectVariables($name, $codename, $description, $value)
+	/*function createDefaultProjectVariables($name, $codename, $description, $value)
 	{
-        $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value)  VALUES ('$codename', '$name',$'description','$value')";
+        $SQL  = "INSERT INTO tranfer_variable(codename,name,description,value, variable_type_id)  VALUES ('$codename', '$name','$description','$value', 1) ;
+         SELECT SCOPE_IDENTITY()";
         $result = DB_query($GLOBALS['connect'],$SQL);
         if($result){
 	        sqlsrv_next_result($result); 
 	        sqlsrv_fetch($result); 
-	        $variable_id = sqlsrv_get_field($result, 0); 
-	        $SQL  = "select * from tranfer_variable where id = $variable_id";
-	        $result = DB_query($GLOBALS['connect'],$SQL);
-	        $row = DB_fetch_array($result);
-	        return $row;
-        }else{
+	        $create_id = sqlsrv_get_field($result, 0);
+	        $projects = getAllProjects();
+	        foreach ($projects as $project) {
+	        	$sql = "INSERT INTO tranfer_variable_project (variable_id, project_id, value) VALUES({$create_id}, {$project->id}, '$value');";
+	        	DB_query($GLOBALS['connect'],$sql);
+	        }
+	       	return $create_id;
+	    }else{
             return false;
         }
 	}
@@ -177,7 +179,7 @@
 	{
 		
 
-	}
+	}*/
 
 	function findVariablesByTemplateId($template_id)
 	{

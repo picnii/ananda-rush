@@ -4,13 +4,17 @@
 	{
 		$search_query = $q;
 		
-		$units = findAllUnitsByQuery($q);
+		if($q=="*")
+			$units = findAllUnits();
+
+
+		/*$units = findAllUnitsByQuery($q);
 		if($q=="*")
 		{
 			array_push($units, getSampleUnit());
 			array_push($units, getSampleUnit());
 			array_push($units, getSampleUnit());
-		}
+		}*/
 		return $units;
 	}
 

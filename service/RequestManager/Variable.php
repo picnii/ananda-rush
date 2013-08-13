@@ -34,7 +34,7 @@
 			require_once 'Controller/VariableController.php';
 		if($reqBody->action == 'createVariable')
 		{
-			$response = actionCreateVariable($reqBody->name, $reqBody->name, '', $reqBody->type, $reqBody->value);		
+			$response = actionCreateVariable($reqBody->name, $reqBody->codename, '', $reqBody->type, $reqBody->value);		
 		}
 		if($reqBody->action == "deleteVariable")
 			$response = actionDeleteVariable($reqBody->id);

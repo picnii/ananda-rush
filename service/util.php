@@ -38,6 +38,38 @@ function getWhereClauseFromQuery($q)
 	return $sql;
 }
 
+function getWhereClauseFromParams($params)
+{
+	$sql = "WHERE ";
+	$isFirst = true;
+	foreach ($params as $key => $value)
+    {
+    	if($isFirst)
+    		$isFirst = false;
+    	else
+    		$sql = $sql." AND ";
+
+    	//if(is_numeric($value))
+    	//	$sql = $sql." {$key} = {$value}";
+    	//else
+    		$sql = $sql." {$key} = '{$value}'"; 
+    }
+	return $sql;
+}
+
+function getIdClauseFromParams($ids, $id_key="id")
+{
+	$sql = "";
+	for($i =0; $i < count($ids); $i++)
+	{
+		if($i != 0)
+			$sql .= "OR ";
+
+		$sql .= "{$id_key} = {$ids[$i]} ";
+	}
+	return $sql;
+}
+
 
 foreach (glob("Model/*.php") as $filename)
 {
