@@ -1,6 +1,6 @@
 <section class="container" id="BillCtrl" ng-controller="BillCtrl" >
 		<div class="row" >
-			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน มีนาคม 2556 เท่านั้น</h4></div>
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน {{getVar("AppointmentMonth")}} เท่านั้น</h4></div>
 			<div class="span12" align="center"> <h4>โครงการไอดีโอ มอร์ฟ 38 </h4>
 			</div>
 			<div  class="span12" align="center">
@@ -14,14 +14,14 @@
 		<div class="row">
 		<font size="2">
 		<div class="offset6 span1">UNIT NO.</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{getVar("unitNumber")}}</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">{{getVar("UnitNumber")}}</div>
 		<div class="span1">บ้านเลขที่</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{getVar("houseNumber")}}</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">{{getVar("HouseNumber")}}</div>
 		
 		<div class="offset6 span1">แบบบ้าน</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">-</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">{{getVar("HouseType")}}</div>
 		<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">-</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">{{getVar("HouseSize")}}</div>
 		</font>
 		</div>
 		
@@ -31,17 +31,17 @@
 			<div class="row">
 				<font size="2">
 					<div class="span1"><b>วันที่แจ้ง</b></div>
-					<div class="span5" style="border-bottom: groove;">{{getVar("noticeDate")}}</div>
+					<div class="span5" style="border-bottom: groove;">{{getVar("DocumentDate")}}</div>
 					<div class="span1"><b>จาก</b></div>
-					<div class="span5" style="border-bottom: groove;">{{getVar("from")}}</div><br>
+					<div class="span5" style="border-bottom: groove;">{{getVar("SaleName")}}</div><br>
 					<div class="span1"><b>วันนัดโอน</b></div>
-					<div class="span5" style="border-bottom: groove;">{{getVar("payDate")}}</div>
+					<div class="span5" style="border-bottom: groove;">{{getVar("PayDate")}}</div>
 					<div class="span1"><b>เวลา :</b></div>
-					<div class="span5" style="border-bottom: groove;">{{getVar("payTime")}}</div><br>
+					<div class="span5" style="border-bottom: groove;">{{getVar("PayTime")}}</div><br>
 					<div class="span1"><b>เรียน</b></div>
-					<div class="span5" style="border-bottom: groove;">{{getVar("customerName")}}</div>
+					<div class="span5" style="border-bottom: groove;">{{getVar("CustomerName")}}</div>
 					<div class="span1"><b>โทร. :</b></div>
-					<div class="span5" style="border-bottom: groove;">{{getVar("tel")}}</div><br><br>
+					<div class="span5" style="border-bottom: groove;">{{getVar("CustomerTel")}}</div><br><br>
 					<div class="span12" style="border-bottom-style:groove;"></div>
 					
 				</div>
@@ -51,66 +51,66 @@
 						<font size="2">
 						<div class="span1"><b><u>1.1 ราคา</u></b></div>
 						<div class="span3">ราคาตามสัญญา</div>
-						<div class="span1" align="right">{{getVar("priceOnContact") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{getVar("PriceOnContact") | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						
 						<div class="span6"><b><u>1.2 วิธีการโอนกรรมสิทธิ์</u></b></div>
 						<div class="offset1 span3">ราคาต่อตารางเมตร</div>
-						<div class="span1" align="right">{{getVar("pricePerArea") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{getVar("PricePerArea") | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span6">โอนสด</div>
 						
 						<div class="offset1 span3">หัก ส่วนลดพิเศษ</div>
-						<div class="span1" align="right">{{ bill.getVar("specialDiscount") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{ bill.getVar("SpecialDiscount") | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span2">ใช้สินเชื่อ  ธนาคาร/สาขา</div>
-						<div class="span4">{{getVar("bankLoanRoom") | zeroDash}}</div>
+						<div class="span4">{{getVar("BankLoanName") | zeroDash}}</div>
 						
 						<div class="offset1 span3">พื้นที่ตามสัญญา</div>
-						<div class="span1" align="right">{{getVar("contractSpace") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{getVar("ContractSpace") | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติค่าห้อง</div>
-						<div class="span2" align="right">{{getVar("bankLoanRoom") | zeroDash}}</div>
+						<div class="span2" align="right">{{getVar("BankLoanRoom") | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span3">พื้นที่จริง</div>
-						<div class="span1" align="right">{{getVar("actualSpace") | up2area }}</div>
+						<div class="span1" align="right">{{getVar("ActualSpace") | up2area }}</div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าประกัน</div>
-						<div class="span2" align="right">100,000.00</div>
+						<div class="span2" align="right">{{getVar("BankLoanInsurance") | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span3">ส่วนต่างพื้นที่ 0.31 ตร.ม.</div>
-						<div class="span1" align="right">41,401.00</div>
+						<div class="span1" align="right">{{getVar("DifferenOfSpace") | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าตกแต่ง</div>
-						<div class="span2" align="right">-</div> 
+						<div class="span2" align="right">{{getVar("BankLoanDecorate") | zeroDash}}</div> 
 						<div class="span1">บาท</div> 
 						
 						
 						<div class="offset1 span3">ราคาห้องชุด ณ วันโอน</div>
-						<div class="span1" align="right">{{getVar("priceOnContact") - bill.getVar("specialDiscount") + bill.getVar("additionalAreaPrice") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{getVar("PriceDateOfPayment") | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินเอนกประสงค์</div>
-						<div class="span2" align="right">-</div>
+						<div class="span2" align="right">{{getVar("BankLoanMulti") | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span2">หัก  ชำระแล้ว</div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("paidAmount")  | currency:"" | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("PaidAmount")  | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินอื่น ๆ </div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("bankLoanOther") | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("BankLoanOther") | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span2"><b>ค่าห้องชุดต้องชำระ</b></div>
-						<div class="span2" align="right" style="border-bottom-style: double;"><b>{{getVar("priceOnContact") - bill.getVar("specialDiscount") + bill.getVar("additionalAreaPrice") - bill.getVar("paidAmount") | currency:"" | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style: double;"><b>{{getVar("PriceRoomOfPayment") | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">วงเงินจำนองรวม</div>
-						<div class="span2" align="right" style="border-bottom-style: double;">6,200,000.00</div>
+						<div class="span2" align="right" style="border-bottom-style: double;">{{getVar("SumBankLoan") | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						<br><br>
 							
@@ -144,9 +144,9 @@
 		                          </tr>
 								  <tr>
 		                        			<td align="center" colspan="3"><strong>รวมค่าใช้จ่ายทั้งสิ้น (บาท)</strong> </td>
-		                                    <td align="center"><strong>8,500,000.00</strong></td>
-		                                    <td align="center"><strong>99,069.00</strong></td>
-		                                    <td align="center"><strong>67,150.00</strong></td>
+		                                    <td align="center"><strong>-</strong></td>
+		                                    <td align="center"><strong>-</strong></td>
+		                                    <td align="center"><strong>-</strong></td>
 								 </tr>
 								  </table>			
 		                                    
@@ -163,22 +163,22 @@
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
 						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"ธนาคารกรุงไทย จำกัด (มหาชน)"</b> </div>
-						<div class="span3" align="right">-</div>
+						<div class="span3" align="right">{{getVar("PayCheckBank") | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด (มหาชน)"</b> </div>
-						<div class="span3" align="right">-</div>
+						<div class="span3" align="right">{{getVar("PayCheckAnanda") | zeroDash}}</div>
 						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
 						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมอเนียม อาคาร B"</b></div>
-						<div class="span1" align="right">{{getVar("commonFeeCharge")}}</div>
+						<div class="span1" align="right">{{getVar("PayCommonFeeCharge")}}</div>
 						<div class="span3">3.3 ชำระเงินสมทบกองทุนส่วนกลาง</div>
 						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม อาคาร B"</b></div>
-						<div class="span1" align="right">{{getVar("commonFeeFund")}}</div>
+						<div class="span1" align="right">{{getVar("PayCommonFeeFund")}}</div>
 						<div class="span7">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ค่าจำนองอีก 1% เป็นแคชเชียร์เช็คสั่งจ่าย </div>
 						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
-						<div class="span1" align="right">{{getVar("feeForMinistryOfFinance") | zeroDash}}</div>
+						<div class="span1" align="right">{{getVar("PayFeeForMinistryOfFinance") | zeroDash}}</div>
 						<div class="span10" align="right"><b>และแบ่งเป็นเงินสด</b></div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("feeForTranferCash")| zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("PayFeeForTranferCash")| zeroDash}}</div>
 						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
-						<div class="span2" align="right" style="border-bottom-style:double"><b>{{getFinalCustomerPayment()| zeroDash}}</b></div>
+						<div class="span2" align="right" style="border-bottom-style:double"><b>{{getVar("FinalCustomerPayment")| zeroDash}}</b></div>
 						
 		                </div>
 					

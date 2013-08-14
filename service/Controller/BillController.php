@@ -93,13 +93,124 @@
 	function convertSaleDataToBill($sale_data)
 	{
 		$bill = getSampleBill();
-
-		$variable = getBillVariable('unitNumber', 'UNIT NO.', $sale_data->unit_number);
+		
+		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('companyName', 'ที่อยู่', $sale_data->unit_number);
+		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $sale_data->unit_number);
 		array_push($bill->variables, $variable);
+		$variable = getBillVariable('CompanyName', 'ที่อยู่', $sale_data->unit_number);
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('HouseType', 'แบบบ้าน',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('HouseSize', 'พื้นที่ใช้สอย',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('DocumentDate', 'วันที่แจ้ง',  '14 มีนาคม 2556');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('SaleName', 'ชื่อผู้ติดต่อ',  'คุณสุกัญญา');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayDate', 'วันที่นัดโอน',  '29 มีนาคม 2556');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '10.00 น.');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  'คุณขจิต  ล้วนพิชญ์พงศ์');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PriceOnContract', 'ราคาตามสัญญา',  '6,970,000');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PricePerArea', 'ราคาต่อตารางเมตร',  '133,550');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('SpacialDiscount', 'หักส่วนลดพิเศษ',  '300,000');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('BnakLoanName', 'ชื่อธนาคาร',  'ธนาคารกรุงไทย จำกัด มหาชน');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('ContractOfSpace', 'พื้นที่ตามสัญญา',  '52.19');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '6,100,000');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('ActualSpace', 'พื้นที่จริง',  '52.50');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PaidAmount', 'หักชำระแล้ว',  '6,970,200');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '6,200,000');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayCheckBank', 'เช็คสั่งจ่ายธนาคาร',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayCheckAnanda', 'เช็คสั่งจ่ายอนันดา',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayCommonFeeCharge', 'ชำระส่วนกลาง',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayCommonFeeFund', 'ชำระค่าสมทบ',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayFeeForMinistryOfFinance', 'ชำระค่าธรรมเนียม',  '99,322.00');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PayFeeForTranferCash', 'แบ่งจ่ายเงินสด',  '1,000');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('FinalCustomerPayment', 'รวมเป็นเงินที่ต้องชำระ',  '100,322.00');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '100,000.00');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  '0.31');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PriceDateOfPayment', 'ราคาห้องชุด ณ วันโอน',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '6,970,000');
+		array_push($bill->variables, $variable);
+		
 		$bill->variables[11]->contractSpace->value = $sale_data->sqm;
 		return $bill;
+	}
+	
+	function getGlobalVariables()
+	{
+		return array(
+			"AppointmentMonth"=>"เดือนวันที่นัดโอน"
+			"UnitNumber"=>"UNIT NO."
+			"CompanyName"=>"ที่อยู่"
+			"HouseNumber"=>"บ้านเลขที่"
+			"HouseType"=>"แบบบ้าน"
+			"HouseSize"=>"พื้นที่ใช้สอย"
+			"DocumentDate"=>"วันที่แจ้ง"
+			"SaleName"=>"ชื่อผู้ติดต่อ"
+			"PayDate"=>"วันที่นัดโอน"
+			"PayTime"=>"เวลาที่นัดโอน"
+			"CustomerName"=>"ชื่อลูกค้า"
+			"CustomerTel"=>"เบอร์โทรลูกค้า"
+			"PriceOnContract"=>"ราคาตามสัญญา"
+			"PricePerArea"=>"ราคาต่อตารางเมตร"
+			"SpacialDiscount"=>"หักส่วนลดพิเศษ"
+			"BankLoanName"=>"ชื่อธนาคาร/สาขา"
+			"ContractOfSpace"=>"พื้นที่ตามสัญญา"
+			"BankLoanRoom"=>"อนุมัติค่าห้อง"
+			"ActualSpace"=>"พื้นที่จริง"
+			"BankLoanInsurance"=>"อนุมัติวงเงินค่าประกัน"
+			"DifferenOfSpace"=>"ส่วนต่างพื้นที่"
+			"BankLoanDecorate"=>"อนุมัติวงเงินตกแต่ง"
+			"PriceDateOfPayment"=>"ราคาห้องชุด ณ วันที่โอน"
+			"BankloanMulti"=>"อนุมัติวงเงินเอนกประสงค์"
+			"PaidAmount"=>"หักชำระแล้ว"
+			"BankLoanOther"=>"อนุมิติวงเงินอื่น ๆ "
+			"PriceRoomOfPayment"=>"ค่าห้องชุดที่ต้องชำระ"
+			"SumBankLoan"=>"วงเงินจำนองรวม"
+			"PayCheckBank"=>"เช็คสั่งจ่ายธนาคาร"
+			"PayCheckAnanda"=>"เช็คสั่งจ่ายอนันดา"
+			"PayCommonFeeCharge"=>"ชำระค่าส่วนกลาง"
+			"PayCommonFeeFund"=>"ชำระค่าสมทบ"
+			"PayFeeForministryOfFinance"=>"ชำระค่าธรรมเนียม"
+			"PayFeeForTranferCash"=>"แบ่งชำระเงินสด"
+			"FinalCustomerPayment"=>"รวมเป็นเงินที่ต้องชำระ"
+			
+		
+		);
+	
 	}
 
 	function getBillVariable($codename, $description, $value)
