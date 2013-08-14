@@ -6,29 +6,33 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<td>Unit ID</td>
+						<td>Item ID</td>
 						<td>Name</td>
-						<td>is mark</td>
+						<td>Floor</td>
 						<td>Print - View</td>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="units-list">
 					<tr ng-repeat="unit in units">
 
-						<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
+						<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.item_id}}
 						</td>
-						<td>{{unit.client_name}}</td>
-						<td>{{unit.is_match_bill}}</td>
-						<td><a href="#/bills/{{unit.billId}}/edit">edit</a></td>
+						<td>{{unit.item_name}}</td>
+						<td>{{unit.floor}}</td>
+						<td class="preview"><a href="#/bills/preview/{{templateId}}/{{unit.id}}" target-id="{{unit.id}}">edit</a>
+
+
+						</td>
 					</tr>
 					
 				</tbody>
 			</table>
 		</div>
 		<div class="span4">
-			<h2>Templates</h2>
+			<input ng-model="testTemp" type="text"/>
+			<h2>Templates : {{testTemp}}</h2>
 			<div ng-repeat="tp in templates" class="template thumb" style="background-color:{{tp.color}}">
-				<input type="radio" ng-model="templateId" name="template_id" value="{{tp.id}}" />{{tp.id}} {{tp.name}}
+				<input type="radio" ng-model="templateId" name="template_id" value="{{tp.id}}" ng-change="updateTemplateId(tp.id)"/>{{tp.id}} {{tp.name}}
 			</div>
 		</div>
 	</div>

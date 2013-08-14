@@ -40,6 +40,23 @@
     </style>
 </head>
 <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <a class="brand" href="#">Tranfer System</a>
+        <ul class="nav">
+          <li class="active dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                สร้างใบค่าใช้จ่าย</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#/templates">จัดการ Template</a></li>
+                    <li> <a href="#/payments">จัดการ ค่าใช้จ่าย</a></li>
+                     <li><a href="#/variables">จัดการ ตัวแปร</a></li>
+                </ul>
+            </li>
+          <li><a href="#">ดูข้อมูล Transaction</a></li>
+          <li><a href="#">ดู Report</a></li>
+        </ul>
+      </div>
+    </div>
 	<div ng-view></div>
     <div id="json-get-data" class="hide"><?php echo $jsonGetData; ?></div>
     <div id="json-post-data"  class="hide"><?php echo $jsonPostData; ?></div>

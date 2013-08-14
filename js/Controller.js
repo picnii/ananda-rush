@@ -3,6 +3,7 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location, Type, Template, U
 	var post_data =  getPostData();
 	$scope.room_types = Type.getRoomType();
 	$scope.project_types = Type.getProjectsList();
+	$scope.company_types = Type.getCompaniesList();
 	$scope.templates = Template.query();
 	$scope.unit_ids = post_data['unit_ids'];
 	$scope.units = Unit.query();
@@ -19,8 +20,9 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location, Type, Template, U
 	{
 		var ss= $scope.search;
 		var query = "";
-		var params_name = ['unit_id', 'project_id', 'room_type', 'template_id'];
-		var check_params = [ss.unit, ss.project, ss.type, ss.template];
+		var params_name = ['ItemId', 'ProjID', 'room_type', 'Floor', 'CompanyCode'];
+		//ss.company = ss.company.toLowerCase();
+		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company];
 		var params_count = 0;
 		for(var i =0; i < params_name.length; i++)
 		{
@@ -163,7 +165,10 @@ function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Templa
 
 	//$scope.unit_ids = post_data['unit_ids'];
 	$scope.unit_ids = loadTempData();
-	$scope.templates = Template.query();
+	$scope.templates = Template.query(function(data){
+		$scope.template_id = data[data.length-1].id;
+
+	});
 
 	var unit_id_str = convertUnitIdsToStr($scope.unit_ids);
 	$http({
@@ -219,6 +224,19 @@ function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Templa
 		    uids.push($(this).val());
 		});
 		return {uids:uids, tid:tid};
+	}
+
+	$scope.updateTemplateId = function(id)
+	{
+		console.log('update to '+ id );
+		$alists = $('#units-list .preview a');
+		for(var i=0; i < $alists.length; i++)
+		{
+			$alist = $alists[i];
+			var unit_id = $($alist).attr('target-id');
+			var target_url = '#/bills/preview/' + id + '/' + unit_id;
+			$($alist).attr('href', target_url);
+		}
 	}
 
 }

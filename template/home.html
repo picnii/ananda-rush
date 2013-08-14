@@ -1,15 +1,19 @@
 <section ng-controller="HomeCtrl" class="container">
-	This is demo
-	<ul>
-		<li><a href="simulate-call.php">จำลองการโดนเรียกจาก ระบบคัดกรองลูกค้า</a></li>
-		<li><a href="simulate-call.php">ดู Report ยาวโพดๆ</a></li>
-		<li><a href="#/templates">จัดการ Template</a></li>
-	</ul>
+	
 
 	<h2>Search</h2>
 	<form>
-		<label>UNIT ID</label>
+		<label>Item ID</label>
 		<input type="text" ng-model="search.unit" />
+		<label>Company</label>
+		<select ng-model="search.company" >
+			<option  value="*">
+				ALL
+			</option>
+			<option ng-repeat="type in company_types" value="{{type.value}}">
+				{{type.name}}
+			</option>
+		</select>
 		<label>Project</label>
 		<select ng-model="search.project" >
 			<option  value="*">
@@ -28,15 +32,8 @@
 				{{type.name}}
 			</option>
 		</select>
-		<label>Template</label>
-		<select ng-model="search.template" >
-			<option  value="*">
-				ALL
-			</option>
-			<option ng-repeat="type in templates" value="{{type.id}}">
-				{{type.name}}
-			</option>
-		</select>
+		<label>Floor</label>
+		<input type="text" ng-model="search.floor" />
 		<button class="btn" ng-click="search()">Search</button>
 		search query is {{search.unit}} {{search.project}} {{search.type}}
 	</form>
@@ -45,6 +42,16 @@
 	<button ng-click="back()">Back</button>
 	<form>
 		<table class="table">
+			<tr>
+				<td>transaction_id</td>
+				<td>item id</td>
+				<td>item name</td>
+				<td>floor</td>
+				<td>unit number</td>
+				<td>unit status</td>
+				<td>house size</td>
+				<td>land size</td>
+			</tr>
 			<tr ng-repeat="unit in units">
 
 				<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
