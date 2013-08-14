@@ -106,7 +106,7 @@ function findBankLoanInfo($pre_approve_bank_id)
     $SQL.="mb.bank_id,mb.bank_code as master_bank_code,mb.bank_name as master_bank_name,mb.bank_branch as master_bank_branch,";
     $SQL.="mb.bank_contactname,mb.bank_contactphone,sp.id_status_Approve,sp.name_status_Approve,";
     $SQL.="ts.id_type_select,ts.name_type_select ";
-    $SQL.="from preapprove_bank b";
+    $SQL.="from preapprove_bank b ";
     $SQL.="left join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
     $SQL.="left join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
     $SQL.="left join appointment_reason1 ar on b.appoint_reason1_id = ar.appoint_reason1_id ";
