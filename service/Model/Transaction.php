@@ -144,10 +144,10 @@ function findInformation($pre_id)
                      $rt =  DB_fetch_array($res);
                      $data = array();
                      if($rt["id_preapprove_bank"] != ''){
-                        $pre_approve_bank_id = $rt["id_preapprove_bank"];
-                        $bank = findBankLoanInfo($pre_approve_bank_id);
-                        $data["$rt"] = $rt;
-                        $data["bank"] = $bank;
+                       // $pre_approve_bank_id = $rt["id_preapprove_bank"];
+                        //$bank = findBankLoanInfo($pre_approve_bank_id);
+                        $data["rt"] = $rt;
+                        //$data["bank"] = $bank;
                          
                         return $rt;
                      }elseif($rt["id_preapprove_bank"] == ''){
