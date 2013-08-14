@@ -1,167 +1,205 @@
-<section id="BillCtrl" ng-controller="BillCtrl">
-	<br/>
-	<div align ="center" ><strong>
-					<p><font size=5>{{getVar("documentName")}}</font><p></strong>
-	</div>
-	<header class="header">
-		<div class="head">IDEO MORPH 38</div>
-		<div class="detail">
-			<p>บริษัท อนันดา ดีเวลลอปเม้นท์ ทูจำกัด</p>
-			<p>{{getVar("companyAddress")}}</p>
-			<p>{{getName("companyPhone")}}.{{getVar("companyPhone")}} {{getName("companyFax")}}.{{getVar("companyFax")}}</p>
+<section class="container" id="BillCtrl" ng-controller="BillCtrl" >
+		<div class="row" >
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน มีนาคม 2556 เท่านั้น</h4></div>
+			<div class="span12" align="center"> <h4>โครงการไอดีโอ มอร์ฟ 38 </h4>
+			</div>
+			<div  class="span12" align="center">
+				<strong><p>บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด</p>
+				<p>{{bill.getVar("companyAddress")}} {{bill.getName("companyPhone")}}.{{bill.getVar("companyPhone")}} {{bill.getName("companyFax")}}.{{bill.getVar("companyFax")}}</p></strong>
+			</div>
 		</div>
-	</header>
-			
-		<div class="container" >
-			<p align ="right"><strong>{{getName("unitNumber")}}</strong>&nbsp;&nbsp;&nbsp; {{getVar("unitNumber")}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>{{getName("houseNumber")}}</strong>&nbsp;&nbsp;&nbsp; {{getVar("houseNumber")}}</p><br><br>
-
+		<div style="border-bottom: groove"></div>
+		</div><br><br>
+		
+		<div class="row">
+		<font size="2">
+		<div class="offset6 span1">UNIT NO.</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.getVar("unitNumber")}}</div>
+		<div class="span1">บ้านเลขที่</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.getVar("houseNumber")}}</div>
+		
+		<div class="offset6 span1">แบบบ้าน</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">-</div>
+		<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center">-</div>
+		</font>
+		</div>
+		
+		
+		
+		<div class="container" ><br>
 			<div class="row">
 				<font size="2">
-					<div class="span1"><b>{{getName("noticeDate")}}</b></div>
-					<div class="span5"><u style="min-width:380px">&nbsp;{{getVar("noticeDate")}}</u>
-					</div>
-					<div class="span1"><b>{{getName("from")}} :</b></div>
-					<div class="span5"><u style="min-width:380px;">{{getVar("from")}}</u>
-					</div><br>
-					<div class="span1"><b>{{getName("payDate")}}</b></div>
-					<div class="span5"><u>{{getVar("payDate")}}</u>
-					</div>
-					<div class="span1"><b>{{getName("payTime")}} :</b></div>
-					<div class="span5"><u>&nbsp;{{getVar("payTime")}}</u>
-					</div><br>
+					<div class="span1"><b>วันที่แจ้ง</b></div>
+					<div class="span5" style="border-bottom: groove;">{{bill.getVar("noticeDate")}}</div>
+					<div class="span1"><b>จาก</b></div>
+					<div class="span5" style="border-bottom: groove;">{{bill.getVar("from")}}</div><br>
+					<div class="span1"><b>วันนัดโอน</b></div>
+					<div class="span5" style="border-bottom: groove;">{{bill.getVar("payDate")}}</div>
+					<div class="span1"><b>เวลา :</b></div>
+					<div class="span5" style="border-bottom: groove;">{{bill.getVar("payTime")}}</div><br>
 					<div class="span1"><b>เรียน</b></div>
-					<div class="span5"><u>&nbsp;{{getVar("customerName")}}</u>
+					<div class="span5" style="border-bottom: groove;">{{bill.getVar("customerName")}}</div>
+					<div class="span1"><b>โทร. :</b></div>
+					<div class="span5" style="border-bottom: groove;">{{bill.getVar("tel")}}</div><br><br>
+					<div class="span12" style="border-bottom-style:groove;"></div>
+					
+				</div>
+			<div><h4>1.ราคาและวิธีโอนกรรมสิทธิ์</h4></div>
+				<div class="container" >
+					<div class="row" >
+						<font size="2">
+						<div class="span1"><b><u>1.1 ราคา</u></b></div>
+						<div class="span3">ราคาตามสัญญา</div>
+						<div class="span1" align="right">{{bill.getVar("priceOnContact") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">บาท</div>
+						
+						<div class="span6"><b><u>1.2 วิธีการโอนกรรมสิทธิ์</u></b></div>
+						<div class="offset1 span3">ราคาต่อตารางเมตร</div>
+						<div class="span1" align="right">{{bill.getVar("pricePerArea") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">บาท</div>
+						<div class="span6">โอนสด</div>
+						
+						<div class="offset1 span3">หัก ส่วนลดพิเศษ</div>
+						<div class="span1" align="right">{{ bill.getVar("specialDiscount") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">บาท</div>
+						<div class="span2">ใช้สินเชื่อ  ธนาคาร/สาขา</div>
+						<div class="span4">{{bill.getVar("bankLoanRoom") | zeroDash}}</div>
+						
+						<div class="offset1 span3">พื้นที่ตามสัญญา</div>
+						<div class="span1" align="right">{{bill.getVar("contractSpace") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">ตร.ม.</div>
+						<div class="offset1 span2">อนุมัติค่าห้อง</div>
+						<div class="span2" align="right">{{bill.getVar("bankLoanRoom") | zeroDash}}</div>
+						<div class="span1">บาท</div>
+						
+						
+						<div class="offset1 span3">พื้นที่จริง</div>
+						<div class="span1" align="right">{{bill.getVar("actualSpace") | up2area }}</div>
+						<div class="span1" align="center">ตร.ม.</div>
+						<div class="offset1 span2">อนุมัติวงเงินค่าประกัน</div>
+						<div class="span2" align="right">100,000.00</div>
+						<div class="span1">บาท</div>
+						
+						
+						<div class="offset1 span3">ส่วนต่างพื้นที่ 0.31 ตร.ม.</div>
+						<div class="span1" align="right">41,401.00</div>
+						<div class="span1" align="center">บาท</div>
+						<div class="offset1 span2">อนุมัติวงเงินค่าตกแต่ง</div>
+						<div class="span2" align="right">-</div> 
+						<div class="span1">บาท</div> 
+						
+						
+						<div class="offset1 span3">ราคาห้องชุด ณ วันโอน</div>
+						<div class="span1" align="right">{{bill.getVar("priceOnContact") - bill.getVar("specialDiscount") + bill.getVar("additionalAreaPrice") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">บาท</div>
+						<div class="offset1 span2">อนุมัติวงเงินเอนกประสงค์</div>
+						<div class="span2" align="right">-</div>
+						<div class="span1">บาท</div>
+						
+						
+						<div class="offset1 span2">หัก  ชำระแล้ว</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.getVar("paidAmount")  | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">บาท</div>
+						<div class="offset1 span2">อนุมัติวงเงินอื่น ๆ </div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.getVar("bankLoanOther") | zeroDash}}</div>
+						<div class="span1">บาท</div>
+						
+						
+						<div class="offset1 span2"><b>ค่าห้องชุดต้องชำระ</b></div>
+						<div class="span2" align="right" style="border-bottom-style: double;"><b>{{bill.getVar("priceOnContact") - bill.getVar("specialDiscount") + bill.getVar("additionalAreaPrice") - bill.getVar("paidAmount") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="center">บาท</div>
+						<div class="offset1 span2">วงเงินจำนองรวม</div>
+						<div class="span2" align="right" style="border-bottom-style: double;">6,200,000.00</div>
+						<div class="span1">บาท</div>
+						<br><br>
+							
+						<div class="span12" style="border-bottom-style:groove;">-</div>
+						</font>
 					</div>
-					<div class="span1"><b>{{getName("tel")}}. :</b></div>
-					<div class="span5"><u>{{getVar("tel")}}</u>
-					</div><br><br>
-				</font>
-					<div class="span1"><b><u>1.ราคา *</u></b></div>
-					<div class="span3">	
-						{{getName("pricePerArea")}} <br>
-						{{getName("priceOnContact")}}	<br>
-						{{getName("specialDiscount")}}	<br>
-						{{getName("additionalAreaPrice")}}<br>
-						ราคาห้องชุด ณ วันโอน<br>
-						{{getName("paidAmount")}} ณ {{getVar("paidDate")}}<br>
-						ค่าห้องชุดส่วนที่ต้องชำระ
-					</div>
-					<div class="span2" align ="right" >			{{getVar("pricePerArea") | currency:"" | zeroDash}} บาท<br>
-				 		{{getVar("priceOnContact") | currency:"" | zeroDash}} บาท<br>
-				 		{{ getVar("specialDiscount") | currency:"" | zeroDash}} บาท<br>
-						{{getVar("additionalAreaPrice") | up2area}} บาท<br>
-						{{getVar("priceOnContact") - getVar("specialDiscount") + getVar("additionalAreaPrice") | currency:"" | zeroDash}} บาท<br>
-				      	<u>{{getVar("paidAmount")  | currency:"" | zeroDash}}</u> บาท<br>
-				      	<u><span style="border-bottom: 1px double #000;">{{getVar("priceOnContact") - getVar("specialDiscount") + getVar("additionalAreaPrice") - getVar("paidAmount") | currency:"" | zeroDash}}</span></u> บาท
-				     </div>
-				     <div class="span1"><b><u>2.พื้นที่ *</u><br><br><br><u>3.สินเชื่อ</u></b></div>
-				     <div class="span2">	
-				     	{{getName("contractSpace")}}<br>
-				      	{{getName("actualSpace")}}<br>
-				      	ส่วนต่างพื้่นที่เพิ่ม (ลด)<br>
-				      	ธนาคาร/สาขา<br>
-				      	{{getName("bankLoanRoom")}}<br>
-				      	{{getName("bankLoanOther")}}<br>
-				      	รวมวงเงิน
-				     </div>
-				     <div class="span3" align ="right" >		{{getVar("contractSpace") | currency:"" | zeroDash}} ตร.ม.<br>
-			      		<u>{{getVar("actualSpace") | up2area }}</u> ตร.ม.<br>
-			      		<u><span style="border-bottom: 1px double #000;" ng-bind-html-unsafe="getDiffArea(getVar('actualSpace'), getVar('contractSpace'))
-			      			 | areaDifference"></span></u> ตร.ม.<br><br>
-			      		{{getVar("bankLoanRoom") | zeroDash}} &nbsp;&nbsp;บาท<br>
-			      		<u ng-bind-html-unsafe="getVar('bankLoanOther') | zeroSpaceDash"></u> บาท<br>
-			      		<u><span style="border-bottom: 1px double #000;" ng-bind-html-unsafe="getVar('bankLoanRoom') + getVar('bankLoanOther') | zeroSpaceDash"></u></span> บาท<br>
-			      	</div>
-			</div><br>
-
-					<table border = "1" align="center" width ="100%" hight ="50%"  cellspacing = "0" >
-                 
+				</div>
+				
+				
+			   <div><h4>2.ค่าใช้จ่าย ณ วันโอน</h4></div>
+					<table border = "1" align="center" width ="100%" hight ="30%"  cellspacing = "0"  style="font-size:13px" >
+             			 
                     	 <thead>
 		                        <tr>
-		                          <th> 4. ค่าใช้จ่าย ณ วันโอน</th>
-		                          <th>อัตรา</th>
-		                          <th>ธนาคาร</th>
-		                          <th>บริษัท</th>
-		                          <th>ลูกค้า</th>
+								  <th width="5%">No.</th>
+		                          <th width="30%" align="center">ค่าใช้จ่าย ณ วันโอน</th>
+								  <th width="20%" align="center">อัตรา</th>
+		                          <th width="10%">บริษัท</th>
+		                          <th width="10%">ธนาคาร</th>
+		                          <th width="10%">ลูกค้า</th>
 		                        </tr>
 		                 </thead>
-                        <tr ng-repeat="payment in datas.payments">
-                            <td>{{payment.name}}</td>
-                            <TD>{{payment.description}}</TD>
-                            <TD style="text-align:right">{{getFormulaValue(payment.formulas[0]) | zeroDash }}</TD>
-                            <TD style="text-align:right">{{getFormulaValue(payment.formulas[1]) | zeroDash }}</TD>
-                            <TD style="text-align:right">{{getFormulaValue(payment.formulas[2]) | zeroDash }}</TD>
-                        </tr>
-					</table>
-
-
-				<div class="row">
-					<div class="span7" align="right">รวมค่าใช้จ่ายเป็นเงินทั้งสิ้น (บาท)</div>
-					<div class="span2" align="right">ประมาณ</div>
-					<div class="span3" align="right"><u><span style="border-bottom: 1px double #000;"><b>	{{getSumCustomerPayment() | zeroDash}}</b></span></u></div><br>
-
-				</div>
-				<div class="row">
-					<div class="span9">
+		                          <tr ng-repeat="payment in bill.payments">
+		                                    <td align="center" style="">1.</td>
+											<td style="padding-left:10px;">{{payment.name}}</td>
+											<TD align="center">{{payment.description}}</TD>
+		                                    <TD align="center">{{bill.getFormulaValue(payment.formulas[0]) | zeroDash }</TD>
+		                                    <TD align="center">{{bill.getFormulaValue(payment.formulas[1]) | zeroDash }}</TD>
+		                                    <TD align="center">{{bill.getFormulaValue(payment.formulas[2]) | zeroDash }}</TD>
+		                                 
+		                          </tr>
+								  <tr>
+		                        			<td align="center" colspan="3"><strong>รวมค่าใช้จ่ายทั้งสิ้น (บาท)</strong> </td>
+		                                    <td align="center"><strong>8,500,000.00</strong></td>
+		                                    <td align="center"><strong>99,069.00</strong></td>
+		                                    <td align="center"><strong>67,150.00</strong></td>
+								 </tr>
+								  </table>			
+		                                    
+		                                    
+		                          
+		                        
+					<br>
+					<div class="row">
+					<div class="span12" style="border-bottom-style:groove;"></div>
+					</div>
+					<div><h4>3.วิธีการชำระเงิน</h4></div>
+						<div class="row" style="font-size:13px;">
+						
+						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
+						<div class="span7" align="right">-</div>
+						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"ธนาคารกรุงไทย จำกัด (มหาชน)"</b> </div>
+						<div class="span3" align="right">-</div>
+						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด (มหาชน)"</b> </div>
+						<div class="span3" align="right">-</div>
+						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
+						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมอเนียม อาคาร B"</b></div>
+						<div class="span1" align="right">{{bill.getVar("commonFeeCharge")}}</div>
+						<div class="span3">3.3 ชำระเงินสมทบกองทุนส่วนกลาง</div>
+						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม อาคาร B"</b></div>
+						<div class="span1" align="right">{{bill.getVar("commonFeeFund")}}</div>
+						<div class="span7">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ค่าจำนองอีก 1% เป็นแคชเชียร์เช็คสั่งจ่าย </div>
+						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
+						<div class="span1" align="right">{{bill.getVar("feeForMinistryOfFinance") | zeroDash}}</div>
+						<div class="span10" align="right"><b>และแบ่งเป็นเงินสด</b></div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.getVar("feeForTranferCash")| zeroDash}}</div>
+						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
+						<div class="span2" align="right" style="border-bottom-style:double"><b>{{bill.getFinalCustomerPayment()| zeroDash}}</b></div>
+						
+		                </div>
 					
-						<u>รายการชำระเงินที่ลูกค้าต้องเตรียมมาในวันโอนกรรมสิทธิ์ ดังนี้</u><br>
-						1. กรณีโอนสดแคชเชียร์เช็กสั่งจ่าย <b>"บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b>
-					
-					</div>
-					<div class="span3" align ="right"><br>{{getSumCustomerPayment() | zeroDash}}</div>
-				</div>
-				<div class="row">
-					<div class="span3">2. ชำระค่าส่วนกลาง</div>
-					<div class="span7">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม"</b>
-					</div>
-					<div class="span2" align ="right">{{getVar("commonFeeCharge")}}
-					</div>
-				</div>
-				<div class="row">
-					<div class="span3">
-					 3. ชำระเงินสมทบกองทุนส่วนกลาง</div>
-					<div class="span7">
-					เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม"</b>
-					</div>
-					<div class="span2" align ="right">{{getVar("commonFeeFund")}}</div>
-				</div>
-				<div class='row'>
-						<div class ="span7">4. ชำระค่าธรรมเนียมโอน 1 % กรณีกู้+ค่าจำนองอีก 1%เป็นแคชเชียร์เช็คสั่งจ่าย</div>
-						<div class="span3"><b>"กระทรวงการคลัง"</b><br><b>และแบ่งเป็นเงินสด</b></div>
-						<div class ="span2" align ="right">{{getVar("feeForMinistryOfFinance") | zeroDash}}<br><u>{{getVar("feeForTranferCash")| zeroDash}}</u></div>
-				</div>
-				<div class="row">
-						<div class ="span10" align = "right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
-						<div class ="span2" align ="right"><u><span style="border-bottom: 1px double #000;"><b>{{getFinalCustomerPayment()| zeroDash}}</b></span></u></div>
-					
-				</div>
-
-
-
-				<br><b><u>*หมายเหตุ</u></b> ขอเป็นแคชเชียร์เช็คที่ทำให้ในกรุงเทพหรือปริมณฑลเท่านั้น ถ้าเป็นต่างจังหวัดต้องเป็นดร๊าฟ ที่่สามารถขึ้นเงินได้ทุกสาขาทั่วประเทศ เท่านั้น<br><br>
-				<p align ="center">***********************************************</p><br>
-				<u><b>เอกสารที่ใช้ในการโอนกรรมสิทธิ์</b></u><br>
-				1. บัตรประจำตัวประชาชน และทะเบียนบ้าน ฉบับจริง และสำเนา 3 ชุด<br>
-				2. ใบทะเบียนสมรส / หนังสือยินยอมคู่สมรส / ใบหย่า /ใบมรณะบัตร (ถ้ามี)<br>
-				3. ใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
-				
+						<br><b><u>*หมายเหตุ</u></b> ขอเป็นแคชเชียร์เช็คที่ทำให้ในกรุงเทพหรือปริมณฑลเท่านั้น ถ้าเป็นต่างจังหวัดต้องเป็นดร๊าฟ ที่่สามารถขึ้นเงินได้ทุกสาขาทั่วประเทศ เท่านั้น
+						<p align ="center">***********************************************</p>
+						<u><b>เอกสารที่ใช้ในการโอนกรรมสิทธิ์</b></u><br>
+						1. สำเนาบัตรประจำตัวประชาชน และสำเนาทะเบียนบ้าน จำนวน 4 ชุด<br>
+						2. สำเนาใบทะเบียนสมรส / สำเนาหนังสือยินยอมคู่สมรส / สำเนาใบหย่า /สำเนาใบมรณะบัตร (ถ้ามี)<br>
+						3. สำเนาใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
+			
 						<strong>
 							บัญชี &nbsp;"บริษัท อนันดา ดีเวลลอปเม้น ทู จำกัด " ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
 							หรือ &nbsp;&nbsp;&nbsp;"บริษัท อนันดา ดีเวลลอปเม้น ทู จำกัด " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
-							บัญชี:&nbsp; "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม" ธนาคาร...................สาขา.........................................(ออมทรัย์)เลขที่....................................<br><br>
+							บัญชี:&nbsp; "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม" ธนาคาร...................สาขา.........................................(ออมทรัพย์)เลขที่....................................<br><br>
 
 						</strong>
 
-			<div class= "row">
-						<div class="span12" align="center">**ใบประเมินการค่าใช้จ่ายนี้ คำนวนขากสัญญาจะซื้อจะขาย อาจจะมีการเปลี่ยนแปลงขึ้นอยู่กับพื้นที่จริง และราคาประเมินหลังได้ อช. แล้ว ซึ่งบริษัทจะแจ้งค่าใช้จ่ายที่แน่นอนให้ทราบอีกครั้ง เมื่อนัดโอนกรรมสิทธ์**
-						</div>
+			
 			</div>
-		</div> 
-
-	
-</section>
-
-<style type="text/css">
+		</section> 
+		<style type="text/css">
 	#main-menu
 	{
 		display:none;
