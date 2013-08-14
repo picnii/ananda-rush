@@ -8,11 +8,7 @@
 
 function fetchBillInformation($transaction_ids)
 {
-    $sql = "SELECT * FROM master_transaction LEFT JOIN Sale_Transection 
-    on master_transaction.ItemId = Sale_Transection.ItemID 
-    LEFT JOIN preapprove ON Sale_Transection.InvoiceAccount = preapprove.InvoiceAccount 
-    WHERE ";
-
+    $sql = "select transaction_id,ItemId from master_transaction where ";
     for($i = 0; $i < count($transaction_ids); $i++)
     {
         $id = $transaction_ids[$i];
@@ -20,15 +16,59 @@ function fetchBillInformation($transaction_ids)
         if(!($i + 1 == count($transaction_ids)))
             $sql .= " OR ";
     }
-
     $result = DB_query($GLOBALS['connect'],$sql);
-    $rows = array();
-    while( $row = DB_fetch_array($result) )
-        array_push($rows, $row);
-    return $rows;
+    $dt = array();
+    while($rs =  DB_fetch_array($result)){
+        $tran_item = $rs["ItemId"];
+        if($tran_item){
+            $pre_id = findPreID($tran_item);
+        }
+        if($pre_id){
+            $data = findInformation($pre_id);
+        }
+        array_push($dt,$data);
+    }
+    return $dt;
 }
-
-
+function findPreID($tran_item){
+    if($tran_item){
+         $SQL = "select s.*,(select top 1 pre.id_preapprove from preapprove pre where pre.itemid = s.ItemID and pre.InvoiceAccount = s.InvoiceAccount order by pre.lastupdate DESC) ";
+         $SQL.="as pre_id from Sale_Transection s where s.ItemID = '".$tran_item."'";
+         $result = DB_query($GLOBALS['connect'],$SQL);
+         $numrow = DB_num_rows($result);
+         $rw =  DB_fetch_array($result);
+     }
+     return $rw["pre_id"];
+}
+function findInformation($pre_id)
+{    
+            if($pre_id){
+                    $SQL1 = "select  s.*,p.*,t.*";
+                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
+                     $SQL1.="from Sale_Transection s ";
+                     $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
+                     $SQL1.="inner join master_transaction t on p.itemid = t.ItemId ";
+                     $SQL1.="inner join preapprove_bank b on p.itemid = b.itemID and p.InvoiceAccount = b.InvoiceAccount ";
+                     $SQL1.="inner join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
+                     $SQL1.="inner join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
+                     $SQL1.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
+                     $res = DB_query($GLOBALS['connect'],$SQL1);
+                     $row = DB_num_rows($res);
+                     $rt =  DB_fetch_array($res);
+                     if($rt["id_preapprove"] != ''){   
+                            return $rt;
+                     }elseif($rt["id_preapprove"] == ''){
+                         $SQL = "select  s.*,p.*,t.transaction_id,t.ItemId,t.ItemName,t.Floor,t.UnitNo,t.RoomNo,t.Status,t.HOUSESIZE,t.LANDSIZE ";
+                         $SQL.="from Sale_Transection s ";
+                         $SQL.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
+                         $SQL.="inner join master_transaction t on p.itemid = t.ItemId ";
+                         $SQL.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
+                         $rs = DB_query($GLOBALS['connect'],$SQL);
+                         $dt =  DB_fetch_array($rs);
+                         return $dt;
+                     }
+            }
+}
 function getSaleDatas($unit_ids)
 {
     //print_r($unit_ids);
