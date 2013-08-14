@@ -27,20 +27,29 @@ function fetchBillInformation($transaction_ids)
         }
         if($pre_id){
             $data = findInformation($pre_id);
-        }else
+       //     echo "new-data no.. {$data['transaction_id']} code:{$data['CompanyCode']} ..";
+        }else{
             $data = findOldInformation($transaction_id);
+        //    echo "old-data no.. {$data['transaction_id']} code:{$data['CompanyCode']} ..";
+        }
 
         //get company info
+        if(isset($data['company_code']))
+        {
+
+            $data['CompanyCode'] = $data['company_code'];
+        }
         $comp_data = findCompanyInfo($data);
-        print_r($comp_data);
+       
+     //   print_r($comp_data);
         foreach ($comp_data as $key => $value) {
             # code...
 
             $data[$key] = $comp_data[$key];
         }
 
-       print_r($data);
-            echo "<br/>";
+       /*print_r($data);
+            echo "<br/>";*/
         array_push($dt,$data);
     }
     return $dt;
@@ -59,11 +68,12 @@ function findPreID($tran_item){
 
 function findOldInformation($transaction_id)
 {
-    $sql = "SELECT * FROM master_transaction LEFT JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID 
-    LEFT JOIN preapprove ON Sale_Transection.InvoiceAccount = preapprove.InvoiceAccount
+    $sql = "SELECT *, m.projID as project_code FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
+    LEFT JOIN master_project as mp ON m.projID = mp.proj_code
     WHERE transaction_id = {$transaction_id}";
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
+     $row['q_type'] = 'oldInfo';
      if(isset($row['transaction_id']))
         return $row;
     else
@@ -79,6 +89,7 @@ function findCompanyInfo($row_transaction)
     $sql = "SELECT * from master_company WHERE comp_code = '{$comp_code_sql}'";
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
+
      if(isset($row['comp_code']))
         return $row;
     else
@@ -95,7 +106,7 @@ function findBankLoanInfo($pre_approve_bank_id)
 function findInformation($pre_id)
 {    
             if($pre_id){
-                    $SQL1 = "select  s.*,p.*,t.*";
+                    $SQL1 = "select  s.*,p.*,t.*, t.CompanyCode as company_code";
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
                      $SQL1.="from Sale_Transection s ";
                      $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
@@ -103,6 +114,7 @@ function findInformation($pre_id)
                      $SQL1.="inner join preapprove_bank b on p.itemid = b.itemID and p.InvoiceAccount = b.InvoiceAccount ";
                      $SQL1.="inner join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
                      $SQL1.="inner join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
+                     $SQL1.="inner join master_project mp on mp.proj_code = t.projID ";
                      $SQL1.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
                      $res = DB_query($GLOBALS['connect'],$SQL1);
                      $row = DB_num_rows($res);
@@ -172,7 +184,21 @@ function getSaleDatas($unit_ids)
 
 function getVariableUnits($sale_datas)
 {
-    return $sale_datas;
+    $variables = findAllVariables();
+    $bill_variables = array();
+    foreach ($sale_datas as $sale_data) {
+        # code...
+        $bill = new stdClass;
+        foreach($sale_data as $key => $value)
+          $bill->$key = $sale_data[$key];
+        foreach ($variables as $var) {
+            # code...
+            $varname = $var['codename'];
+            $bill->$varname = $var['value'];
+        }
+        array_push($bill_variables, $bill);
+    }
+    return $bill_variables;
 }
 
 $id = 22;
