@@ -32,12 +32,15 @@ function fetchBillInformation($transaction_ids)
 
         //get company info
         $comp_data = findCompanyInfo($data);
+        print_r($comp_data);
         foreach ($comp_data as $key => $value) {
             # code...
-            $data[$key] = $value;
+
+            $data[$key] = $comp_data[$key];
         }
 
-       
+       print_r($data);
+            echo "<br/>";
         array_push($dt,$data);
     }
     return $dt;
@@ -82,6 +85,13 @@ function findCompanyInfo($row_transaction)
         return null;
 }
 
+function findBankLoanInfo($pre_approve_bank_id)
+{
+    $row;
+    return $row;
+
+}
+
 function findInformation($pre_id)
 {    
             if($pre_id){
@@ -97,9 +107,9 @@ function findInformation($pre_id)
                      $res = DB_query($GLOBALS['connect'],$SQL1);
                      $row = DB_num_rows($res);
                      $rt =  DB_fetch_array($res);
-                     if($rt["id_preapprove"] != ''){   
+                     if($rt["id_preapprove_bank"] != ''){   
                             return $rt;
-                     }elseif($rt["id_preapprove"] == ''){
+                     }elseif($rt["id_preapprove_bank"] == ''){
                          $SQL = "select  s.*,p.*,t.transaction_id,t.ItemId,t.ItemName,t.Floor,t.UnitNo,t.RoomNo,t.Status,t.HOUSESIZE,t.LANDSIZE ";
                          $SQL.="from Sale_Transection s ";
                          $SQL.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";

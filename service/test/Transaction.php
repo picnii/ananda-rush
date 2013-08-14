@@ -4,7 +4,7 @@
 	$rows = fetchBillInformation($transaction_ids);
 	print_r($rows);
 
-	$units = findAllUnits();
+	/*$units = findAllUnits();
 	$unit_index = rand(0, count($units) - 1);
 	$unit_ids = array(
 		$units[rand(0, count($units) - 1)]->id,
@@ -40,7 +40,7 @@
 	/*View Latest Transaction
 	*
 	*/
-	$transactions = findAllLastTransactionsByUnitIds($unit_ids);
+	/*$transactions = findAllLastTransactionsByUnitIds($unit_ids);
 	assertEquals(count($unit_ids), count($transactions));
 	print_r($unit_ids);
 	foreach ($transactions as $tran) {
