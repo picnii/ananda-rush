@@ -1,8 +1,86 @@
 <?php
 
-	$transaction_ids = array(1352, 1302, 1307, 1311);
+	$transaction_ids = array(1352, 1302, 1307, 1311, 1301);
 	$rows = fetchBillInformation($transaction_ids);
-	print_r($rows);
+	$bills = getVariableUnits($rows);
+
+	//check for project name
+	foreach($bills as $bill)
+	{
+		if(isset($bill->proj_name_th))
+			$project_name = $bill->proj_name_en;
+		assertEquals(true, is_string($project_name));
+	}
+
+	//check for company name
+	foreach($bills as $bill)
+	{
+		if(isset($bill->comp_name_th))
+			$company_name = $bill->comp_name_th;
+		assertEquals(true, is_string($company_name));
+	}
+
+	//check for company address
+	foreach($bills as $bill)
+	{
+		if(isset($bill->comp_addno) && isset($bill->comp_road) && isset($bill->comp_soi)  && isset($bill->comp_province)  && isset($bill->comp_tumbon)  && isset($bill->comp_distinct) && isset($bill->comp_zipcode) )
+			$company_address = "เลขที่ {$bill->comp_addno} ซอย {$bill->comp_soi} ถนน {$bill->comp_road} ตำบล {$bill->comp_tumbon} อำเภอ {$bill->comp_distinct} จังหวัด {$bill->comp_province} {$bill->comp_zipcode}";
+		else
+			echo "company_address wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_string($company_address));
+	}
+
+	//check for company tel
+
+	//check for company fax
+
+	//check for unit no
+	foreach($bills as $bill)
+	{
+		if(isset($bill->UnitNo))
+			$unit_number = $bill->UnitNo.' ';
+		else
+			echo "unit_number wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_string($unit_number));
+	}
+	
+	//check for house type
+	foreach($bills as $bill)
+	{
+		if(isset($bill->ItemType))
+			$item_type = $bill->ItemType;
+		else
+		{
+			echo "house type wrong at {$bill->transaction_id}:";
+		}
+		assertEquals(true, is_string($item_type) || is_numeric($item_type));
+	}
+	
+
+	//check for usage area
+	foreach($bills as $bill)
+	{
+		if(isset($bill->Sqm))
+			$contractSpace = $bill->sqm;
+		else if(isset($bill->SQM))
+			$contractSpace = $bill->SQM;
+		else
+			echo "contract space wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_numeric($contractSpace));
+	}
+
+	//check for เรียน salename
+	foreach($bills as $bill)
+	{
+		if(isset($bill->SalesName))
+			$sale_name = $bill->SalesName;
+		else
+			echo "sale name wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_string($sale_name));
+	}
+
+
+	print_r($bills);
 
 	/*$units = findAllUnits();
 	$unit_index = rand(0, count($units) - 1);
