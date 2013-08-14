@@ -23,8 +23,19 @@
 			require_once 'Controller/BillController.php';
 		if($action == 'bill')
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
-		
-	
+	}
+
+	if(isset($reqBody->action))
+	{
+
+		$action = $reqBody->action ;
+		if(gotAction($action, $billActions))
+			require_once 'Controller/BillController.php';
+		if($reqBody->action == 'createBills')
+		{
+			$response = actionCreateBills($reqBody->unit_ids, $reqBody->template_id);		
+		}
+
 	}
 
 ?>

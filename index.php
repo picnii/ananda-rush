@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
+    <div id="main-menu" class="navbar">
       <div class="navbar-inner">
         <a class="brand" href="#">Tranfer System</a>
         <ul class="nav">

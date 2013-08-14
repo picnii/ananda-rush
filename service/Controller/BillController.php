@@ -24,14 +24,21 @@
 		$template = findTemplateById($template_id);
 		$payments_json = json_encode($template->payments);
 		$sale_data = getSaleDatas($unit_ids);
-		$variable_units = getVariableUnits($sales_data);
+		//print_r($sale_data);
+		$variable_units = $sale_data;//getVariableUnits($sales_data);
+		//print_r($variable_units);
 		for($i = 0;$i < count($unit_ids); $i++)
 		{
 			
 			$unit_id =  $variable_units[$i]->unit_id;
 			$variables = $variable_units[$i];
 			$variables_json = json_encode($variables);
-
+			/*print_r(array(
+					'unit_id'=>$unit_id,
+					'template_id'=>$template_id,
+					'payments_json'=>$payments_json,
+					'variables_json'=>$variables_json
+				));*/
 			$created_id = createTransaction($unit_id, $template_id, $payments_json, $variables_json);
 			//$created_id = createTransaction($unit_ids[$i], $template_id);
 			array_push($transaction_ids, $created_id);
@@ -89,6 +96,8 @@
 
 		$variable = getBillVariable('unitNumber', 'UNIT NO.', $sale_data->unit_number);
 		array_push($bill->variables, $variable);
+		$variable = getBillVariable('companyName', 'ที่อยู่', $sale_data->unit_number);
+		array_push($bill->variables, $variable);
 		$bill->variables[11]->contractSpace->value = $sale_data->sqm;
 		return $bill;
 	}
@@ -102,10 +111,6 @@
 		$variable->$codename->value = $value;
 
 		return $variable;
-		/*new stdClass;
-		$sample->variables[3]->unitNumber  = new stdClass;
-		$sample->variables[3]->unitNumber->name = 'UNIT NO.';
-		$sample->variables[3]->unitNumber->value = 'MR9-0502';*/
 	}
 
 

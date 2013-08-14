@@ -16,20 +16,33 @@ function fetchBillInformation($transaction_ids)
         if(!($i + 1 == count($transaction_ids)))
             $sql .= " OR ";
     }
+
     $result = DB_query($GLOBALS['connect'],$sql);
     $dt = array();
     while($rs =  DB_fetch_array($result)){
         $tran_item = $rs["ItemId"];
+        $transaction_id = $rs['transaction_id'];
         if($tran_item){
             $pre_id = findPreID($tran_item);
         }
         if($pre_id){
             $data = findInformation($pre_id);
+        }else
+            $data = findOldInformation($transaction_id);
+
+        //get company info
+        $comp_data = findCompanyInfo($data);
+        foreach ($comp_data as $key => $value) {
+            # code...
+            $data[$key] = $value;
         }
+
+       
         array_push($dt,$data);
     }
     return $dt;
 }
+
 function findPreID($tran_item){
     if($tran_item){
          $SQL = "select s.*,(select top 1 pre.id_preapprove from preapprove pre where pre.itemid = s.ItemID and pre.InvoiceAccount = s.InvoiceAccount order by pre.lastupdate DESC) ";
@@ -40,6 +53,35 @@ function findPreID($tran_item){
      }
      return $rw["pre_id"];
 }
+
+function findOldInformation($transaction_id)
+{
+    $sql = "SELECT * FROM master_transaction LEFT JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID 
+    LEFT JOIN preapprove ON Sale_Transection.InvoiceAccount = preapprove.InvoiceAccount
+    WHERE transaction_id = {$transaction_id}";
+    $result = DB_query($GLOBALS['connect'],$sql);
+    $row =  DB_fetch_array($result);
+     if(isset($row['transaction_id']))
+        return $row;
+    else
+        return null;
+
+}
+
+function findCompanyInfo($row_transaction)
+{
+    $comp_code_lower = $row_transaction['CompanyCode'];
+    $comp_code_sql = strtoupper($comp_code_lower);
+
+    $sql = "SELECT * from master_company WHERE comp_code = '{$comp_code_sql}'";
+    $result = DB_query($GLOBALS['connect'],$sql);
+    $row =  DB_fetch_array($result);
+     if(isset($row['comp_code']))
+        return $row;
+    else
+        return null;
+}
+
 function findInformation($pre_id)
 {    
             if($pre_id){
@@ -69,12 +111,15 @@ function findInformation($pre_id)
                      }
             }
 }
+
 function getSaleDatas($unit_ids)
 {
     //print_r($unit_ids);
+    //echo "<br/></br>";
     $bill_datas = fetchBillInformation($unit_ids);
     $variables = findAllVariables();
    // print_r($bill_datas);
+    //echo "<br/></br>";
     $sale_datas = array();
     foreach ($bill_datas as $bill) {
         # code...

@@ -43,5 +43,9 @@ angular.module('dataServices', ['ngResource']).
     create:{method:'POST', params:{action:'createVariable',description:'none', codename:"-", name:"-", type:"-", value:"-"}},
     delete:{method:'POST', params:{action:'deleteVariable'}}
   });
+}).factory('Bill', function($resource){
+  return $resource('service/index.php', {}, {
+    create:{method:'POST', params:{action:'createBills'}}
+  });
 })
     //, params:{unitId:'data'}, isArray:false

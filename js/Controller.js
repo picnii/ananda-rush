@@ -159,7 +159,7 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
 
 }
 
-function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Template)
+function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Template, Bill)
 {
 	//var post_data =  getPostData();
 
@@ -194,21 +194,11 @@ function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Templa
 		var obj = $scope.getSelectedChoice();
 		var tid = obj.tid;
 		var uids = obj.uids;
-		console.log(tid);
-		console.log(uids);
-		console.log('saving');
-		var unit_id_str = convertUnitIdsToStr(obj.uids);
-		$http({
-                method: 'POST',
-                url: 'service/index.php',
-                data: 'action=createBills&template_id='+tid+unit_id_str,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(function(data, status) {
-        		console.log('status')
-        		console.log(status)
-            	//$location.path('/bills/print/'+tid);
-        });
+		Bill.create({action:"createBills", unit_ids:uids, template_id:tid},function(data){
 
+			console.log('done');
+			console.log(data);
+		});
 		
 
 	}
