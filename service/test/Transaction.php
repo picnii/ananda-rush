@@ -2,6 +2,7 @@
 
 	$transaction_ids = array(1352, 1302, 1307, 1311, 1301);
 	$rows = fetchBillInformation($transaction_ids);
+
 	$bills = getVariableUnits($rows);
 
 	//check for project name
@@ -79,7 +80,7 @@
 		assertEquals(true, is_string($sale_name));
 	}
 
-
+	//print_r($rows);
 	print_r($bills);
 
 	/*$units = findAllUnits();

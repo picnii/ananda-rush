@@ -34,9 +34,8 @@ function fetchBillInformation($transaction_ids)
         }
 
         //get company info
-        if(isset($data['company_code']))
+        if(isset($data['master_CompanyCode']))
         {
-
             $data['CompanyCode'] = $data['company_code'];
         }
         $comp_data = findCompanyInfo($data);
@@ -149,7 +148,8 @@ function findInformation($pre_id)
                         $bank = findBankLoanInfo($pre_approve_bank_id);
                         $data["$rt"] = $rt;
                         $data["bank"] = $bank;
-                        return $data;
+                         
+                        return $rt;
                      }elseif($rt["id_preapprove_bank"] == ''){
                          $SQL = "select  s.*,p.*,t.transaction_id,t.ItemId,t.ItemName,t.Floor,t.UnitNo,t.RoomNo,t.Status,t.HOUSESIZE,t.LANDSIZE ";
                          $SQL.="from Sale_Transection s ";

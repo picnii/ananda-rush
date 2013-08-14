@@ -1,5 +1,5 @@
 <?php
-	$payments = getPayments();
+	$payments = getPayments();/*
 	foreach($payments as $payment)
 		$payment->order = rand(1, 10);
 	$create_template_id = createTemplate("Test Template", "white", $payments);
@@ -55,5 +55,5 @@
 	$del_template = findTemplateById($create_template_id);
 	assertEquals(false, $del_template);
 
-	//check if there are TemplatePaymentLeft?
+	//check if there are TemplatePaymentLeft?*/
 ?>

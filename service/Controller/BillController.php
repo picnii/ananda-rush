@@ -6,7 +6,7 @@
 
 		$sale_datas = getSaleDatas($unit_ids);
 		$bills = array();
-		foreach($sale_datas as $sale_data)
+		/*foreach($sale_datas as $sale_data)
 		{
 			$bill = convertSaleDataToBill($sale_data);
 			array_push($bills, $bill);
@@ -94,7 +94,7 @@
 	{
 		$bill = getSampleBill();
 		
-		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
+		/*$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $sale_data->unit_number);
 		array_push($bill->variables, $variable);
@@ -163,7 +163,7 @@
 		$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '6,970,000');
-		array_push($bill->variables, $variable);
+		array_push($bill->variables, $variable);*/
 		
 		$bill->variables[11]->contractSpace->value = $sale_data->sqm;
 		return $bill;
