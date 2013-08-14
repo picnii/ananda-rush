@@ -1,8 +1,8 @@
 <?php
 
-	$transaction_ids = array(1301, 1302, 1303, 1303, 1304);
+	$transaction_ids = array(1352, 1302, 1307, 1311);
 	$rows = fetchBillInformation($transaction_ids);
-	//print_r($rows);
+	print_r($rows);
 
 	$units = findAllUnits();
 	$unit_index = rand(0, count($units) - 1);
@@ -23,7 +23,7 @@
 	$payments_json = json_encode($template->payments);
 	//print_r($payments_json);
 	$sales_data = getSaleDatas($unit_ids);
-	//print_r($sales_data);
+	print_r($sales_data);
 	//echo "<br/>";
 	$variable_units = getVariableUnits($sales_data);
 	for($i = 0; $i < count($unit_ids); $i++)

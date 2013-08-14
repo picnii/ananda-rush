@@ -8,6 +8,27 @@
 		
 	}
 
+	function actionCompaniesList()
+	{
+		$companies_raw = getAllCompanies();
+		$companies = array();
+		foreach ($companies_raw as $company_raw) {
+			# code...
+			$company = new stdClass;
+			$company->name = $company_raw['name'];
+			$company->value = strtolower($company_raw['code']);
+			array_push($companies, $company);
+		}
+		return $companies;
+	}
+
+	function actionBuildingsList()
+	{
+
+		$buildings = array();
+		return $buildings;
+	}
+
 	function actionProjectsList()
 	{
 
@@ -31,13 +52,15 @@
 
 	function getProjectsList()
 	{
+		$projects_raw = getAllProjects();
 		$projects = array();
-		$projects[0] = new stdClass;
-		$projects[0]->name ="CONDO Ratchada";
-		$projects[0]->value = 1;
-		$projects[1] = new stdClass;
-		$projects[1]->name ="CONDO BANA";
-		$projects[1]->value = 2;
+		foreach ($projects_raw as $project_raw) {
+			# code...
+			$project = new stdClass;
+			$project->name = $project_raw['name'];
+			$project->value = $project_raw['code'];
+			array_push($projects, $project);
+		}
 		return $projects;
 	}
 ?>

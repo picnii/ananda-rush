@@ -24,7 +24,9 @@ function getWhereClauseFromQuery($q)
 {
 	if($q == "*")
 		return "";
+	echo $q;
 	$params = getParamsFromSearchQuery($q);
+	print_r($params);
 	$sql = "WHERE ";
 	$isFirst = true;
 	foreach ($params as $key => $value)

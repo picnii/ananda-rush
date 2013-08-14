@@ -73,6 +73,7 @@ function getSaleDatas($unit_ids)
 {
     //print_r($unit_ids);
     $bill_datas = fetchBillInformation($unit_ids);
+    $variables = findAllVariables();
    // print_r($bill_datas);
     $sale_datas = array();
     foreach ($bill_datas as $bill) {
@@ -104,6 +105,11 @@ function getSaleDatas($unit_ids)
         $sale_data->sqm = $bill['SQM'];
         $sale_data->sett_amount = $bill['SETTAMOUNT'];
         $sale_data->outstanding = $bill['OUTSTANDING'];
+        foreach($variables as $var)
+        {
+            $key_name = $var['codename'];
+            $sale_data->$key_name = $var['value'];
+        }
         array_push($sale_datas, $sale_data);
     }
     return $sale_datas;

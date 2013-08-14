@@ -129,7 +129,7 @@
 	function findAllUnitsByQuery($q, $isDebugMode = false)
 	{
 		$sql = "SELECT * FROM master_transaction ".getWhereClauseFromParams($q);
-		
+		//echo $sql;	
 		//SELECT 
 		$result = DB_query($GLOBALS['connect'],$sql);
 	    $units =  array();
@@ -156,11 +156,27 @@
 
 	function getUnits($unit_ids)
 	{
-		$samples = array(
-			getSampleUnit(), getSampleUnit(),
-			getSampleUnit(), getSampleUnit()
-		);
-		return $samples;
+		$sql = "SELECT * FROM master_transaction WHERE ";
+		$isFirst =true;
+		foreach ($unit_ids as $id) {
+			# code...
+			if($isFirst)
+				$isFirst = false;
+			else
+				$sql .= " OR ";
+			$sql .= "transaction_id = {$id}";
+		}
+
+		$result = DB_query($GLOBALS['connect'],$sql);
+	    $units =  array();
+	    while($row = DB_fetch_array($result))
+	    {
+	    	if(!isset($row['transaction_id']))
+	    		return array();
+	    	$unit = convertUnitFromRow($row);
+	    	array_push($units, $unit);
+	    }
+	    return $units;
 	}
 
 	function getSampleUnit()

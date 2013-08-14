@@ -1,13 +1,25 @@
 <?php
 	require_once('util.php');
-	function actionSearch($q)
+	function actionSearch($q, $from=null, $to=null)
 	{
 		$search_query = $q;
 		
-		if($q=="*")
+		if($q=="*" && $from== null && $to==null)
+		{
+			
 			$units = findAllUnits();
-
-
+		}
+		else if($q == "*")
+		{
+			$units = findAllUnits($from, $to);
+		
+		}
+		else
+		{
+		//	echo "q = {$q}";
+			$params = getParamsFromSearchQuery($q);
+			$units = findAllUnitsByQuery($params);
+		}
 		/*$units = findAllUnitsByQuery($q);
 		if($q=="*")
 		{
@@ -20,6 +32,7 @@
 
 	function actionUnits($unit_ids)
 	{
+
 		$units = getUnits($unit_ids);
 		return $units;
 	}

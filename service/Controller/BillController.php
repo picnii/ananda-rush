@@ -3,21 +3,37 @@
 	//use for preview what bills will be liked
 	function actionBills($unit_ids, $template_id)
 	{
-		$samples = array();
-		$samples[0] = getSampleBill();
-		$samples[1] = getSampleBill();
-		$samples[2] = getSampleBill();
 
-		return $samples;
+		$sale_datas = getSaleDatas($unit_ids);
+		$bills = array();
+		foreach($sale_datas as $sale_data)
+		{
+			$bill = convertSaleDataToBill($sale_data);
+			array_push($bills, $bill);
+		}
+		/*$samples[0] = getSampleBill();
+		$samples[1] = getSampleBill();
+		$samples[2] = getSampleBill();*/
+
+		return $bills;
 	}
 
 	function actionCreateBills($unit_ids, $template_id)
 	{
 		$transaction_ids  = array();
+		$template = findTemplateById($template_id);
+		$payments_json = json_encode($template->payments);
+		$sale_data = getSaleDatas($unit_ids);
+		$variable_units = getVariableUnits($sales_data);
 		for($i = 0;$i < count($unit_ids); $i++)
 		{
 			
-			$created_id = createTransaction($unit_ids[$i], $template_id);
+			$unit_id =  $variable_units[$i]->unit_id;
+			$variables = $variable_units[$i];
+			$variables_json = json_encode($variables);
+
+			$created_id = createTransaction($unit_id, $template_id, $payments_json, $variables_json);
+			//$created_id = createTransaction($unit_ids[$i], $template_id);
 			array_push($transaction_ids, $created_id);
 			
 		}
@@ -44,8 +60,16 @@
 
 	function actionBill($unit_id, $template_id)
 	{
-		$sample = getSampleBill();
-		return $sample;
+		$unit_ids = array();
+		$unit_ids[0] = $unit_id;
+		$sale_datas = getSaleDatas($unit_ids);
+		//print_r($sale_datas);
+		//echo "<br/><br/>";
+		$sale_data = $sale_datas[0];
+		$bill = convertSaleDataToBill($sale_data);
+		$template = findTemplateById($template_id);
+		$bill->payments = $template->payments;
+		return $bill;
 	}
 
 	function testBill()
@@ -57,6 +81,31 @@
 	function loadBill($transaction_row)
 	{
 		
+	}
+
+	function convertSaleDataToBill($sale_data)
+	{
+		$bill = getSampleBill();
+
+		$variable = getBillVariable('unitNumber', 'UNIT NO.', $sale_data->unit_number);
+		array_push($bill->variables, $variable);
+		$bill->variables[11]->contractSpace->value = $sale_data->sqm;
+		return $bill;
+	}
+
+	function getBillVariable($codename, $description, $value)
+	{
+		$variable = new stdClass;
+		$variable->$codename = new stdClass;
+
+		$variable->$codename->name = $description;
+		$variable->$codename->value = $value;
+
+		return $variable;
+		/*new stdClass;
+		$sample->variables[3]->unitNumber  = new stdClass;
+		$sample->variables[3]->unitNumber->name = 'UNIT NO.';
+		$sample->variables[3]->unitNumber->value = 'MR9-0502';*/
 	}
 
 
@@ -84,11 +133,6 @@
 		$sample->variables[3]->companyFax  = new stdClass;
 		$sample->variables[3]->companyFax->name = 'โทรสาร';
 		$sample->variables[3]->companyFax->value = '02-3160180-1';
-
-		$sample->variables[3] = new stdClass;
-		$sample->variables[3]->unitNumber  = new stdClass;
-		$sample->variables[3]->unitNumber->name = 'UNIT NO.';
-		$sample->variables[3]->unitNumber->value = 'MR9-0502';
 
 		$sample->variables[4] = new stdClass;
 		$sample->variables[4]->customerName  = new stdClass;

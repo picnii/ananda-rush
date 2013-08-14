@@ -12,7 +12,8 @@
 			$response = actionRoomType();
 		else if($action == 'type' && $type =='projects')
 			$response = actionProjectsList();
-	
+		else if($action == 'type' && $type == 'companies')
+			$response = actionCompaniesList();
 	}
 
 ?>
