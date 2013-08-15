@@ -25,7 +25,7 @@
 		
 		</div>
 		<div class="row">
-			<div align="center">{{getVar("PayDate")}}</div><br><br>
+			<div align="center">{{getVar("DocumentDate")}}</div><br><br>
 			<div class="span1">เรื่อง</div>
 			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
 			<div class="span1">เรียน</div>
@@ -59,8 +59,8 @@
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">ซึ่งลูกค้าได้นัดโอนกรรมสิทธิ์ห้องชุดในวันที่</div>
-				<div class="span3" align="center" style="border-bottom-style:groove">-</div>
-				<div class="span2">เวลา 10.00 น.</div>
+				<div class="span3" align="center" style="border-bottom-style:groove">{{getVar("PayDate")}}</div>
+				<div class="span2">เวลา {{getVar("PayTime")}}</div>
 				
 				</div><br><br>
 				
