@@ -36,7 +36,7 @@ function fetchBillInformation($transaction_ids)
         //get company info
         if(isset($data['master_CompanyCode']))
         {
-            $data['CompanyCode'] = $data['company_code'];
+            $data['CompanyCode'] = $data['master_CompanyCode'];
         }
         $comp_data = findCompanyInfo($data);
        
@@ -86,6 +86,8 @@ function findCompanyInfo($row_transaction)
     $comp_code_sql = strtoupper($comp_code_lower);
 
     $sql = "SELECT * from master_company WHERE comp_code = '{$comp_code_sql}'";
+    //echo $sql;
+    //echo "<br/>";
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
 
@@ -144,12 +146,20 @@ function findInformation($pre_id)
                      $rt =  DB_fetch_array($res);
                      $data = array();
                      if($rt["id_preapprove_bank"] != ''){
-                       // $pre_approve_bank_id = $rt["id_preapprove_bank"];
-                        //$bank = findBankLoanInfo($pre_approve_bank_id);
-                        $data["rt"] = $rt;
-                        //$data["bank"] = $bank;
+                        $pre_approve_bank_id = $rt["id_preapprove_bank"];
+                        $bank = findBankLoanInfo($pre_approve_bank_id);
+                        foreach ($rt as $key => $value) {
+                            # code...
+                            $data[$key] = $value;
+                        }
+                       // $data["rt"] = $rt;
+                        foreach ($bank as $key => $value) {
+                            # code...
+                            $data[$key] = $value;
+                        }
+                      //  $data["bank"] = $bank;
                          
-                        return $rt;
+                        return $data;
                      }elseif($rt["id_preapprove_bank"] == ''){
                         $SQL ="select  s.*,p.*,t.transaction_id,t.CompanyCode as master_CompanyCode,t.ProjID as master_ProjID,t.Brand as master_Brand,t.ItemID as master_ItemID,t.ItemName as master_ItemName,";
                         $SQL.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
@@ -171,11 +181,12 @@ function getSaleDatas($unit_ids)
     //print_r($unit_ids);
     //echo "<br/></br>";
     $bill_datas = fetchBillInformation($unit_ids);
-    $variables = findAllVariables();
+    $variables_unit =  getVariableUnits($bill_datas);
+    return $variables_unit;
    // print_r($bill_datas);
     //echo "<br/></br>";
-    $sale_datas = array();
-    foreach ($bill_datas as $bill) {
+    /*$sale_datas = array();
+    foreach ($variables_unit  as $bill) {
         # code...
         
         $sale_data = new StdClass;
@@ -211,7 +222,7 @@ function getSaleDatas($unit_ids)
         }
         array_push($sale_datas, $sale_data);
     }
-    return $sale_datas;
+    return $sale_datas;*/
 }
 
 function getVariableUnits($sale_datas)

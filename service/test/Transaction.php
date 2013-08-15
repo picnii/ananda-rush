@@ -24,10 +24,14 @@
 	//check for company address
 	foreach($bills as $bill)
 	{
-		if(isset($bill->comp_addno) && isset($bill->comp_road) && isset($bill->comp_soi)  && isset($bill->comp_province)  && isset($bill->comp_tumbon)  && isset($bill->comp_distinct) && isset($bill->comp_zipcode) )
+		if(isset($bill->comp_addno))
 			$company_address = "เลขที่ {$bill->comp_addno} ซอย {$bill->comp_soi} ถนน {$bill->comp_road} ตำบล {$bill->comp_tumbon} อำเภอ {$bill->comp_distinct} จังหวัด {$bill->comp_province} {$bill->comp_zipcode}";
 		else
-			echo "company_address wrong at{$bill->transaction_id}:";
+		{
+			echo "company_address wrong at {$bill->transaction_id}:";
+			print_r($bill);
+			echo "end error;";
+		}
 		assertEquals(true, is_string($company_address));
 	}
 
@@ -38,7 +42,9 @@
 	//check for unit no
 	foreach($bills as $bill)
 	{
-		if(isset($bill->UnitNo))
+		if(isset($bill->master_UnitNo))
+			$unit_number = $bill->master_UnitNo.' ';
+		else if(isset($bill->UnitNo))
 			$unit_number = $bill->UnitNo.' ';
 		else
 			echo "unit_number wrong at{$bill->transaction_id}:";
@@ -73,11 +79,100 @@
 	//check for เรียน salename
 	foreach($bills as $bill)
 	{
+		if(isset($bill->master_SalesName))
+			$sale_name = $bill->master_SalesName;
 		if(isset($bill->SalesName))
 			$sale_name = $bill->SalesName;
 		else
 			echo "sale name wrong at{$bill->transaction_id}:";
 		assertEquals(true, is_string($sale_name));
+	}
+
+	//check for เรียน sale phone number
+	foreach($bills as $bill)
+	{
+		if(isset($bill->Mobile))
+			$sale_mobile = $bill->Mobile;
+		else
+			echo "sale mobile wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_string($sale_mobile));
+	}
+
+	//price at contract
+	foreach($bills as $bill)
+	{
+
+		if(isset($bill->SellPrice))
+			$sellPrice = $bill->SellPrice;
+		if(isset($bill->DiscAmount))
+			$discount = $bill->DiscAmount;
+		if(isset($sellPrice) && isset($discount))
+			$price_at_contract = $sellPrice - $discount;
+		else
+			echo "price at contract wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_numeric($price_at_contract));
+	}
+
+	//price per sqm
+	foreach($bills as $bill)
+	{
+
+		if(isset($bill->master_Sqm))
+			$area = $bill->master_Sqm;
+		elseif(isset($bill->Sqm))
+			$area = $bill->Sqm;
+		elseif(isset($bill->SQM))
+			$area = $bill->SQM;
+
+		if(isset($bill->master_BasePrice))
+			$price = $bill->master_BasePrice;
+		else if(isset($bill->BasePrice))
+			$price = $bill->BasePrice;
+
+		if(isset($price) && isset($area))
+			$price_per_sqm = $area / $price;
+		else
+			echo "price per sqm wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_numeric($price_per_sqm));
+	}
+
+	//Spacial Discount
+	foreach($bills as $bill)
+	{
+
+		if(isset($bill->master_Sqm))
+			$area = $bill->master_Sqm;
+		elseif(isset($bill->Sqm))
+			$area = $bill->Sqm;
+		elseif(isset($bill->SQM))
+			$area = $bill->SQM;
+
+		if(isset($bill->master_BasePrice))
+			$price = $bill->master_BasePrice;
+		else if(isset($bill->BasePrice))
+			$price = $bill->BasePrice;
+
+		if(isset($price) && isset($area))
+			$price_per_sqm = $area / $price;
+		else
+			echo "price per sqm wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_numeric($price_per_sqm));
+	}
+
+	//Area at contract
+	foreach($bills as $bill)
+	{
+
+		if(isset($bill->master_HOUSESIZE))
+			$area = $bill->master_HOUSESIZE;
+		elseif(isset($bill->HOUSESIZE))
+			$area = $bill->HOUSESIZE;
+
+		if(isset($area) )
+			$area = $area ;
+		else
+			echo "price per sqm wrong at{$bill->transaction_id}:";
+		assertEquals(true, is_numeric($area));
 	}
 
 	//print_r($rows);

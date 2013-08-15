@@ -6,7 +6,7 @@
 
 		$sale_datas = getSaleDatas($unit_ids);
 		$bills = array();
-		/*foreach($sale_datas as $sale_data)
+		foreach($sale_datas as $sale_data)
 		{
 			$bill = convertSaleDataToBill($sale_data);
 			array_push($bills, $bill);
@@ -73,6 +73,7 @@
 		//print_r($sale_datas);
 		//echo "<br/><br/>";
 		$sale_data = $sale_datas[0];
+		$bill =array();
 		$bill = convertSaleDataToBill($sale_data);
 		$template = findTemplateById($template_id);
 		$bill->payments = $template->payments;
@@ -90,15 +91,29 @@
 		
 	}
 
-	function convertSaleDataToBill($sale_data)
+	function convertSaleDataToBill($data)
 	{
 		$bill = getSampleBill();
 		
-		/*$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
+		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
+
+		if(isset($data->comp_name_th))
+			$company_name = $data->comp_name_th;
+		else
+			$company_name = '-';
+
+		if(isset($data->master_UnitNo))
+			$unit_number = $data->master_UnitNo.' ';
+		else if(isset($data->UnitNo))
+			$unit_number = $data->UnitNo.' ';
+		else
+			$unit_number = '-';
+
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $sale_data->unit_number);
+		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $unit_number);
+
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CompanyName', 'ที่อยู่', $sale_data->unit_number);
+		$variable = getBillVariable('CompanyName', 'ที่อยู่', $company_name);
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '-');
 		array_push($bill->variables, $variable);
@@ -163,7 +178,7 @@
 		$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '6,970,000');
-		array_push($bill->variables, $variable);*/
+		array_push($bill->variables, $variable);
 		
 		$bill->variables[11]->contractSpace->value = $sale_data->sqm;
 		return $bill;
@@ -171,44 +186,43 @@
 	
 	function getGlobalVariables()
 	{
+		//return array();
 		return array(
-			"AppointmentMonth"=>"เดือนวันที่นัดโอน"
-			"UnitNumber"=>"UNIT NO."
-			"CompanyName"=>"ที่อยู่"
-			"HouseNumber"=>"บ้านเลขที่"
-			"HouseType"=>"แบบบ้าน"
-			"HouseSize"=>"พื้นที่ใช้สอย"
-			"DocumentDate"=>"วันที่แจ้ง"
-			"SaleName"=>"ชื่อผู้ติดต่อ"
-			"PayDate"=>"วันที่นัดโอน"
-			"PayTime"=>"เวลาที่นัดโอน"
-			"CustomerName"=>"ชื่อลูกค้า"
-			"CustomerTel"=>"เบอร์โทรลูกค้า"
-			"PriceOnContract"=>"ราคาตามสัญญา"
-			"PricePerArea"=>"ราคาต่อตารางเมตร"
-			"SpacialDiscount"=>"หักส่วนลดพิเศษ"
-			"BankLoanName"=>"ชื่อธนาคาร/สาขา"
-			"ContractOfSpace"=>"พื้นที่ตามสัญญา"
-			"BankLoanRoom"=>"อนุมัติค่าห้อง"
-			"ActualSpace"=>"พื้นที่จริง"
-			"BankLoanInsurance"=>"อนุมัติวงเงินค่าประกัน"
-			"DifferenOfSpace"=>"ส่วนต่างพื้นที่"
-			"BankLoanDecorate"=>"อนุมัติวงเงินตกแต่ง"
-			"PriceDateOfPayment"=>"ราคาห้องชุด ณ วันที่โอน"
-			"BankloanMulti"=>"อนุมัติวงเงินเอนกประสงค์"
-			"PaidAmount"=>"หักชำระแล้ว"
-			"BankLoanOther"=>"อนุมิติวงเงินอื่น ๆ "
-			"PriceRoomOfPayment"=>"ค่าห้องชุดที่ต้องชำระ"
-			"SumBankLoan"=>"วงเงินจำนองรวม"
-			"PayCheckBank"=>"เช็คสั่งจ่ายธนาคาร"
-			"PayCheckAnanda"=>"เช็คสั่งจ่ายอนันดา"
-			"PayCommonFeeCharge"=>"ชำระค่าส่วนกลาง"
-			"PayCommonFeeFund"=>"ชำระค่าสมทบ"
-			"PayFeeForministryOfFinance"=>"ชำระค่าธรรมเนียม"
-			"PayFeeForTranferCash"=>"แบ่งชำระเงินสด"
+			"AppointmentMonth"=>"เดือนวันที่นัดโอน",
+			"UnitNumber"=>"UNIT NO.",
+			"CompanyName"=>"ที่อยู่",
+			"HouseNumber"=>"บ้านเลขที่",
+			"HouseType"=>"แบบบ้าน",
+			"HouseSize"=>"พื้นที่ใช้สอย",
+			"DocumentDate"=>"วันที่แจ้ง",
+			"SaleName"=>"ชื่อผู้ติดต่อ",
+			"PayDate"=>"วันที่นัดโอน",
+			"PayTime"=>"เวลาที่นัดโอน",
+			"CustomerName"=>"ชื่อลูกค้า",
+			"CustomerTel"=>"เบอร์โทรลูกค้า",
+			"PriceOnContract"=>"ราคาตามสัญญา",
+			"PricePerArea"=>"ราคาต่อตารางเมตร",
+			"SpacialDiscount"=>"หักส่วนลดพิเศษ",
+			"BankLoanName"=>"ชื่อธนาคาร/สาขา",
+			"ContractOfSpace"=>"พื้นที่ตามสัญญา",
+			"BankLoanRoom"=>"อนุมัติค่าห้อง",
+			"ActualSpace"=>"พื้นที่จริง",
+			"BankLoanInsurance"=>"อนุมัติวงเงินค่าประกัน",
+			"DifferenOfSpace"=>"ส่วนต่างพื้นที่",
+			"BankLoanDecorate"=>"อนุมัติวงเงินตกแต่ง",
+			"PriceDateOfPayment"=>"ราคาห้องชุด ณ วันที่โอน",
+			"BankloanMulti"=>"อนุมัติวงเงินเอนกประสงค์",
+			"PaidAmount"=>"หักชำระแล้ว",
+			"BankLoanOther"=>"อนุมิติวงเงินอื่น ๆ ",
+			"PriceRoomOfPayment"=>"ค่าห้องชุดที่ต้องชำระ",
+			"SumBankLoan"=>"วงเงินจำนองรวม",
+			"PayCheckBank"=>"เช็คสั่งจ่ายธนาคาร",
+			"PayCheckAnanda"=>"เช็คสั่งจ่ายอนันดา",
+			"PayCommonFeeCharge"=>"ชำระค่าส่วนกลาง",
+			"PayCommonFeeFund"=>"ชำระค่าสมทบ",
+			"PayFeeForministryOfFinance"=>"ชำระค่าธรรมเนียม",
+			"PayFeeForTranferCash"=>"แบ่งชำระเงินสด",
 			"FinalCustomerPayment"=>"รวมเป็นเงินที่ต้องชำระ"
-			
-		
 		);
 	
 	}

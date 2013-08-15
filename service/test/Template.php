@@ -1,5 +1,5 @@
 <?php
-	$payments = getPayments();/*
+	$payments = getPayments();
 	foreach($payments as $payment)
 		$payment->order = rand(1, 10);
 	$create_template_id = createTemplate("Test Template", "white", $payments);
