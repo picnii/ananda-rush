@@ -3,37 +3,42 @@
 		<font size="2">
 			<div class="row" >
 				<div class="span1" align="right">To.</div>
-				<div class="span5" style="border-bottom-style:groove;">-</div>
+				<div class="span5" style="border-bottom-style:groove;">{{getVar("BankLoanName")}}</div>
 				<div class="span1" align="right">Tel :</div>
-				<div class="span2" style="border-bottom-style:groove;">-</div>
+				<div class="span2" style="border-bottom-style:groove;">{{getVar("BankLoanTel")}}</div>
 				<div class="span1" align="right">Fax :</div>
-				<div class="span2" style="border-bottom-style:groove;">-</div><br><br>
+				<div class="span2" style="border-bottom-style:groove;">{{getVar("BankLoanFax")}}</div><br><br>
 				
 				
 				<div class="span1" align="right">From :</div>
-				<div class="span5" style=" border-bottom-style:groove;">คุณสุกัญญา(จักจั่น)</div>
+				<div class="span5" style=" border-bottom-style:groove;">{{getVar("SaleName")}}</div>
 				<div class="span1" align="right">Tel :</div>
-				<div class="span2" style="border-bottom-style:groove;">-</div>
+				<div class="span2" style="border-bottom-style:groove;">{{getVar("SaleTel")}}</div>
 				<div class="span1" align="right">Fax :</div>
-				<div class="span2" style="border-bottom-style:groove;">-</div><br><br>
+				<div class="span2" style="border-bottom-style:groove;">{{getVar("SaleTel")}}</div><br><br>
 			<div class="span12" style="border-bottom-style:groove;"></div>
 			</div><br>
 		
-		<div style="background-color:#FF66CC; width:150px; height:150px;">-</div>
 		<div class="row">
-			<div align="center">27 มิถุนายน 2556</div><br><br>
+		<div class="offset8 span4"><h5>{{getVar("ProjectName")}}</h5></div>
+		
+		
+		</div>
+		<div class="row">
+			<div align="center">{{getVar("PayDate")}}</div><br><br>
 			<div class="span1">เรื่อง</div>
 			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
 			<div class="span1">เรียน</div>
-			<div class="span11">ผู้จัดการ</div><br><br><br>
+			<div class="span11">ผู้จัดการ</div>
+			<div class="offset1 span11">{{getVar("BankLoanName")}}</div><br><br><br><br>
 			
 			<div class="offset1 span1" align="right" >ตามที่</div>
-			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>ธนาคารยูโอบี</b></div>
-			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดในโครงการไอดีโอ มอร์ฟ 38</div><br><br>
+			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{getVar("BankLoanName")}}</b></div>
+			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดใน{{getVar("ProjectName")}}</div><br><br>
 			<div class="span2" align="right">ห้องชุด เลขที่ </div>
-			<div class="span2" align="center" style="border-bottom-style:groove"><b>88/86</b></div>
+			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{getVar("HouseNumber")}}</b></div>
 			<div class="span2" align="center">ให้กับลูกค้าราย</div>
-			<div class="span4" align="center" style="border-bottom-style:groove"><b>นรินทร์  ลีลาภรณ์</b></div>
+			<div class="span4" align="center" style="border-bottom-style:groove"><b>{{getVar("CustomerName")}}</b></div>
 			<div class="span2">ดังต่อไปนี้</div>
 			</div><br><br>
 			
@@ -41,6 +46,11 @@
 				<div class="offset1 span5">วงเงินกู้อนุมัติห้องชุด</div>
 				<div class="span1">จำนวน</div>
 				<div class="span2" align="center">8,000,000.00</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">วงเงินกู้ (&CO)</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">100,000.00</div>
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">ประกัน และ/หรือ ตกแต่ง</div>
@@ -60,23 +70,31 @@
 				<div class="span1">บาท</div>
 				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
 				
-				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b></div>
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "ธนาคารกรุงไทย จำกัด มหาชน"</b></div>
 				<div class="span2" align="center">8,000,000.00  </div>
 				<div class="span1">บาท</div>
 				
-				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
-				<div class="span2" align="center">-  </div>
+				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b></div>
+				<div class="span2" align="center">8,000,000.00  </div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
 				<div class="span2" align="center">-  </div>
 				<div class="span1">บาท</div>
 				
-				<div class="span9">4. เช็คสั่งจ่ายลูกค้าในนาม <b> คุณนรินทร์ ลีลาภรณ์</b></div>
+				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
+				<div class="span2" align="center">-  </div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b> คุณนรินทร์ ลีลาภรณ์</b></div>
 				<div class="span2" align="center">-  </div>
 				<div class="span1">บาท</div><br><br><br>
 				
-				<div class="span9">5. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
+				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b> คุณนรินทร์ ลีลาภรณ์</b></div>
+				<div class="span2" align="center">-  </div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
 				<div class="span2" align="center">-  </div>
 				<div class="span1">บาท</div>
 			
@@ -86,10 +104,10 @@
 			<div class="row">
 				<div class="offset1 span11"> จึงเรียบมาเพื่อทราบและโปรดดำเนินการ</div>
 				<br><br>
-				<div class="span12" align="center">ขอแสดงความนับถือ</div>
+				<div class="offset6 span4" align="center">ขอแสดงความนับถือ</div>
 				<br><br><br><br>
-				<div class="span12" align="center">(คุณสุกัญญา สุยากรรม)</div>
-				<div class="span12" align="center">Assistant Customer Service Manager</div>
+				<div class="offset6 span4" align="center" style="border-bottom-style:groove">-</div>
+				<div class="offset6 span4" align="center">Manager/Directer</div>
 				
 			</div>
 			
