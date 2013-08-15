@@ -35,6 +35,10 @@
 		{
 			$response = actionCreateBills($reqBody->unit_ids, $reqBody->template_id);		
 		}
+		if($reqBody->action == 'bills')
+		{
+			$response = actionBills($reqBody->unit_ids, $reqBody->template_id);		
+		}
 
 	}
 

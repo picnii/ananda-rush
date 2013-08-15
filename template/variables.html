@@ -3,11 +3,12 @@
 	<h2>Create Variable</h2>
 	<input type="text" ng-model="variable.name" placeholder="Variable Name"/>
 	<input type="text" ng-model="variable.codename" placeholder="Variable Code Name"/>
-	<select ng-model="variable.type">
+	<input type="hidden" ng-model="variable.type">
+	<!--<select ng-model="variable.type">
 		<option ng-repeat="type in variablesType" value="{{type.value}}">
 			{{type.name}}
 		</option>
-	</select>
+	</select>-->
 	<input type="text" ng-model="variable.value" placeholder="Default Variable Value"/>
 	<button ng-click="create()">Create</button>
 	<h2>Variables List</h2>

@@ -236,7 +236,7 @@ function BillEditCtrl($scope, $rootScope, $routeParams, $location, Npop)
 
 }
 
-function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http)
+function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
 {
 	
 	$scope.url = 'service/index.php';
@@ -262,13 +262,18 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http)
 			ids_str +="&";
 		ids_str += "unit_ids[]=" + uids[i]
 	}
-	$http({
+	/*$http({
                 method: 'POST',
                 url: 'service/index.php',
                 data: 'action=bills&template_id='+$routeParams.tid+ids_str,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function(data, status) {
-                $scope.status = status;
+            }).success(function(data, status) {*/
+    Bill.preview({action:'bills', unit_ids:uids, template_id:$routeParams.tid}, function(data){
+
+
+
+    //})
+      //          $scope.status = status;
                 	$scope.bills = data;
                 	console.log($scope.bills)
  					for(var i=0; i<$scope.bills.length;i++)
@@ -681,7 +686,7 @@ function VariablesListCtrl($scope, $rootScope, $location, Variable)
 	Variable.getAllTypes({}, function(data){
 		console.log(data);
 		$scope.variablesType = data;
-		
+		$scope.variable.type = 0;
 	});
 
 	$scope.create = function()
@@ -692,7 +697,7 @@ function VariablesListCtrl($scope, $rootScope, $location, Variable)
 		console.log($scope.variable.codename);
 		console.log($scope.variable.type);
 		console.log($scope.variable.value);
-		Variable.create({action:'createVariable', name:$scope.variable.name, codename:$scope.variable.codename, type:$scope.variable.type, value:$scope.variable.value} , function(data){
+		Variable.create({action:'createVariable', name:$scope.variable.name, codename:$scope.variable.codename, type:0, value:$scope.variable.value} , function(data){
 			console.log(data);
 			//$scope.variables.push($scope.variable)
 			//temp
@@ -714,7 +719,7 @@ function VariableCreateCtrl($scope, $rootScope, $location, Variable)
 	var type = Variable.getAllTypes({}, function(data){
 		console.log(data);
 		$scope.variablesType = data;
-		
+		$sc
 	});
 
 }
@@ -771,7 +776,7 @@ function UnitListCtrl($scope, $rootScope, $location, Type, Template, Unit)
 
 function ChequeTestCtrl()
 {
-	
+
 }
 
 function convertUnitIdsToStr(uids)
