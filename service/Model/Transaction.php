@@ -98,7 +98,7 @@ function findCompanyInfo($row_transaction)
 }
 
 
-function findBankLoanInfo($pre_approve_bank_id)
+function findBankLoanInfo($pre_approve_bank_id,$pre_appoint_reason1_id)
 {
     $SQL = "select b.*,pri.id_preapprove_bank,pri.id_credit_approval,pri.Price_Approve,";
     $SQL.="pri.lastupdate as price_update,pri.createdate as price_createdate,";
@@ -114,7 +114,7 @@ function findBankLoanInfo($pre_approve_bank_id)
     $SQL.="left join master_bank mb on b.bank_code = mb.bank_code ";
     $SQL.="join status_Approve sp on b.id_status_Approve = sp.id_status_Approve ";
     $SQL.="join Type_Select ts on b.status_user_select = ts.id_type_select ";
-    $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."'";
+    $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."'and b.appoint_reason1_id = '".$pre_appoint_reason1_id."' ";
     $res = DB_query($GLOBALS['connect'],$SQL);
     $numrows = DB_num_rows($res);
 
@@ -140,11 +140,13 @@ function findInformation($pre_id)
                      $SQL1.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                      $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
-                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
+                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,"
+                     $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
                      $SQL1.="from Sale_Transection s ";
                      $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
                      $SQL1.="inner join master_transaction t on p.itemid = t.ItemId ";
                      $SQL1.="inner join preapprove_bank b on p.itemid = b.itemID and p.InvoiceAccount = b.InvoiceAccount ";
+                     $SQL1.="inner join appointment_reason1 ar on p.appoint_reason1_id = ar.appoint_reason1_id ";
                      $SQL1.="inner join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
                      $SQL1.="inner join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
                      $SQL1.="inner join master_project mp on mp.proj_code = t.projID ";
@@ -155,7 +157,8 @@ function findInformation($pre_id)
                      $data = array();
                      if($rt["id_preapprove_bank"] != ''){
                         $pre_approve_bank_id = $rt["id_preapprove_bank"];
-                        $bank = findBankLoanInfo($pre_approve_bank_id);
+                        $pre_appoint_reason1_id = $rt["preapp_appoint_reason1_id"];
+                        $bank = findBankLoanInfo($pre_approve_bank_id,$pre_appoint_reason1_id);
                         foreach ($rt as $key => $value) {
                             # code...
                             $data[$key] = $value;
