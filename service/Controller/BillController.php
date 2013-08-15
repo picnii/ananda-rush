@@ -95,7 +95,13 @@
 	{
 		$bill = getSampleBill();
 		
-		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
+		foreach($data->variables as $key => $value)
+		{
+			//print_r($data->variables[$key]);
+			$variable = getBillVariable($key, $data->variables[$key]->name, $data->variables[$key]->value);
+			array_push($bill->variables, $variable);
+		}
+	
 
 		if(isset($data->comp_name_th))
 			$company_name = $data->comp_name_th;
@@ -109,78 +115,182 @@
 		else
 			$unit_number = '-';
 
+		if(isset($data->ItemType))
+			$item_type = $data->ItemType;
+		else
+			$item_type = "-";
+
+		if(isset($data->master_HOUSESIZE))
+			$house_size = $data->master_HOUSESIZE;
+		else if(isset($data->HOUSESIZE))
+			$house_size = $data->HOUSESIZE;
+
+		if(isset($data->master_LANDSIZE))
+			$land_size = $data->master_LANDSIZE;
+		else if(isset($data->LANDSIZE))
+			$land_size = $data->LANDSIZE;
+
+		if(isset($data->master_SalesName))
+			$sale_name = $data->master_SalesName;
+		else if(isset($data->SalesName))
+			$sale_name = $data->SalesName;
+		else
+			$sale_name = "-";
+
+		if(isset($data->Mobile))
+			$mobile = $data->Mobile;
+		else
+			$mobile = "-";
+
+		if(isset($data->SellPrice))
+			$sellPrice = $data->SellPrice;
+		if(isset($data->DiscAmount))
+			$discount = $data->DiscAmount;
+
+		if(isset($sellPrice) && isset($discount))
+			$price_at_contract = $sellPrice - $discount;
+		else
+			$price_at_contract = "-";
+
+		if(isset($data->master_Sqm))
+			$area = $data->master_Sqm;
+		elseif(isset($data->Sqm))
+			$area = $data->Sqm;
+		elseif(isset($data->SQM))
+			$area = $data->SQM;
+
+		if(isset($data->master_BasePrice))
+			$price = $data->master_BasePrice;
+		else if(isset($data->BasePrice))
+			$price = $data->BasePrice;
+
+		if(isset($price) && isset($area))
+			$price_per_sqm = $area / $price;
+		else
+			$price_per_sqm = '-';
+
+		if(!isset($discount))
+			$discount = '-';
+
+		if(!isset($area))
+			$area = '-';
+
+		if(isset($data->banks))
+			$isBankPay = true;
+		else
+			$isBankPay = false;
+
+		if(isset($house_size ))
+			$actual_space = $house_size;
+		else
+			$actual_space = "-";
+
+		if(isset($house_size ) && isset($land_size))
+			$diff_space = $land_size - $house_size;
+		else
+			$diff_space = "-";
+
+		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $unit_number);
 
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('CompanyName', 'ที่อยู่', $company_name);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '-');
+		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseType', 'แบบบ้าน',  '-');
+		$variable = getBillVariable('HouseType', 'แบบบ้าน',  $item_type);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseSize', 'พื้นที่ใช้สอย',  '-');
+		$variable = getBillVariable('HouseSize', 'พื้นที่ใช้สอย',  $house_size);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('DocumentDate', 'วันที่แจ้ง',  '14 มีนาคม 2556');
+		$variable = getBillVariable('DocumentDate', 'วันที่แจ้ง',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('SaleName', 'ชื่อผู้ติดต่อ',  'คุณสุกัญญา');
+		$variable = getBillVariable('SaleName', 'ชื่อผู้ติดต่อ',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayDate', 'วันที่นัดโอน',  '29 มีนาคม 2556');
+		$variable = getBillVariable('PayDate', 'วันที่นัดโอน',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '10.00 น.');
+		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  'คุณขจิต  ล้วนพิชญ์พงศ์');
+		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  $sale_name);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  '-');
+		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  $mobile);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PriceOnContract', 'ราคาตามสัญญา',  '6,970,000');
+		$variable = getBillVariable('PriceOnContract', 'ราคาตามสัญญา',  $price_at_contract);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PricePerArea', 'ราคาต่อตารางเมตร',  '133,550');
+		$variable = getBillVariable('PricePerArea', 'ราคาต่อตารางเมตร',  $price_per_sqm);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('SpacialDiscount', 'หักส่วนลดพิเศษ',  '300,000');
+		$variable = getBillVariable('SpacialDiscount', 'หักส่วนลดพิเศษ',  $discount);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('BnakLoanName', 'ชื่อธนาคาร',  'ธนาคารกรุงไทย จำกัด มหาชน');
+		
+		$variable = getBillVariable('ContractOfSpace', 'พื้นที่ตามสัญญา',  $area);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('ContractOfSpace', 'พื้นที่ตามสัญญา',  '52.19');
+
+		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  $diff_space);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '6,100,000');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('ActualSpace', 'พื้นที่จริง',  '52.50');
+
+		if($isBankPay)
+		{
+			$variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  'สมภพ');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '6,100,000');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '6,200,000');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '100,000.00');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
+			array_push($bill->variables, $variable);
+		}else
+		{
+			$variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
+			array_push($bill->variables, $variable);
+			$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
+			array_push($bill->variables, $variable);
+		}
+		
+		$variable = getBillVariable('ActualSpace', 'พื้นที่จริง',  $actual_space);
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PaidAmount', 'หักชำระแล้ว',  '6,970,200');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+	
+		
+		$variable = getBillVariable('PayCheckBank', 'เช็คสั่งจ่ายธนาคาร',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '6,200,000');
+		$variable = getBillVariable('PayCheckAnanda', 'เช็คสั่งจ่ายอนันดา',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayCheckBank', 'เช็คสั่งจ่ายธนาคาร',  '-');
+		$variable = getBillVariable('PayCommonFeeCharge', 'ชำระส่วนกลาง',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayCheckAnanda', 'เช็คสั่งจ่ายอนันดา',  '-');
+		$variable = getBillVariable('PayCommonFeeFund', 'ชำระค่าสมทบ',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayCommonFeeCharge', 'ชำระส่วนกลาง',  '-');
+
+		$variable = getBillVariable('PayFeeForMinistryOfFinance', 'ชำระค่าธรรมเนียม',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayCommonFeeFund', 'ชำระค่าสมทบ',  '-');
+		$variable = getBillVariable('PayFeeForTranferCash', 'แบ่งจ่ายเงินสด',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayFeeForMinistryOfFinance', 'ชำระค่าธรรมเนียม',  '99,322.00');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayFeeForTranferCash', 'แบ่งจ่ายเงินสด',  '1,000');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('FinalCustomerPayment', 'รวมเป็นเงินที่ต้องชำระ',  '100,322.00');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '100,000.00');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  '0.31');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PriceDateOfPayment', 'ราคาห้องชุด ณ วันโอน',  '-');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
-		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '6,970,000');
+		$variable = getBillVariable('FinalCustomerPayment', 'รวมเป็นเงินที่ต้องชำระ',  '--');
 		array_push($bill->variables, $variable);
 		
-		$bill->variables[11]->contractSpace->value = $sale_data->sqm;
+		
+		$variable = getBillVariable('PriceDateOfPayment', 'ราคาห้องชุด ณ วันโอน',  '-');
+		array_push($bill->variables, $variable);
+		
+		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '--');
+		array_push($bill->variables, $variable);
+		
 		return $bill;
 	}
 	
@@ -244,146 +354,6 @@
 		$sample = new stdClass;
 
 		$sample->variables = array();
-		$sample->variables[0] = new stdClass;
-		$sample->variables[0]->documentName  = new stdClass;
-		$sample->variables[0]->documentName->name = 'ชื่อเอกสาร';
-		$sample->variables[0]->documentName->value = 'ใบประเมินการค่าใช้จ่ายโอนกรรมสิทธิ์';
-
-		$sample->variables[1] = new stdClass;
-		$sample->variables[1]->companyAddress  = new stdClass;
-		$sample->variables[1]->companyAddress->name = 'ที่อยู่';
-		$sample->variables[1]->companyAddress->value = 'เลขที่ 99/4 หมุ่ที่ 14 ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ 10540';
-
-		$sample->variables[2] = new stdClass;
-		$sample->variables[2]->companyPhone  = new stdClass;
-		$sample->variables[2]->companyPhone->name = 'โทร';
-		$sample->variables[2]->companyPhone->value = '02-3171155 ต่อ 102-109, 121';
-
-		$sample->variables[3] = new stdClass;
-		$sample->variables[3]->companyFax  = new stdClass;
-		$sample->variables[3]->companyFax->name = 'โทรสาร';
-		$sample->variables[3]->companyFax->value = '02-3160180-1';
-
-		$sample->variables[4] = new stdClass;
-		$sample->variables[4]->customerName  = new stdClass;
-		$sample->variables[4]->customerName->name = 'ลูกค้า';
-		$sample->variables[4]->customerName->value = 'ปุณณตา ดิษฐพงศา';
-
-		$sample->variables[5] = new stdClass;
-		$sample->variables[5]->documentDate  = new stdClass;
-		$sample->variables[5]->documentDate->name = 'วันที่';
-		$sample->variables[5]->documentDate->value = '29 กรกฎาคม 2556';
-
-		$sample->variables[6] = new stdClass;
-		$sample->variables[6]->from  = new stdClass;
-		$sample->variables[6]->from->name = 'จาก';
-		$sample->variables[6]->from->value = 'คุณตุ๊กตา085-488-2578/จั่น089-2027962';
-
-		$sample->variables[7] = new stdClass;
-		$sample->variables[7]->payDate  = new stdClass;
-		$sample->variables[7]->payDate->name = 'วันนัดโอน';
-		$sample->variables[7]->payDate->value = '15 ค่ำเดือน 11';
-
-		$sample->variables[8] = new stdClass;
-		$sample->variables[8]->payTime  = new stdClass;
-		$sample->variables[8]->payTime->name = 'เวลา';
-		$sample->variables[8]->payTime->value = '10.00 น';
-
-		$sample->variables[9] = new stdClass;
-		$sample->variables[9]->payTime  = new stdClass;
-		$sample->variables[9]->payTime->name = 'เวลา';
-		$sample->variables[9]->payTime->value = '10.00 น';
-
-		$sample->variables[10] = new stdClass;
-		$sample->variables[10]->tel  = new stdClass;
-		$sample->variables[10]->tel->name = 'โทร';
-		$sample->variables[10]->tel->value = '082-452-3991';
-
-		$sample->variables[11] = new stdClass;
-		$sample->variables[11]->contractSpace  = new stdClass;
-		$sample->variables[11]->contractSpace->name = 'พื้นที่ตามสัญญา';
-		$sample->variables[11]->contractSpace->value = 35.39;
-
-		$sample->variables[12] = new stdClass;
-		$sample->variables[12]->houseAddress  = new stdClass;
-		$sample->variables[12]->houseAddress->name = 'บ้านเลขที่';
-		$sample->variables[12]->houseAddress->value = "TH05-2-105003";
-
-		$sample->variables[13] = new stdClass;
-		$sample->variables[13]->noticeDate  = new stdClass;
-		$sample->variables[13]->noticeDate->name = 'วันที่แจ้ง';
-		$sample->variables[13]->noticeDate->value = '30 กรกฎาคม 2556';
-
-		$sample->variables[14] = new stdClass;
-		$sample->variables[14]->pricePerArea  = new stdClass;
-		$sample->variables[14]->pricePerArea->name = 'ราคาต่อตารางเมตร';
-		$sample->variables[14]->pricePerArea->value = 102238.10;
-
-		$sample->variables[15] = new stdClass;
-		$sample->variables[15]->priceOnContact  = new stdClass;
-		$sample->variables[15]->priceOnContact->name = 'ราคาตามสัญญา';
-		$sample->variables[15]->priceOnContact->value = 2731000;
-
-		$sample->variables[16] = new stdClass;
-		$sample->variables[16]->specialDiscount  = new stdClass;
-		$sample->variables[16]->specialDiscount->name = 'หัก ส่วนลดพิเศษ';
-		$sample->variables[16]->specialDiscount->value = 0;
-
-		$sample->variables[17] = new stdClass;
-		$sample->variables[17]->additionalAreaPrice  = new stdClass;
-		$sample->variables[17]->additionalAreaPrice->name = 'พื้นที่เพิ่ม (ลด)';
-		$sample->variables[17]->additionalAreaPrice->value = null;
-
-		$sample->variables[18] = new stdClass;
-		$sample->variables[18]->paidAmount  = new stdClass;
-		$sample->variables[18]->paidAmount->name = 'หัก ชำระแล้ว';
-		$sample->variables[18]->paidAmount->value = 307000.00;
-
-		$sample->variables[19] = new stdClass;
-		$sample->variables[19]->paidDate  = new stdClass;
-		$sample->variables[19]->paidDate->name = 'วันที่ชำระ';
-		$sample->variables[19]->paidDate->value = "30/7/56";
-
-		$sample->variables[20] = new stdClass;
-		$sample->variables[20]->actualSpace  = new stdClass;
-		$sample->variables[20]->actualSpace->name = 'พื้นที่จริง';
-		$sample->variables[20]->actualSpace->value = null;
-
-		$sample->variables[21] = new stdClass;
-		$sample->variables[21]->bankLoanRoom  = new stdClass;
-		$sample->variables[21]->bankLoanRoom->name = 'อนุมัติค่าห้อง';
-		$sample->variables[21]->bankLoanRoom->value = 0;
-
-		$sample->variables[22] = new stdClass;
-		$sample->variables[22]->bankLoanOther  = new stdClass;
-		$sample->variables[22]->bankLoanOther->name = 'อนุมัติวงเงินอื่นๆ';
-		$sample->variables[22]->bankLoanOther->value = 0;
-
-		$sample->variables[23] = new stdClass;
-		$sample->variables[23]->electricMeter  = new stdClass;
-		$sample->variables[23]->electricMeter->name = 'มิเตอร์ไฟฟ้า';
-		$sample->variables[23]->electricMeter->value = 3250;
-
-		$sample->variables[24] = new stdClass;
-		$sample->variables[24]->commonFeeCharge  = new stdClass;
-		$sample->variables[24]->commonFeeCharge->name = 'ชำระส่วนกลาง';
-		$sample->variables[24]->commonFeeCharge->value = 5000;
-
-		$sample->variables[25] = new stdClass;
-		$sample->variables[25]->commonFeeFund  = new stdClass;
-		$sample->variables[25]->commonFeeFund->name = 'เงินสมทบกองทุนส่วนกลาง';
-		$sample->variables[25]->commonFeeFund->value = 2000;
-
-		$sample->variables[26] = new stdClass;
-		$sample->variables[26]->feeForMinistryOfFinance  = new stdClass;
-		$sample->variables[26]->feeForMinistryOfFinance->name = 'ค่าธรรมเนียมสำหรับกระทรวงการคลัง';
-		$sample->variables[26]->feeForMinistryOfFinance->value = 30000;
-
-		$sample->variables[27] = new stdClass;
-		$sample->variables[27]->feeForTranferCash  = new stdClass;
-		$sample->variables[27]->feeForTranferCash->name = 'ค่าธรรมเนียมเงินสด';
-		$sample->variables[27]->feeForTranferCash->value = 20000;
-
 		$sample->paymentTypes = array("ธนาคาร", "บริษัท", "ลูกค้า");
 
 		$sample->payments = getPaymentsByTemplateId(5);

@@ -102,7 +102,7 @@ function findBankLoanInfo($pre_approve_bank_id)
 {
     $SQL = "select b.*,pri.id_preapprove_bank,pri.id_credit_approval,pri.Price_Approve,";
     $SQL.="pri.lastupdate as price_update,pri.createdate as price_createdate,";
-    $SQL.="cr.id_credit_approval as credit_id_credit_approval,cr.name_credit_approval,cr.lastupdate as credit_lastupdate,";
+    $SQL.="cr.id_credit_approval as credit_id_credit_approval,cr.name_credit_approval,cr.lastupdate as credit_lastupdate, cr.seq,";
     $SQL.="ar.appoint_reason1_id,ar.appoint_reason1_name,ar.appoint_reason_type_id,";
     $SQL.="mb.bank_id,mb.bank_code as master_bank_code,mb.bank_name as master_bank_name,mb.bank_branch as master_bank_branch,";
     $SQL.="mb.bank_contactname,mb.bank_contactphone,sp.id_status_Approve,sp.name_status_Approve,";
@@ -117,10 +117,18 @@ function findBankLoanInfo($pre_approve_bank_id)
     $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."'";
     $res = DB_query($GLOBALS['connect'],$SQL);
     $numrows = DB_num_rows($res);
-    $row =  DB_fetch_array($res);
-    if($numrows >0){
-        return $row;
+
+    $result = new StdClass;
+    $result->banks = array();
+    while($row =  DB_fetch_array($res))
+    {
+       array_push($result->banks , $row);
     }
+    
+    return $result;
+    /*if($numrows >0){
+        return $basnk;
+    }*/
 }
 
 
@@ -228,16 +236,23 @@ function getSaleDatas($unit_ids)
 function getVariableUnits($sale_datas)
 {
     $variables = findAllVariables();
+
     $bill_variables = array();
     foreach ($sale_datas as $sale_data) {
         # code...
         $bill = new stdClass;
         foreach($sale_data as $key => $value)
           $bill->$key = $sale_data[$key];
+        $bill->variables = array();
         foreach ($variables as $var) {
             # code...
             $varname = $var['codename'];
-            $bill->$varname = $var['value'];
+          
+            $variable = new stdClass;
+            $bill->variables[$varname] = new stdClass;
+            $bill->variables[$varname]->name = $var['name'];
+            $bill->variables[$varname]->value = $var['value'];
+             
         }
         array_push($bill_variables, $bill);
     }

@@ -769,6 +769,10 @@ function UnitListCtrl($scope, $rootScope, $location, Type, Template, Unit)
 	}
 }
 
+function ChequeTestCtrl()
+{
+	
+}
 
 function convertUnitIdsToStr(uids)
 {

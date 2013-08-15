@@ -162,12 +162,10 @@
 	//Area at contract
 	foreach($bills as $bill)
 	{
-
 		if(isset($bill->master_HOUSESIZE))
 			$area = $bill->master_HOUSESIZE;
 		elseif(isset($bill->HOUSESIZE))
 			$area = $bill->HOUSESIZE;
-
 		if(isset($area) )
 			$area = $area ;
 		else
