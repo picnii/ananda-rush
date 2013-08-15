@@ -61,7 +61,7 @@
 						<div class="span6">โอนสด</div>
 						
 						<div class="offset1 span3">หัก ส่วนลดพิเศษ</div>
-						<div class="span1" align="right">{{ bill.getVar("SpecialDiscount") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{ getVar("SpecialDiscount") | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span2">ใช้สินเชื่อ  ธนาคาร/สาขา</div>
 						<div class="span4">{{getVar("BankLoanName") | zeroDash}}</div>
@@ -137,7 +137,7 @@
 		                                    <td align="center" style="">1.</td>
 											<td style="padding-left:10px;">{{payment.name}}</td>
 											<TD align="center">{{payment.description}}</TD>
-		                                    <TD align="center">{{getFormulaValue(payment.formulas[0]) | zeroDash }</TD>
+		                                    <TD align="center">{{getFormulaValue(payment.formulas[0]) | zeroDash }}</TD>
 		                                    <TD align="center">{{getFormulaValue(payment.formulas[1]) | zeroDash }}</TD>
 		                                    <TD align="center">{{getFormulaValue(payment.formulas[2]) | zeroDash }}</TD>
 		                                 
@@ -162,7 +162,7 @@
 						
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
-						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"ธนาคารกรุงไทย จำกัด (มหาชน)"</b> </div>
+						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{getVar("BankLoanName")}}</b> </div>
 						<div class="span3" align="right">{{getVar("PayCheckBank") | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด (มหาชน)"</b> </div>
 						<div class="span3" align="right">{{getVar("PayCheckAnanda") | zeroDash}}</div>
@@ -176,9 +176,9 @@
 						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
 						<div class="span1" align="right">{{getVar("PayFeeForMinistryOfFinance") | zeroDash}}</div>
 						<div class="span10" align="right"><b>และแบ่งเป็นเงินสด</b></div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("PayFeeForTranferCash")| zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("PayFeeForTranferCash") | zeroDash}}</div>
 						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
-						<div class="span2" align="right" style="border-bottom-style:double"><b>{{getVar("FinalCustomerPayment")| zeroDash}}</b></div>
+						<div class="span2" align="right" style="border-bottom-style:double"><b>{{getVar("FinalCustomerPayment") | zeroDash}}</b></div>
 						
 		                </div>
 					
