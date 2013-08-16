@@ -144,7 +144,7 @@ function findInformation($pre_id)
             if($pre_id){
                      $SQL1 ="select  s.*,p.*,t.transaction_id,t.CompanyCode as master_CompanyCode,t.ProjID as master_ProjID,t.Brand as master_Brand,t.ItemID as master_ItemID,t.ItemName as master_ItemName,";
                      $SQL1.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
-                     $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
+                     $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,"
                      $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
