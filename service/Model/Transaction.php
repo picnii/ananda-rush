@@ -281,7 +281,7 @@ ELSE
 	$SQL  = "INSERT INTO tranfer_transaction(unit_id,template_id,create_time, payments, variables)  VALUES ('$unit_id', '$template_id',GETDATE(), '{$payments_json}' ,'{$variables_json}'); SELECT SCOPE_IDENTITY()";
     //echo $SQL;
     //echo "<br/><br/>";
-     $result = DB_query($GLOBALS['connect'],$SQL);
+     $result = DB_query($GLOBALS['connect'],converttis620$SQL);
     if($result){
         sqlsrv_next_result($result); 
         sqlsrv_fetch($result); 
