@@ -79,6 +79,8 @@
 		$unit->bu_id = $row['bu_id'];
 		$unit->house_size = $row['HOUSESIZE'];
 		$unit->land_size = $row['LANDSIZE'];
+		//MOCK REPAYMENT
+		$unit->repayment = 0.75 * $unit->sell_price;
 		return $unit;
 	}
 

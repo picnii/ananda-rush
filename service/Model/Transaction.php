@@ -98,7 +98,7 @@ function findCompanyInfo($row_transaction)
 }
 
 
-function findBankLoanInfo($pre_approve_bank_id,$pre_appoint_reason1_id)
+function findBankLoanInfo($pre_approve_bank_id,$pre_appoint_reason1_id ='')
 {
    $SQL = "select b.id_preapprove_bank as preBank_id_preapprove_bank,b.bank_code as preBank_bankcode,pri.id_preapprove_bank";
     $SQL.=",b.bank_contactname as preBank_bank_contactname,b.date_reque as preBank_date_reque,b.id_preapprove1 as preBank_id_preapprove1";
@@ -120,7 +120,8 @@ function findBankLoanInfo($pre_approve_bank_id,$pre_appoint_reason1_id)
     $SQL.="left join master_bank mb on b.bank_code = mb.bank_code ";
     $SQL.="join status_Approve sp on b.id_status_Approve = sp.id_status_Approve ";
     $SQL.="join Type_Select ts on b.status_user_select = ts.id_type_select ";
-    $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."'and b.appoint_reason1_id = '".$pre_appoint_reason1_id."' ";
+   // $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."'and b.appoint_reason1_id = '".$pre_appoint_reason1_id."' ";
+     $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."'";
     $res = DB_query($GLOBALS['connect'],$SQL);
     $numrows = DB_num_rows($res);
 
@@ -153,7 +154,7 @@ function findInformation($pre_id)
                      $SQL1.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                      $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
-                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,"
+                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
                      $SQL1.="from Sale_Transection s ";
                      $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
@@ -547,6 +548,117 @@ function findBillByTransactionId($transaction_id)
 function findAllBill($q)
 {
 
+}
+
+
+/*
+* Bill Data Set
+*/
+
+function getProjectName($bill)
+{
+    if(isset($bill->proj_name_th))
+        return $bill->proj_name_en;
+    else
+        return "-";
+}
+
+function getCompanyName($bill)
+{
+    if(isset($bill->comp_name_th))
+        return $bill->comp_name_th;
+    else
+        return "-";
+}
+
+function getCompanyAddress($bill)
+{
+    if(isset($bill->comp_addno))
+        $company_address = "เลขที่ {$bill->comp_addno} ซอย {$bill->comp_soi} ถนน {$bill->comp_road} ตำบล {$bill->comp_tumbon} อำเภอ {$bill->comp_distinct} จังหวัด {$bill->comp_province} {$bill->comp_zipcode}";
+    else
+        return "-";
+    return $company_address;
+}
+
+function getCompanyPhoneNumber($bill)
+{
+    if(isset($bill->comp_tel))
+        return $bill->comp_tel;
+    else
+        return "-";
+}
+
+function getCompanyFaxNumber($bill)
+{
+    if(isset($bill->comp_fax))
+        return $bill->comp_fax;
+    else
+        return "-";
+}
+
+function getUnitNumber($bill)
+{
+    if(isset($bill->master_UnitNo))
+            $unit_number = $bill->master_UnitNo.' ';
+    else if(isset($bill->UnitNo))
+            $unit_number = $bill->UnitNo.' ';
+    else
+        return "-";
+    return $unit_number;
+}
+
+function getItemType($bill)
+{
+    if(isset($bill->ItemType))
+        $item_type = $bill->ItemType;
+    else
+        return "-";
+    return $item_type;
+}
+
+function getUsageSpace($bill)
+{
+    //Housesize
+    if(isset($bill->master_HOUSESIZE))
+        return $bill->master_HOUSESIZE;
+    else if(isset($bill->HOUSESIZE))
+        return $bill->HOUSESIZE;
+    else
+        return "-";
+}
+
+function getContractSpace($bill)
+{
+    if(isset($bill->master_LANDSIZE))
+        return $bill->master_LANDSIZE;
+    else if(isset($bill->LANDSIZE))
+        return $bill->LANDSIZE;
+    else
+        return "-";
+}
+
+function getDifferentArea($bill)
+{
+    $contract_space = getContractSpace($bill);
+    $usage_space = getUsageSpace($bill);
+    if($contract_space == '-')
+        return "-";
+    else if($usage_space == '-')
+        return "-";
+    else
+        return $usage_space - $contract_space;
+}
+
+function getPricePerSqm($bill)
+{
+    if(isset($bill->master_SQM))
+        $sqm = $bill->master_SQM;
+    else if(isset($bill->master_Sqm))
+        $sqm = $bill->master_Sqm;
+    else
+        return "-";
+
+    
 }
 
 ?>
