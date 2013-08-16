@@ -262,13 +262,13 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
 			ids_str +="&";
 		ids_str += "unit_ids[]=" + uids[i]
 	}
-	$http({
+	/*$http({
                 method: 'POST',
                 url: 'service/index.php',
                 data: 'action=bills&template_id='+$routeParams.tid+ids_str,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function(data, status) {
-   // Bill.preview({action:'bills', unit_ids:uids, template_id:$routeParams.tid}, function(data){
+            }).success(function(data, status) {*/
+    Bill.preview({action:'bills', unit_ids:uids, template_id:$routeParams.tid}, function(data){
 
 
 

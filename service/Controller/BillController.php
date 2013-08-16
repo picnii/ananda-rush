@@ -91,7 +91,6 @@
 		
 	}
 
-	
 	function convertSaleDataToBill($data)
 	{
 		$bill = getSampleBill();
@@ -145,8 +144,6 @@
 
 		if(isset($data->SellPrice))
 			$sellPrice = $data->SellPrice;
-
-
 		if(isset($data->DiscAmount))
 			$discount = $data->DiscAmount;
 
@@ -193,15 +190,6 @@
 		else
 			$diff_space = "-";
 
-		if(isset($data->master_RoomNo))
-			$room_number = $data->master_RoomNo;
-		else if(isset($data->RoomNo))
-			$room_number = $data->RoomNo;
-		else
-			$room_number = '-';
-
-		$loanRepayment = 0.75 * $sellPrice;
-
 		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $unit_number);
@@ -209,7 +197,7 @@
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('CompanyName', 'ที่อยู่', $company_name);
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  $room_number);
+		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '--');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('HouseType', 'แบบบ้าน',  $item_type);
 		array_push($bill->variables, $variable);
@@ -301,11 +289,6 @@
 		array_push($bill->variables, $variable);
 		
 		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '--');
-		array_push($bill->variables, $variable);
-
-
-		//Mock Repayment
-		$variable = getBillVariable('LoanRepayment', 'ค่าปลอด',  $loanRepayment);
 		array_push($bill->variables, $variable);
 		
 		return $bill;

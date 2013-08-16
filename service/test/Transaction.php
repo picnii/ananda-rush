@@ -8,23 +8,31 @@
 	//check for project name
 	foreach($bills as $bill)
 	{
-		$project_name = getProjectName($bill);
-		assertEquals(true, is_string($project_name) && ($project_name != "-"));
+		if(isset($bill->proj_name_th))
+			$project_name = $bill->proj_name_en;
+		assertEquals(true, is_string($project_name));
 	}
 
 	//check for company name
 	foreach($bills as $bill)
 	{
-		$company_name =  getCompanyName($bill);
-		assertEquals(true, is_string($company_name) && ($company_name != "-"));
+		if(isset($bill->comp_name_th))
+			$company_name = $bill->comp_name_th;
+		assertEquals(true, is_string($company_name));
 	}
 
 	//check for company address
 	foreach($bills as $bill)
 	{
-		$company_address  = getCompanyAddress($bill);
-		
-		assertEquals(true, is_string($company_address) && ($company_address != "-"));
+		if(isset($bill->comp_addno))
+			$company_address = "เลขที่ {$bill->comp_addno} ซอย {$bill->comp_soi} ถนน {$bill->comp_road} ตำบล {$bill->comp_tumbon} อำเภอ {$bill->comp_distinct} จังหวัด {$bill->comp_province} {$bill->comp_zipcode}";
+		else
+		{
+			echo "company_address wrong at {$bill->transaction_id}:";
+			print_r($bill);
+			echo "end error;";
+		}
+		assertEquals(true, is_string($company_address));
 	}
 
 	//check for company tel
@@ -34,19 +42,25 @@
 	//check for unit no
 	foreach($bills as $bill)
 	{
-		$unit_number = getUnitNumber($bill);
-		if($unit_number == '-')
+		if(isset($bill->master_UnitNo))
+			$unit_number = $bill->master_UnitNo.' ';
+		else if(isset($bill->UnitNo))
+			$unit_number = $bill->UnitNo.' ';
+		else
 			echo "unit_number wrong at{$bill->transaction_id}:";
-		assertEquals(true, is_string($unit_number) && ($unit_number != "-"));
+		assertEquals(true, is_string($unit_number));
 	}
 	
 	//check for house type
 	foreach($bills as $bill)
-	{		
-		$item_type = getItemType($bill);
-		if($item_type == '-')
-			echo "house type wrong at {$bill->transaction_id}:";	
-		assertEquals(true, $item_type !="-" && is_string($item_type) || is_numeric($item_type));
+	{
+		if(isset($bill->ItemType))
+			$item_type = $bill->ItemType;
+		else
+		{
+			echo "house type wrong at {$bill->transaction_id}:";
+		}
+		assertEquals(true, is_string($item_type) || is_numeric($item_type));
 	}
 	
 
@@ -90,8 +104,10 @@
 
 		if(isset($bill->SellPrice))
 			$sellPrice = $bill->SellPrice;
-		if(isset($sellPrice) )
-			$price_at_contract = $sellPrice ;
+		if(isset($bill->DiscAmount))
+			$discount = $bill->DiscAmount;
+		if(isset($sellPrice) && isset($discount))
+			$price_at_contract = $sellPrice - $discount;
 		else
 			echo "price at contract wrong at{$bill->transaction_id}:";
 		assertEquals(true, is_numeric($price_at_contract));
@@ -105,7 +121,7 @@
 			$area = $bill->master_Sqm;
 		elseif(isset($bill->Sqm))
 			$area = $bill->Sqm;
-		elseif(isset($bill->SQM)	)
+		elseif(isset($bill->SQM))
 			$area = $bill->SQM;
 
 		if(isset($bill->master_BasePrice))
@@ -156,32 +172,6 @@
 			echo "price per sqm wrong at{$bill->transaction_id}:";
 		assertEquals(true, is_numeric($area));
 	}
-
-	//Area at contract
-	foreach($bills as $bill)
-	{
-		if(isset($bill->master_HOUSESIZE))
-			$area = $bill->master_HOUSESIZE;
-		elseif(isset($bill->HOUSESIZE))
-			$area = $bill->HOUSESIZE;
-		if(isset($area) )
-			$area = $area ;
-		else
-			echo "price per sqm wrong at{$bill->transaction_id}:";
-		assertEquals(true, is_numeric($area));
-	}
-
-	//Repayment
-	foreach($bills as $bill)
-	{
-		
-		if(isset($bill->SellPrice) )
-			$repayment = 0.75 * $bill->SellPrice ;
-		else
-			echo "repayment wrong at{$bill->transaction_id}:";
-		assertEquals(true, is_numeric($repayment));
-	}
-
 
 	//print_r($rows);
 	print_r($bills);
