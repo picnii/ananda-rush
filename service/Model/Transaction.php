@@ -100,8 +100,14 @@ function findCompanyInfo($row_transaction)
 
 function findBankLoanInfo($pre_approve_bank_id,$pre_appoint_reason1_id)
 {
-    $SQL = "select b.*,pri.id_preapprove_bank,pri.id_credit_approval,pri.Price_Approve,";
-    $SQL.="pri.lastupdate as price_update,pri.createdate as price_createdate,";
+   $SQL = "select b.id_preapprove_bank as preBank_id_preapprove_bank,b.bank_code as preBank_bankcode,pri.id_preapprove_bank";
+    $SQL.=",b.bank_contactname as preBank_bank_contactname,b.date_reque as preBank_date_reque,b.id_preapprove1 as preBank_id_preapprove1";
+    $SQL.=",b.remak as preBank_remak,b.id_status_Approve as preBank_id_status_Approve,b.status_user_select as preBank_status_user_select";
+    $SQL.=",b.date_Approve as preBank_date_Approve,b.remak_More as preBank_remak_More,b.csnote_bank as preBank_csnote_bank";
+    $SQL.=",b.id_Reason_bank as preBank_id_Reason_bank,b.want_loan as preBank_want_loan";
+    $SQL.=",b.Branch as preBank_Branch,b.appoint_reason1_id as preBank_appoint_reason1_id";
+    $SQL.=",b.id_status_import as preBank_id_status_import,b.itemID as preBank_itemID,b.InvoiceAccount as preBank_InvoiceAccount";
+    $SQL.=",pri.id_credit_approval,pri.Price_Approve,pri.lastupdate as price_update,pri.createdate as price_createdate,";
     $SQL.="cr.id_credit_approval as credit_id_credit_approval,cr.name_credit_approval,cr.lastupdate as credit_lastupdate, cr.seq,";
     $SQL.="ar.appoint_reason1_id,ar.appoint_reason1_name,ar.appoint_reason_type_id,";
     $SQL.="mb.bank_id,mb.bank_code as master_bank_code,mb.bank_name as master_bank_name,mb.bank_branch as master_bank_branch,";
