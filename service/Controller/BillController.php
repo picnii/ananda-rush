@@ -94,114 +94,27 @@
 	function convertSaleDataToBill($data)
 	{
 		$bill = getSampleBill();
-		
+		/*
 		foreach($data->variables as $key => $value)
 		{
 			//print_r($data->variables[$key]);
 			$variable = getBillVariable($key, $data->variables[$key]->name, $data->variables[$key]->value);
 			array_push($bill->variables, $variable);
 		}
-	
 
-		if(isset($data->comp_name_th))
-			$company_name = $data->comp_name_th;
-		else
-			$company_name = '-';
-
-		if(isset($data->master_UnitNo))
-			$unit_number = $data->master_UnitNo.' ';
-		else if(isset($data->UnitNo))
-			$unit_number = $data->UnitNo.' ';
-		else
-			$unit_number = '-';
-
-		if(isset($data->ItemType))
-			$item_type = $data->ItemType;
-		else
-			$item_type = "-";
-
-		if(isset($data->master_HOUSESIZE))
-			$house_size = $data->master_HOUSESIZE;
-		else if(isset($data->HOUSESIZE))
-			$house_size = $data->HOUSESIZE;
-
-		if(isset($data->master_LANDSIZE))
-			$land_size = $data->master_LANDSIZE;
-		else if(isset($data->LANDSIZE))
-			$land_size = $data->LANDSIZE;
-
-		if(isset($data->master_SalesName))
-			$sale_name = $data->master_SalesName;
-		else if(isset($data->SalesName))
-			$sale_name = $data->SalesName;
-		else
-			$sale_name = "-";
-
-		if(isset($data->Mobile))
-			$mobile = $data->Mobile;
-		else
-			$mobile = "-";
-
-		if(isset($data->SellPrice))
-			$sellPrice = $data->SellPrice;
-		if(isset($data->DiscAmount))
-			$discount = $data->DiscAmount;
-
-		if(isset($sellPrice) && isset($discount))
-			$price_at_contract = $sellPrice - $discount;
-		else
-			$price_at_contract = "-";
-
-		if(isset($data->master_Sqm))
-			$area = $data->master_Sqm;
-		elseif(isset($data->Sqm))
-			$area = $data->Sqm;
-		elseif(isset($data->SQM))
-			$area = $data->SQM;
-
-		if(isset($data->master_BasePrice))
-			$price = $data->master_BasePrice;
-		else if(isset($data->BasePrice))
-			$price = $data->BasePrice;
-
-		if(isset($price) && isset($area))
-			$price_per_sqm = $area / $price;
-		else
-			$price_per_sqm = '-';
-
-		if(!isset($discount))
-			$discount = '-';
-
-		if(!isset($area))
-			$area = '-';
-
-		if(isset($data->banks))
-			$isBankPay = true;
-		else
-			$isBankPay = false;
-
-		if(isset($house_size ))
-			$actual_space = $house_size;
-		else
-			$actual_space = "-";
-
-		if(isset($house_size ) && isset($land_size))
-			$diff_space = $land_size - $house_size;
-		else
-			$diff_space = "-";
-
+		$isBankPay = false;
 		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('UnitNumber', 'UNIT NO.', $unit_number);
+		$variable = getBillVariable('UnitNumber', 'UNIT NO.', getUnitNumberFromSaleData($data));
 
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CompanyName', 'ที่อยู่', $company_name);
+		$variable = getBillVariable('CompanyName', 'ที่อยู่', getCompanyNameFromSaleData($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseType', 'แบบบ้าน',  $item_type);
+		$variable = getBillVariable('HouseType', 'แบบบ้าน',  getItemTypeFromSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseSize', 'พื้นที่ใช้สอย',  $house_size);
+		$variable = getBillVariable('HouseSize', 'พื้นที่ใช้สอย',  getAreaFromSaleData($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('DocumentDate', 'วันที่แจ้ง',  '--');
 		array_push($bill->variables, $variable);
@@ -211,21 +124,21 @@
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  $sale_name);
+		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  getCustomerNameFromSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  $mobile);
+		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  getCustomerMobileFromSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PriceOnContract', 'ราคาตามสัญญา',  $price_at_contract);
+		$variable = getBillVariable('PriceOnContract', 'ราคาตามสัญญา',  getPriceOnContractFromSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PricePerArea', 'ราคาต่อตารางเมตร',  $price_per_sqm);
+		$variable = getBillVariable('PricePerArea', 'ราคาต่อตารางเมตร',  getPricePerAreaSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('SpacialDiscount', 'หักส่วนลดพิเศษ',  $discount);
+		$variable = getBillVariable('SpacialDiscount', 'หักส่วนลดพิเศษ',  getDiscountSaleData($data));
 		array_push($bill->variables, $variable);
 		
-		$variable = getBillVariable('ContractOfSpace', 'พื้นที่ตามสัญญา',  $area);
+		$variable = getBillVariable('ContractOfSpace', 'พื้นที่ตามสัญญา',  getAreaOnContractFromSaleData($data));
 		array_push($bill->variables, $variable);
 
-		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  $diff_space);
+		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  getAreaDiffFromSaleData($data);
 		array_push($bill->variables, $variable);
 
 		if($isBankPay)
@@ -262,7 +175,7 @@
 			array_push($bill->variables, $variable);
 		}
 		
-		$variable = getBillVariable('ActualSpace', 'พื้นที่จริง',  $actual_space);
+		$variable = getBillVariable('ActualSpace', 'พื้นที่จริง',  getActualAreaFromSaleData($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PaidAmount', 'หักชำระแล้ว',  '6,970,200');
 		array_push($bill->variables, $variable);
@@ -290,7 +203,7 @@
 		
 		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '--');
 		array_push($bill->variables, $variable);
-		
+		*/
 		return $bill;
 	}
 	
@@ -360,6 +273,8 @@
 		
 		return $sample;	
 	}
+
+
 	
 	//testBill();
 	//header('Content-Type: text/html; charset=utf-8');

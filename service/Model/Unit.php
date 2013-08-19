@@ -3,13 +3,15 @@
 	{
 		$sql = "SELECT  *
 			FROM    ( SELECT    ROW_NUMBER() OVER ( ORDER BY transaction_id ) AS RowNum, *
-			          FROM      master_transaction
+			          FROM      master_transaction 
 			        ) AS RowConstrainedResult
+			INNER JOIN Sale_Transection on RowConstrainedResult.ItemId = Sale_Transection.ItemID
 			WHERE   RowNum >= {$row_start}
 			    AND RowNum < {$row_end}
+			
 			ORDER BY RowNum";
 		$result = DB_query($GLOBALS['connect'],$sql);
-    
+    	
 	    $units =  array();
 	    while($row = DB_fetch_array($result))
 	    {
@@ -34,7 +36,7 @@
 
 	function getAllUnitRows()
 	{
-		$sql ="SELECT COUNT(*) AS row FROM master_transaction";
+		$sql ="SELECT COUNT(*) AS row FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID";
 		$result = DB_query($GLOBALS['connect'],$sql);
 		$row = DB_fetch_array($result);
 		return ceil($row['row']);
@@ -49,7 +51,7 @@
 
 	function findUnitById($id)
 	{
-		$sql = "SELECT * FROM master_transaction WHERE transaction_id = {$id}";
+		$sql = "SELECT * FROM master_transaction WHERE transaction_id = {$id} INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID";
 		$result = DB_query($GLOBALS['connect'],$sql);
 		$row = DB_fetch_array($result);
 		if(!isset($row['transaction_id']))
@@ -128,7 +130,7 @@
 
 	function findAllUnitsByQuery($q, $isDebugMode = false)
 	{
-		$sql = "SELECT * FROM master_transaction ".getWhereClauseFromParams($q);
+		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID ".getWhereClauseFromParams($q);
 		//echo $sql;	
 		//SELECT 
 		$result = DB_query($GLOBALS['connect'],$sql);

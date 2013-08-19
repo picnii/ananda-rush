@@ -6,7 +6,7 @@ function testCon()
 	echo "testCon";
 }
 
-function getParamsFromSearchQuery($q)
+function getParamsFromSearchQuery($q, $prefix='')
 {
 	$arr = explode(".", $q);
 	$answer = array();
@@ -14,6 +14,8 @@ function getParamsFromSearchQuery($q)
 	{
 		$split_str = explode("=", $arr[$i]);
 		$key = $split_str[0];
+		if($prefix !='')
+			$key = $prefix.'.'.$key;
 		$value = $split_str[1];
 		$answer[$key] = $value;
 	}

@@ -153,7 +153,7 @@ function findInformation($pre_id)
                      $SQL1.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                      $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
-                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,"
+                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval ";
                      $SQL1.="from Sale_Transection s ";
                      $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
@@ -548,5 +548,146 @@ function findAllBill($q)
 {
 
 }
+
+/*
+    *   Bill Data
+    */
+    /*function getProjectNameFromSaleData($bill)
+    {
+        if(isset($bill->proj_name_th))
+            $project_name = $bill->proj_name_en;
+        else
+            $project_name = '?';
+        return $project_name;
+    }
+
+    function getComapanyNameFromSaleData($bill)
+    {
+        if(isset($bill->comp_name_th))
+            $comp_name_th = $bill->comp_name_th;
+        else
+            $comp_name_th = '?';
+        return $comp_name_th;
+    }
+
+    function getCompanyAddressFromSaleData($bill)
+    {
+        if(isset($bill->comp_addno))
+            $company_address = "เลขที่ {$bill->comp_addno} ซอย {$bill->comp_soi} ถนน {$bill->comp_road} ตำบล {$bill->comp_tumbon} อำเภอ {$bill->comp_distinct} จังหวัด {$bill->comp_province} {$bill->comp_zipcode}";
+        else
+            $company_address = '?';
+        return $company_address;
+    }
+
+    function getCompanyTelFromSaleData($bill)
+    {
+        if(isset($bill->comp_tel))
+            $comp_tel = $bill->comp_tel;
+        else
+            $comp_tel = '?';
+        return $comp_tel;
+    }
+
+    function getCompanyFaxFromSaleData($bill)
+    {
+        if(isset($bill->comp_fax))
+            $comp_fax = $bill->comp_fax;
+        else
+            $comp_fax = '?';
+        return $comp_fax;
+    }
+
+    function getUnitNumberFromSaleData($bill)
+    {
+        if(isset($bill->master_UnitNo))
+            $master_UnitNo = $bill->master_UnitNo;
+        else
+            $master_UnitNo = '?';
+        return $master_UnitNo;
+    }
+
+    function getItemTypeFromSaleData($bill)
+    {
+        if(isset($bill->ItemType))
+            $ItemType = $bill->ItemType;
+        else
+            $ItemType = '?';
+        return $ItemType;
+    }
+
+    function getAreaFromSaleData($bill)
+    {
+         if(isset($bill->master_HOUSESIZE))
+            $master_HOUSESIZE = $bill->master_HOUSESIZE;
+        else
+            $master_HOUSESIZE = '?';
+        return $master_HOUSESIZE;
+    }
+
+    function getCustomerNameFromSaleData($bill)
+    {
+        if(isset($bill->SalesName))
+            $SalesName = $bill->SalesName;
+        else
+            $SalesName = '?';
+        return $SalesName;
+    }
+
+    function getCustomerMobileFromSaleData($bill)
+    {
+        if(isset($bill->Mobile))
+            $Mobile = $bill->Mobile;
+        else
+            $Mobile = '?';
+        return $Mobile;
+    }
+
+    function getPriceOnContractFromSaleData($bill)
+    {
+        if(isset($bill->SellPrice))
+            $SellPrice = $bill->SellPrice;
+        else
+            $SellPrice = '?';
+        return $SellPrice;
+    }
+
+    function getPricePerAreaSaleData($bill)
+    {
+         if(isset($bill->SQM))
+            $SQM = $bill->SQM;
+        else
+            return '?';
+        if(getPriceOnContractFromSaleData($bill) != '?')
+            return getPriceOnContractFromSaleData($bill)/$SQM;
+        return '?';
+    }
+
+    function getDiscountSaleData($bill)
+    {
+        return 0;
+    }
+
+    function getAreaOnContractFromSaleData($bill)
+    {
+         if(isset($bill->master_LANDSIZE))
+            $master_LANDSIZE = $bill->master_LANDSIZE;
+        else
+            $master_LANDSIZE = '?';
+        return $master_LANDSIZE;
+    }
+
+    function getAreaDiffFromSaleData($bill)
+    {
+        $HOUSESIZE = getAreaFromSaleData($bill);
+        $LANDSIZE = getAreaOnContractFromSaleData($bill);
+        if($LANDSIZE != '?' && $HOUSESIZE != '?')
+            return $HOUSESIZE - $LANDSIZE;
+        return $HOUSESIZE;
+    }
+
+    function getActualAreaFromSaleData($bill)
+    {
+        return getAreaFromSaleData($bill);;
+    }*/
 
 ?>

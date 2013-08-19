@@ -17,7 +17,7 @@
 		else
 		{
 		//	echo "q = {$q}";
-			$params = getParamsFromSearchQuery($q);
+			$params = getParamsFromSearchQuery($q, 'master_transaction');
 			$units = findAllUnitsByQuery($params);
 		}
 		/*$units = findAllUnitsByQuery($q);
