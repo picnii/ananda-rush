@@ -94,7 +94,7 @@
 	function convertSaleDataToBill($data)
 	{
 		$bill = getSampleBill();
-		
+		/*
 		foreach($data->variables as $key => $value)
 		{
 			//print_r($data->variables[$key]);
@@ -203,7 +203,7 @@
 		
 		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  '--');
 		array_push($bill->variables, $variable);
-		
+		*/
 		return $bill;
 	}
 	
