@@ -124,7 +124,8 @@
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  getCustomerNameFromSaleData($data));
+		$customerName = getCustomerNameFromSaleData($data);
+		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  $customerName.' ');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  getCustomerMobileFromSaleData($data));
 		array_push($bill->variables, $variable);
@@ -138,7 +139,7 @@
 		$variable = getBillVariable('ContractOfSpace', 'พื้นที่ตามสัญญา',  getAreaOnContractFromSaleData($data));
 		array_push($bill->variables, $variable);
 
-		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  getAreaDiffFromSaleData($data);
+		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  getAreaDiffFromSaleData($data));
 		array_push($bill->variables, $variable);
 
 		if($isBankPay)
