@@ -561,7 +561,7 @@ function findAllBill($q)
         return $project_name;
     }
 
-    function getComapanyNameFromSaleData($bill)
+    function getCompanyNameFromSaleData($bill)
     {
         if(isset($bill->comp_name_th))
             $comp_name_th = $bill->comp_name_th;
@@ -626,11 +626,14 @@ function findAllBill($q)
 
     function getCustomerNameFromSaleData($bill)
     {
-        if(isset($bill->SalesName))
+
+        if(isset($bill->SalesName) && is_string($bill->SalesName))
             $SalesName = $bill->SalesName;
         else
             $SalesName = '?';
+    ;
         return $SalesName;
+        //return "?";
     }
 
     function getCustomerMobileFromSaleData($bill)
