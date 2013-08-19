@@ -683,14 +683,63 @@ function findAllBill($q)
     {
         $HOUSESIZE = getAreaFromSaleData($bill);
         $LANDSIZE = getAreaOnContractFromSaleData($bill);
-        if($LANDSIZE != '?' && $HOUSESIZE != '?')
-            return $HOUSESIZE - $LANDSIZE;
-        return $HOUSESIZE;
+        $price_per_sqm = getPricePerAreaSaleData($bill);
+        if($LANDSIZE != '?' && $HOUSESIZE != '?' && $price_per_sqm != '?')
+            return ($HOUSESIZE - $LANDSIZE) * $price_per_sqm;
+        else if($price_per_sqm != '?')
+         return $HOUSESIZE * 500;
+        else
+            return '?';
     }
 
     function getActualAreaFromSaleData($bill)
     {
         return getAreaFromSaleData($bill);;
     }
+
+   function getPriceAtPaydate($bill)
+   {
+        $sellprice = getPriceOnContractFromSaleData($bill);
+        $price_diff = getAreaDiffFromSaleData($bill);
+        $discount = getDiscountSaleData($bill);
+       // echo "sellprice {$sellprice} , price_diff {$price_diff}, discount {$discount}";
+       // if($sellprice!= '?' && $price_diff != '?' && $discount != '?')
+             return $sellprice + $price_diff - $discount;
+       // return '?';
+
+   }
+
+   function getSettAmount($bill)
+   {
+        if(isset($bill->SETTAMOUNT))
+            $SETTAMOUNT = $bill->SETTAMOUNT;
+        else
+            $SETTAMOUNT = '?';
+        return $SETTAMOUNT;
+   }
+
+   function getPaymentPrice($bill)
+   {
+        return getPriceAtPaydate($bill) - getSettAmount($bill);
+   }
+
+   function getIsBank($bill)
+   {
+        if(isset($bill->banks))
+        {
+            $select_banks = array();
+            foreach($bill->banks as $bank)
+            {
+                
+            }   
+            if(count($select_banks) == 0)
+                return false;
+            else
+            {
+                return true;
+            }
+        }
+        return false;
+   }
 
 ?>
