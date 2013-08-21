@@ -94,9 +94,9 @@ function updateAppointmentLog($appointment_id)
 function getAppointmentTypes()
 {
 	return array(
-		0 => 'โทรนัด',
-		1 => 'นัดเจอ',
-		2 => 'Email'
+		0 => 'โทรศัพท์',
+		1 => 'ส่งข้อความ',
+		2 => 'ส่งอีเมล์'
 	);
 }
 
@@ -104,7 +104,8 @@ function getAppointmentStatus()
 {
 	return array(
 		0 => 'ไม่รับโทรศัพท์',
-		1 => 'รับโทรศัพท์'
+		1 => 'รับโทรศัพท์',
+		2 => 'สายไม่ว่าง'
 	);
 }
 
@@ -112,15 +113,17 @@ function getAppointmentPaymentTypes()
 {
 	return array(
 		0 => 'โอนสด',
-		1 => 'สินเชื่อ'
+		1 => 'สินเชื่อ',
+		2 => 'ยังไม่ตัดสินใจ'
 	);
 }
 
 function getAppointmentComingStatus()
 {
 	return array(
-		0 => 'มานะ',
-		1 => 'ไม่มา'
+		0 => 'มาแน่นอน',
+		1 => 'ไม่มา',
+		2 => 'ยังไม่ตัดสินใจ'
 	);
 }
 
@@ -140,6 +143,14 @@ function date_normalizer($d){
 	} else { 
 		return strtotime($d); 
 	} 
+}
+
+function getAuthorizes()
+{
+	return array(
+		0 => "ไม่มอบฉันทะ",
+		1 => "มอบฉันทะ"
+	);
 }
 
 

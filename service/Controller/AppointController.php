@@ -22,6 +22,9 @@
 
 			$coming_status = getAppointmentComingStatus();
 			$log->coming_status = $coming_status[$log->coming_status];
+
+			$authorizes = getAuthorizes();
+			$log->authorize = $authorizes[$log->authorize];
 		}
 		$data = array(
 			'unit'=>$unit,
