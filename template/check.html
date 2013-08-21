@@ -45,17 +45,17 @@
 			<div class="row">
 				<div class="offset1 span5">วงเงินกู้อนุมัติห้องชุด</div>
 				<div class="span1">จำนวน</div>
-				<div class="span2" align="center">8,000,000.00</div>
+				<div class="span2" align="center">{{getVar("SumBankLoan")}}</div>
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">วงเงินกู้ (&CO)</div>
 				<div class="span1">จำนวน</div>
-				<div class="span2" align="center">100,000.00</div>
+				<div class="span2" align="center">{{getVar("BankLoanCustomerAndCO")}}</div>
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">ประกัน และ/หรือ ตกแต่ง</div>
 				<div class="span1">จำนวน</div>
-				<div class="span2" align="center">-</div>
+				<div class="span2" align="center">{{getVar("BankLoanDecorate")}}</div>
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">ซึ่งลูกค้าได้นัดโอนกรรมสิทธิ์ห้องชุดในวันที่</div>
@@ -66,36 +66,36 @@
 				
 			<div class="row">
 				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
-				<div class="span2" align="center"><b>8,000,000.00</b> </div>
+				<div class="span2" align="center"><b>{{getVar("SumBankLoan")}}</b> </div>
 				<div class="span1">บาท</div>
 				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
 				
-				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "ธนาคารกรุงไทย จำกัด มหาชน"</b></div>
-				<div class="span2" align="center">8,000,000.00  </div>
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b>{{getVar("BankLoanName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckBank")}}</div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b></div>
-				<div class="span2" align="center">8,000,000.00  </div>
+				<div class="span2" align="center">{{getVar("PayCheckAnanda")}} </div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
-				<div class="span2" align="center">-  </div>
+				<div class="span2" align="center">{{getVar("PayCommonFeeCharge")}}</div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
-				<div class="span2" align="center">-  </div>
+				<div class="span2" align="center">{{getVar("PayCommonFeeFund")}}</div>
 				<div class="span1">บาท</div>
 				
-				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b> คุณนรินทร์ ลีลาภรณ์</b></div>
-				<div class="span2" align="center">-  </div>
+				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>{{getVar("CustomerName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckCustomer")}}</div>
 				<div class="span1">บาท</div><br><br><br>
 				
-				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b> คุณนรินทร์ ลีลาภรณ์</b></div>
-				<div class="span2" align="center">-  </div>
+				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b>{{getVar("CustomerName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckCustomerAndCO")}}</div>
 				<div class="span1">บาท</div><br><br><br>
 				
 				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
-				<div class="span2" align="center">-  </div>
+				<div class="span2" align="center">{{getVar("PayFeeForMinistryOfFinance")}}</div>
 				<div class="span1">บาท</div>
 			
 				
