@@ -1,4 +1,4 @@
-var app = angular.module('ananda', ['dataServices','areaFilters',]).
+var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directives']).
 		  config(['$routeProvider', function($routeProvider) {
 		  $routeProvider.
 		  	  when('/', {templateUrl: 'template/home.html',   controller: HomeCtrl}).
@@ -14,7 +14,8 @@ var app = angular.module('ananda', ['dataServices','areaFilters',]).
           when('/variables', {templateUrl: 'template/variables.html',   controller: VariablesListCtrl}).
           when('/variables/create', {templateUrl: 'template/variable-create.html',   controller: VariableCreateCtrl}).
           when('/testprint', {templateUrl:'template/print-test.html', controller: BillPrintTestCtrl}).
-           when('/testcheque', {templateUrl:'template/check.html', controller: ChequeTestCtrl}).
+          when('/testcheque', {templateUrl:'template/check.html', controller: ChequeTestCtrl}).
+          when('/appoint/:itemId', {templateUrl:'template/appoint.html', controller: AppointCtrl}).
 		      otherwise({redirectTo: '/'});
 		}]);
 
@@ -85,7 +86,12 @@ angular.module('areaFilters', []).filter('up2area', function() {
   };
 })
 
-
+app.value('$strapConfig', {
+  datepicker: {
+    language: 'th',
+    format: 'yyyy-mm-dd'
+  }
+});
 
 
 

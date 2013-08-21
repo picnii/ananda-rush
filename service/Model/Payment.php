@@ -1,7 +1,7 @@
 <?php
 function getPayments()
 {
-    $SQL  = "select * from tranfer_payment";
+    $SQL  = "SELECT * FROM tranfer_payment";
     $result = DB_query($GLOBALS['connect'],$SQL);
     
     $payments =  array();

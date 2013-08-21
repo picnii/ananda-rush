@@ -774,6 +774,124 @@ function UnitListCtrl($scope, $rootScope, $location, Type, Template, Unit)
 	}
 }
 
+function AppointCtrl($scope, $rootScope, $location, $routeParams, Appoint)
+{
+	var now = new Date();
+	$scope.appointdate =  {date: {date: new Date("2012-09-01T00:00:00.000Z")}};
+	$scope.refresh = function(){
+		$scope.data = Appoint.get({itemId:$routeParams.itemId}, function(data){
+			$scope.unit = data.unit;
+			$scope.logs = data.logs;
+			
+			for(var i=0; i < $scope.logs.length; i++)
+			{
+				var log = $scope.logs[i];
+				/*var t = "2010-06-09 13:12:01".split(/[- :]/);
+				// Apply each element to the Date function
+				var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);*/
+				log.appoint_date_time = new Date(log.appoint_time.date);
+				log.call_date_time = new Date(log.call_time.date);
+				log.display_call_date = log.call_date_time.getDate() + '/' + log.call_date_time.getMonth() + '/' + (log.call_date_time.getYear() + 1900);
+				log.display_appoint_date = log.appoint_date_time.getDate() + '/' + log.appoint_date_time.getMonth() + '/' + (log.appoint_date_time.getYear() + 1900);
+
+				log.display_call_time = log.call_date_time.getHours() + ':' + log.call_date_time.getMinutes() + ':' + log.call_date_time.getSeconds();
+				log.display_appoint_time = log.appoint_date_time.getHours() + ':' + log.appoint_date_time.getMinutes() + ':' + log.appoint_date_time.getSeconds();
+			}
+			console.log($scope.logs);
+			$scope.current_appoint = data.appoint;
+
+		})
+	}
+
+	$scope.createAppoint = function()
+	{
+		
+		$scope.appointdate = convertDateToSqlDate($scope.appointdate);
+		$scope.appointtime = convertDateToSqlTime($scope.appointtime);
+		$scope.calldate = convertDateToSqlDate($scope.calldate);
+		$scope.calltime = convertDateToSqlTime($scope.calltime);
+
+
+		console.log("type:"+ $scope.type);
+		console.log("calldate:"+ $scope.calldate);
+		console.log("calltime:"+ $scope.calltime);
+		console.log("callduration:"+ $scope.callduration);
+		console.log("people:"+ $scope.people);
+		console.log("appointdate:"+ $scope.appointdate);
+		console.log("appointtime:"+ $scope.appointtime);
+		console.log("status:"+ $scope.status);
+		console.log("payment_type:"+ $scope.payment_type);
+		console.log("coming_status:"+ $scope.coming_status);
+		console.log("remark:" + $scope.remark);
+
+		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
+			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
+			unit_id:$scope.unit.id, action:'createAppoint'
+		}, function(data){
+			console.log(data);
+			$scope.refresh();
+		});
+
+	}
+	$scope.refresh();
+	
+	doOnce(function(){
+		//$('.datepicker').datepicker({format:'yyyy-mm-dd'});
+		
+	})
+	
+
+}
+
+var doOnceCount = 0;
+function doOnce(callback)
+{
+	if(doOnceCount % 2 == 0)
+	{
+		callback();
+			
+	}
+	doOnceCount++;	
+}
+
+function convertDateToSqlDate(date)
+{
+	var test  = (date.getYear() + 1900);
+		test += '-';
+		if(date.getMonth() < 10)
+			test += '0' + date.getMonth();
+		else
+			test += date.getMonth();
+		test += '-';
+		if(date.getDate() < 10)
+			test += '0' + date.getDate();
+		else
+			test += date.getDate();
+	return test;
+}
+
+function convertDateToSqlTime(time)
+{
+	var time_set = time.split(' ');
+	var times = time_set[0].split(':');
+	var hours = Number(times[0]);
+	var mins = times[1];	
+	if(time_set[1] == 'PM')
+		hours += 12;
+	hours = convertToTimeString(hours);
+	test = hours+':'+mins;
+	test += ':00';
+	return test;
+}
+
+function convertToTimeString(time)
+{
+	if(time < 10)
+		return '0'+time;
+	else
+		return time;
+}
+
 function ChequeTestCtrl()
 {
 

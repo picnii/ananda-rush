@@ -1,6 +1,6 @@
 <?php
 
-	$transaction_ids = array(1352, 1302, 1307, 1311, 1854);
+	$transaction_ids = array(1352, 1302, 1307, 1835, 1854);
 	$rows = fetchBillInformation($transaction_ids);
 
 	$bills = getVariableUnits($rows);
@@ -171,6 +171,30 @@
 		else
 			echo "price per sqm wrong at{$bill->transaction_id}:";
 		assertEquals(true, is_numeric($area));
+	}
+
+	foreach($bills as $bill)
+	{
+		$result = getIsBank($bill);
+		$bank = getBanksVariable($bill);
+		if($result)
+		{
+			/*assertEquals(true, is_numeric($bank->BankLoanRoom));
+			assertEquals(true, is_numeric($bank->BankLoanInsurance));
+			assertEquals(true, is_numeric($bank->BankLoanDecorate));
+			assertEquals(true, is_numeric($bank->BankLoanMulti));
+			assertEquals(true, is_numeric($bank->SumBankLoan));
+			assertEquals(true, is_numeric($bank->BankLoanOther));*/
+		}else
+		{
+			assertEquals('-', $bank->BankLoanRoom);
+			assertEquals('-', $bank->BankLoanInsurance);
+			assertEquals('-', $bank->BankLoanDecorate);
+			assertEquals('-', $bank->BankLoanMulti);
+			assertEquals('-', $bank->SumBankLoan);
+			assertEquals('-', $bank->BankLoanOther);
+		}
+		
 	}
 
 	//print_r($rows);

@@ -725,21 +725,163 @@ function findAllBill($q)
 
    function getIsBank($bill)
    {
+        $reason_id = $bill->preapp_appoint_reason1_id;
         if(isset($bill->banks))
         {
             $select_banks = array();
             foreach($bill->banks as $bank)
             {
-                
+                if($bank['id_type_select'] == 2 && $reason_id == $bank['appoint_reason1_id'])
+                    array_push($select_banks, $bank);
             }   
             if(count($select_banks) == 0)
                 return false;
             else
             {
-                return true;
+                return $select_banks;
             }
         }
         return false;
    }
+
+   function getBanksVariable($bill)
+   {
+        $banks = getIsBank($bill);
+        $return_bank = new stdClass;
+        $firstBank = $banks[0];
+        $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  $firstBank['master_bank_name']);
+        array_push($bill->variables, $variable); 
+        $banks_variable_flag = array(
+            'BankLoanRoom' => false,
+            'BankLoanInsurance' => false,
+            'BankLoanOther' =>false,
+            'SumBankLoan' =>false,
+            'BankLoanInsurance' =>false, 
+            'BankLoanMulti' =>false,
+            'BankLoanDecorate' =>  false
+        );
+        $bank_other_loans = array();
+        foreach($banks as $bank)
+        {
+            
+            if($bank['id_credit_approval'] == 1)
+            {
+                 $variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  $bank['Price_Approve']);
+                 $banks_variable_flag['BankLoanRoom'] = true;
+                 $return_bank->BankLoanRoom =  $bank['Price_Approve'];
+                 array_push($bill->variables, $variable);
+            }
+            else if($bank['id_credit_approval'] == 2)
+            {
+                 $variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  $bank['Price_Approve']);
+                 $banks_variable_flag['BankLoanInsurance'] = true;
+                 $return_bank->BankLoanInsurance =  $bank['Price_Approve'];
+                 array_push($bill->variables, $variable);
+            }else if($bank['id_credit_approval'] == 3)
+            {
+                 $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  $bank['Price_Approve']);
+                 $banks_variable_flag['BankLoanDecorate'] = true;
+                 $return_bank->BankLoanDecorate =  $bank['Price_Approve'];
+                 array_push($bill->variables, $variable);
+            }else if($bank['id_credit_approval'] == 5)
+            {
+                $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  $bank['Price_Approve']);
+                $banks_variable_flag['BankLoanMulti'] = true; 
+                $return_bank->BankLoanMulti =  $bank['Price_Approve'];
+                array_push($bill->variables, $variable);  
+            }else if($bank['id_credit_approval'] == 6)
+            {
+                $variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  $bank['Price_Approve']);
+                $banks_variable_flag['SumBankLoan'] = true;  
+                 $return_bank->SumBankLoan =  $bank['Price_Approve']; 
+                array_push($bill->variables, $variable);
+            }else
+            {
+                array_push( $bank_other_loans,  $bank['Price_Approve']);        
+                //$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+            }
+            
+                /*$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+                array_push($bill->variables, $variable);
+                $variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '-');
+                array_push($bill->variables, $variable);
+                $variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '-');
+                array_push($bill->variables, $variable);
+                $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
+                array_push($bill->variables, $variable);
+                $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
+                array_push($bill->variables, $variable);*/
+        }
+
+        $bank_sum = 0;
+        foreach($bank_other_loans as $key => $value)
+        {
+           $bank_other_paid =  $bank_other_loans[$key];
+           $bank_sum += $bank_other_paid;
+        }
+        $variable = getBillVariable('BankLoanOther', '-',  $bank_sum);
+        array_push($bill->variables, $variable);
+        $return_bank->BankLoanOther =  $bank['Price_Approve'];
+
+        foreach($banks_variable_flag as $key => $value)
+        {
+            $var_flag = $banks_variable_flag[$key];
+            if(!$var_flag)
+            {
+                $variable = getBillVariable($key, '-',  '-');
+                array_push($bill->variables, $variable);
+            }
+        }
+       
+   }
+
+   function getRepayment($bill)
+   {
+        return 0.75 * getPriceOnContractFromSaleData($bill);
+   }
+
+   function getSumBankPayments($bill)
+   {
+        return 0;
+   }
+
+   function getBankPayment($bill)
+   {
+        //case cash
+       $answer =  getRepayment($bill) - getSumBankPayments($bill);
+        if($answer < 0)
+            return 0;
+        else 
+            return $answer;
+   }
+
+   function getRealBankPayment($bill)
+   {
+        return getRepayment($bill) - getSumBankPayments($bill);
+   }
+
+   function getCompareValueRepayment($bill)
+   {
+        return getPaymentPrice($bill);
+   }
+
+   function getCompanyPayment($bill)
+   {
+     
+        $a = getCompareValueRepayment($bill);
+        return $a - getRealBankPayment($bill);
+        //case bank
+   }
+
+   function getBillVariable($codename, $description, $value)
+    {
+        $variable = new stdClass;
+        $variable->$codename = new stdClass;
+        $variable->$codename->name = $description;
+        $variable->$codename->value = $value;
+        return $variable;
+    }
+
+
 
 ?>

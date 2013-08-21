@@ -77,6 +77,7 @@
 		$bill = convertSaleDataToBill($sale_data, $template_id);
 		$template = findTemplateById($template_id);
 		$bill->payments = $template->payments;
+		//return $bill;*/
 		return $bill;
 	}
 
@@ -108,7 +109,13 @@
 		$variable = getBillVariable('UnitNumber', 'UNIT NO.', getUnitNumberFromSaleData($data));
 
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CompanyName', 'ที่อยู่', getCompanyNameFromSaleData($data));
+		$variable = getBillVariable('CompanyName', 'ชื่อบริษัท', getCompanyNameFromSaleData($data));
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('companyAddress', 'ที่อยู่', getCompanyAddressFromSaleData($data));
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('companyPhone', 'เบอร์โทร', getCompanyTelFromSaleData($data));
+		array_push($bill->variables, $variable);
+		$variable = getBillVariable('companyFax', 'Fax', getCompanyFaxFromSaleData($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '--');
 		array_push($bill->variables, $variable);
@@ -143,20 +150,8 @@
 
 		if($isBankPay)
 		{
-			$variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  'สมภพ');
-			array_push($bill->variables, $variable);
-			$variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '6,100,000');
-			array_push($bill->variables, $variable);
-			$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
-			array_push($bill->variables, $variable);
-			$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '6,200,000');
-			array_push($bill->variables, $variable);
-			$variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '100,000.00');
-			array_push($bill->variables, $variable);
-			$variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
-			array_push($bill->variables, $variable);
-			$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
-			array_push($bill->variables, $variable);
+			
+			getBanksVariable($bill);
 		}else
 		{
 			$variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  '-');
@@ -181,9 +176,9 @@
 		array_push($bill->variables, $variable);
 	
 		
-		$variable = getBillVariable('PayCheckBank', 'เช็คสั่งจ่ายธนาคาร',  '--');
+		$variable = getBillVariable('PayCheckBank', 'เช็คสั่งจ่ายธนาคาร',  getBankPayment($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayCheckAnanda', 'เช็คสั่งจ่ายอนันดา',  '--');
+		$variable = getBillVariable('PayCheckAnanda', 'เช็คสั่งจ่ายอนันดา',  getCompanyPayment($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PayCommonFeeCharge', 'ชำระส่วนกลาง',  '--');
 		array_push($bill->variables, $variable);
@@ -196,7 +191,6 @@
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('FinalCustomerPayment', 'รวมเป็นเงินที่ต้องชำระ',  '--');
 		array_push($bill->variables, $variable);
-		
 		
 		$variable = getBillVariable('PriceDateOfPayment', 'ราคาห้องชุด ณ วันโอน',  getPriceAtPaydate($data));
 		array_push($bill->variables, $variable);
@@ -249,18 +243,6 @@
 		);
 	
 	}
-
-	function getBillVariable($codename, $description, $value)
-	{
-		$variable = new stdClass;
-		$variable->$codename = new stdClass;
-
-		$variable->$codename->name = $description;
-		$variable->$codename->value = $value;
-
-		return $variable;
-	}
-
 
 	function getSampleBill($template_id)
 	{

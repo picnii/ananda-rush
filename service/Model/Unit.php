@@ -131,8 +131,7 @@
 	function findAllUnitsByQuery($q, $isDebugMode = false)
 	{
 		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID ".getWhereClauseFromParams($q);
-		//echo $sql;	
-		//SELECT 
+//echo $sql;	
 		$result = DB_query($GLOBALS['connect'],$sql);
 	    $units =  array();
 	    if($isDebugMode)
