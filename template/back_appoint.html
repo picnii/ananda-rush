@@ -1,0 +1,37 @@
+<section ng-controller="AppointCtrl">
+<h2>Unit</h2>
+
+Item Id : {{unit.item_id}} Item Name : {{unit.item_name}} Room Number : {{unit.room_no}} Unit Number : {{unit.unit_no}} Floor : {{unit.floor}}
+
+Appoint
+
+
+Appoint Log
+<table class="table">
+	<tr>
+		<td>ID</td>
+		<td>Call Date</td>
+		<td>Call Time</td>
+		<td>Call Duration</td>
+		<td>Type</td>
+		<td>Status</td>
+		<td>Payment Type</td>
+		<td>Coming Status</td>
+		<td>Appoint Date</td>
+		<td>Appoint Time</td>
+	</tr>
+	<tr ng-repeat="log in logs">
+		<td>{{log.id}}</td>
+		<td>{{log.display_call_date}}</td>
+		<td>{{log.display_call_time}}</td>
+		<td>{{log.call_duration}}</td>
+		<td>{{log.type}}</td>
+		<td>{{log.status}}</td>
+		<td>{{log.payment_type}}</td>
+		<td>{{log.coming_status}}</td>
+		<td>{{log.display_appoint_date}}</td>
+		<td>{{log.display_appoint_time}}</td>
+	</tr>
+<table>
+
+</section>

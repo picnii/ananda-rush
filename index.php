@@ -8,8 +8,17 @@
 	<script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="lib/lightbox.js"></script>
 	<script type="text/javascript" src="lib/angular.min.js"></script>
-	<script type="text/javascript" src="lib/angular-strap.min.js"></script>
+	
     <script type="text/javascript" src="lib/angular-resource.min.js"></script>
+
+ 
+     <script type="text/javascript" src="lib/datepicker/js/bootstrap-datepicker.js"></script> 
+    <script type="text/javascript" src="lib/datepicker/js/bootstrap-timepicker.min.js"></script>
+    <script type="text/javascript" src="lib/datepicker/js/locales/bootstrap-datepicker.th.js"></script>
+
+    <link href="lib/datepicker/css/bootstrap-timepicker.min.css" type="text/css" rel="stylesheet"/>
+    <link href="lib/datepicker/css/datepicker.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="lib/angular-strap.min.js"></script>
 	<meta charset="utf-8"> 
     <script type="text/javascript" src="js/app.js"></script>
      <script type="text/javascript" src="js/init.js"></script>
