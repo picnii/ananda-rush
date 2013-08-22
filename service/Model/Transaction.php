@@ -852,10 +852,11 @@ function findAllBill($q)
 
    function getRepayment($bill)
    {
+        $min_repayment = $bill->IVZ_LOANREPAYMENTMINIMUNAMT;
+        $percent_reapayment = $bill->IVZ_LOANREPAYMENTPERC / 100;
 
-
-
-        return 0.75 * getPriceOnContractFromSaleData($bill);
+        return max($min_repayment , $percent_reapayment * getPriceOnContractFromSaleData($bill));
+        //return 0.75 * getPriceOnContractFromSaleData($bill);
    }
 
    function getSumBankPayments($bill)
