@@ -179,20 +179,20 @@
 		$bank = getBanksVariable($bill);
 		if($result)
 		{
-			/*assertEquals(true, is_numeric($bank->BankLoanRoom));
-			assertEquals(true, is_numeric($bank->BankLoanInsurance));
-			assertEquals(true, is_numeric($bank->BankLoanDecorate));
-			assertEquals(true, is_numeric($bank->BankLoanMulti));
-			assertEquals(true, is_numeric($bank->SumBankLoan));
-			assertEquals(true, is_numeric($bank->BankLoanOther));*/
+			assertEquals(true, is_numeric($bank->BankLoanRoom), $bank);
+			assertEquals(true, is_numeric($bank->BankLoanInsurance), $bank);
+			assertEquals(true, is_numeric($bank->BankLoanDecorate), $bank);
+			assertEquals(true, is_numeric($bank->BankLoanMulti), $bank);
+			assertEquals(true, is_numeric($bank->SumBankLoan), $bank);
+			assertEquals(true, is_numeric($bank->BankLoanOther), $bank);
 		}else
 		{
-			assertEquals('-', $bank->BankLoanRoom);
-			assertEquals('-', $bank->BankLoanInsurance);
-			assertEquals('-', $bank->BankLoanDecorate);
-			assertEquals('-', $bank->BankLoanMulti);
-			assertEquals('-', $bank->SumBankLoan);
-			assertEquals('-', $bank->BankLoanOther);
+			assertEquals(true, $bank->BankLoanRoom == 0 || $bank->BankLoanRoom == '-', $bank);
+			assertEquals(true, $bank->BankLoanInsurance == 0 || $bank->BankLoanInsurance == '-', $bank);
+			assertEquals(true, $bank->BankLoanDecorate == 0 || $bank->BankLoanDecorate == '-', $bank);
+			assertEquals(true, $bank->BankLoanMulti == 0 || $bank->BankLoanMulti == '-', $bank);
+			assertEquals(true, $bank->SumBankLoan == 0 || $bank->SumBankLoan == '-', $bank);
+			assertEquals(true, $bank->BankLoanOther == 0 || $bank->BankLoanOther == '-', $bank);
 		}
 		
 	}
