@@ -6,7 +6,10 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location, Type, Template, U
 	$scope.company_types = Type.getCompaniesList();
 	$scope.templates = Template.query();
 	$scope.unit_ids = post_data['unit_ids'];
-	$scope.units = Unit.query();
+	$scope.units = Unit.query(function(){
+		$scope.loading = false;
+	});
+	$scope.loading = true;
 
 /*
 	[
@@ -41,7 +44,10 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location, Type, Template, U
 		if(params_count == 0)
 			query = "*";
 		console.log(query);
-		$scope.units = Unit.query({'q':query})
+		$scope.loading = true;
+		$scope.units = Unit.query({'q':query},function(){
+			$scope.loading = false;
+		})
 	}
 
 	$scope.match = function()
@@ -805,7 +811,11 @@ function AppointCtrl($scope, $rootScope, $location, $routeParams, Appoint)
 
 	$scope.createAppoint = function()
 	{
-		
+		$scope.def_appointdate = $scope.appointdate ;
+		$scope.def_appointtime = $scope.appointtime;
+		$scope.def_calldate = $scope.calldate;
+		$scope.def_calltime  = $scope.calltime;
+
 		$scope.appointdate = convertDateToSqlDate($scope.appointdate);
 		$scope.appointtime = convertDateToSqlTime($scope.appointtime);
 		$scope.calldate = convertDateToSqlDate($scope.calldate);
@@ -823,13 +833,17 @@ function AppointCtrl($scope, $rootScope, $location, $routeParams, Appoint)
 		console.log("payment_type:"+ $scope.payment_type);
 		console.log("coming_status:"+ $scope.coming_status);
 		console.log("remark:" + $scope.remark);
-
+		console.log("authorize"+ $scope.authorize);
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
-			unit_id:$scope.unit.id, action:'createAppoint'
+			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
+			 $scope.appointdate= $scope.def_appointdate  ;
+			$scope.appointtime = $scope.def_appointtime ;
+			$scope.calldate = $scope.def_calldate;
+			$scope.calltime = $scope.def_calltime ;
 		});
 
 	}
