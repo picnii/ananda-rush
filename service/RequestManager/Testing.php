@@ -1,7 +1,7 @@
 <?php
 include "util.php";
 $testResult = array();
-function assertEquals($expect, $value)
+function assertEquals($expect, $value, $debug=null)
 {
 //	echo "assertEquals";
 	if($expect == $value)
@@ -15,6 +15,7 @@ function assertEquals($expect, $value)
 		$fail->expect = $expect;
 		$fail->value = $value;
 		print_r($fail);
+		print_r($debug);
 		echo ")";
 	}
 }

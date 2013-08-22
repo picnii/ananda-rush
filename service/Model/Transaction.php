@@ -153,6 +153,7 @@ function findInformation($pre_id)
                      $SQL1.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                      $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
+                     $SQL1.=",t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC";
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
                      $SQL1.="from Sale_Transection s ";
@@ -192,6 +193,7 @@ function findInformation($pre_id)
                          $SQL.=",p.csnote as Preapp_csnote,p.RoomNo as Preapp_RoomNo,p.Building as Preapp_Building,p.Floor as Preapp_Floor";
                          $SQL.=",p.ItemType as Preapp_ItemType,p.ProjectName as Preapp_ProjectName,p.ProjID as Preapp_ProjID,p.lastupdate as Preapp_lastupdate";
                          $SQL.=",t.transaction_id,t.CompanyCode as master_CompanyCode,t.ProjID as master_ProjID,t.Brand as master_Brand,t.ItemID as master_ItemID,t.ItemName as master_ItemName,";
+                         $SQL.="t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC,";
                         $SQL.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                         $SQL.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                         $SQL.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE,mp.* ";
@@ -626,9 +628,8 @@ function findAllBill($q)
 
     function getCustomerNameFromSaleData($bill)
     {
-
         if(isset($bill->SalesName) && is_string($bill->SalesName))
-            $SalesName = $bill->SalesName;
+            $SalesName = converttis620($bill->SalesName);
         else
             $SalesName = '?';
     ;
@@ -749,7 +750,10 @@ function findAllBill($q)
         $banks = getIsBank($bill);
         $return_bank = new stdClass;
         $firstBank = $banks[0];
-        $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  $firstBank['master_bank_name']);
+        if($banks)
+            $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',   $firstBank['master_bank_name']);
+        else
+            $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  '-');
         array_push($bill->variables, $variable); 
         $banks_variable_flag = array(
             'BankLoanRoom' => false,
@@ -761,6 +765,14 @@ function findAllBill($q)
             'BankLoanDecorate' =>  false
         );
         $bank_other_loans = array();
+        /*if($bill->transaction_id == 1854)
+        {
+            echo "tester";
+           if($banks)
+            echo "pass";
+            else
+                echo count($banks);
+        }*/
         foreach($banks as $bank)
         {
             
@@ -828,7 +840,10 @@ function findAllBill($q)
             $var_flag = $banks_variable_flag[$key];
             if(!$var_flag)
             {
-                $variable = getBillVariable($key, '-',  '-');
+                if($banks)
+                    $variable = getBillVariable($key, '-',  0);
+                else
+                    $variable = getBillVariable($key, '-', '-');
                 array_push($bill->variables, $variable);
             }
         }
@@ -837,6 +852,9 @@ function findAllBill($q)
 
    function getRepayment($bill)
    {
+
+
+
         return 0.75 * getPriceOnContractFromSaleData($bill);
    }
 

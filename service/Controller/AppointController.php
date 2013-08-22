@@ -45,9 +45,10 @@
 		$reqBody->appoint_datetime_str = $reqBody->appoint_date.' '.$reqBody->appoint_time.'.0';
 		$reqBody->call_datetime_str = $reqBody->call_date.' '.$reqBody->call_time.'.0';
 //		$result = $reqBody;
-		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration);
+		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration, $reqBody->authorize);
 		return array(
-			'result'=>$result
+			'result'=>$result,
+			'reqBody'=>$reqBody
 		);
 	}
 

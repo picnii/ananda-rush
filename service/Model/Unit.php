@@ -81,6 +81,11 @@
 		$unit->bu_id = $row['bu_id'];
 		$unit->house_size = $row['HOUSESIZE'];
 		$unit->land_size = $row['LANDSIZE'];
+		if(isset( $row['SalesName']))
+			$unit->customer_name = convertutf8($row['SalesName']);
+		if(isset($row['InvoiceAccount']))
+			$unit->invoice_account = $row['InvoiceAccount'];
+		$unit->rowData = $row;
 		return $unit;
 	}
 
@@ -132,7 +137,7 @@
 	{
 		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID ".getWhereClauseFromParams($q);
 //echo $sql;	
-		$result = DB_query($GLOBALS['connect'],$sql);
+		$result = DB_query($GLOBALS['connect'], convertutf8($sql));
 	    $units =  array();
 	    if($isDebugMode)
 	    	echo $sql;

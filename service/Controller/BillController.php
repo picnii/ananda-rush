@@ -131,8 +131,10 @@
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  getCustomerNameFromSaleData($data));
+		
+		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  $data->SalesName );
 		array_push($bill->variables, $variable);
+
 		$variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  getCustomerMobileFromSaleData($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('PriceOnContract', 'ราคาตามสัญญา',  getPriceOnContractFromSaleData($data));
