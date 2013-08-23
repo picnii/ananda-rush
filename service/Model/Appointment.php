@@ -132,7 +132,7 @@ function convertRowToAppoint($row)
 	$appoint = new stdClass;
 	foreach($row as $key => $value)
 	{
-		$appoint->$key = $value;
+		$appoint->$key = convertutf8($value);
 	}
 	return $appoint;
 }
