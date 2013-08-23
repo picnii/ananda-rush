@@ -1,6 +1,6 @@
 <?php
 
-    $billActions = array('bills', 'bill','createBills');
+    $billActions = array('bills', 'bill','createBills', 'billPayment');
 /* Bill Service */
 
 	if(isset($_POST['action']))
@@ -23,6 +23,8 @@
 			require_once 'Controller/BillController.php';
 		if($action == 'bill')
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
+		if($action == 'billPayment')
+			$response = actionGetPaymentIds();
 	}
 
 	if(isset($reqBody->action))

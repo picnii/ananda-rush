@@ -1,6 +1,6 @@
 <?php
 
-	$transaction_ids = array(1352, 1302, 1307, 1835, 1854);
+	$transaction_ids = array(1352, 2302, 1307, 1835, 1854);
 	$rows = fetchBillInformation($transaction_ids);
 
 	$bills = getVariableUnits($rows);

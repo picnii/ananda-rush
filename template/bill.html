@@ -51,7 +51,7 @@
 						<font size="2">
 						<div class="span1"><b><u>1.1 ราคา</u></b></div>
 						<div class="span3">ราคาตามสัญญา</div>
-						<div class="span1" align="right">{{getVar("PriceOnContact") | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right">{{getVar("PriceOnContract") | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						
 						<div class="span6"><b><u>1.2 วิธีการโอนกรรมสิทธิ์</u></b></div>
@@ -82,7 +82,7 @@
 						<div class="span1">บาท</div>
 						
 						
-						<div class="offset1 span3">ส่วนต่างพื้นที่ 0.31 ตร.ม.</div>
+						<div class="offset1 span3">ส่วนต่างพื้นที่ {{getVar("ActualSpace") - getVar("ContractSpace") | up2area }} ตร.ม.</div>
 						<div class="span1" align="right">{{getVar("DifferenOfSpace") | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าตกแต่ง</div>
@@ -133,8 +133,8 @@
 		                          <th width="10%">ลูกค้า</th>
 		                        </tr>
 		                 </thead>
-		                          <tr ng-repeat="payment in datas.payments">
-		                                    <td align="center" style="">1.</td>
+		                          <tr ng-repeat="payment in datas.payments | orderBy:'order'">
+		                                    <td align="center" style="">{{payment.order}}.</td>
 											<td style="padding-left:10px;">{{payment.name}}</td>
 											<TD align="center">{{payment.description}}</TD>
 		                                    <TD align="center">{{getFormulaValue(payment.formulas[0]) | zeroDash }}</TD>
@@ -143,10 +143,10 @@
 		                                 
 		                          </tr>
 								  <tr>
-		                        			<td align="center" colspan="3"><strong>รวมค่าใช้จ่ายทั้งสิ้น (บาท)</strong> </td>
-		                                    <td align="center"><strong>-</strong></td>
-		                                    <td align="center"><strong>-</strong></td>
-		                                    <td align="center"><strong>-</strong></td>
+                        			<td align="center" colspan="3"><strong>รวมค่าใช้จ่ายทั้งสิ้น (บาท)</strong> </td>
+                                    <td align="center"><strong>{{getSumCompanyPayment() | zeroDash }}</strong></td>
+                                    <td align="center"><strong>{{getSumBankPayment() | zeroDash }}</strong></td>
+                                    <td align="center"><strong>{{getSumCustomerPayment() | zeroDash }}</strong></td>
 								 </tr>
 								  </table>			
 		                                    
@@ -164,14 +164,14 @@
 						<div class="span7" align="right">-</div>
 						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{getVar("BankLoanName")}}</b> </div>
 						<div class="span3" align="right">{{getVar("PayCheckBank") | zeroDash}}</div>
-						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด (มหาชน)"</b> </div>
+						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{getVar("CompanyName")}}"</b> </div>
 						<div class="span3" align="right">{{getVar("PayCheckAnanda") | zeroDash}}</div>
 						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
-						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมอเนียม อาคาร B"</b></div>
-						<div class="span1" align="right">{{getVar("PayCommonFeeCharge")}}</div>
+						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("ProjectName")}}"</b></div>
+						<div class="span1" align="right">{{getPaymentBase().share_payment | zeroDash}}</div>
 						<div class="span3">3.3 ชำระเงินสมทบกองทุนส่วนกลาง</div>
-						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ38 คอนโดมิเนียม อาคาร B"</b></div>
-						<div class="span1" align="right">{{getVar("PayCommonFeeFund")}}</div>
+						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("ProjectName")}}"</b></div>
+						<div class="span1" align="right">{{getPaymentBase().share_fund_payment | zeroDash}}</div>
 						<div class="span7">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ค่าจำนองอีก 1% เป็นแคชเชียร์เช็คสั่งจ่าย </div>
 						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
 						<div class="span1" align="right">{{getVar("PayFeeForMinistryOfFinance") | zeroDash}}</div>
@@ -198,6 +198,7 @@
 
 			
 			</div>
+			<button ng-click="getPaymentBase()">Test</button>
 		</section> 
 		<style type="text/css">
 	#main-menu

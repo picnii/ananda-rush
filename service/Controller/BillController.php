@@ -117,19 +117,19 @@
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('companyFax', 'Fax', getCompanyFaxFromSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  '--');
+		$variable = getBillVariable('HouseNumber', 'บ้านเลขที่',  getCustomerHouseAddress($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('HouseType', 'แบบบ้าน',  getItemTypeFromSaleData($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('HouseSize', 'พื้นที่ใช้สอย',  getAreaFromSaleData($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('DocumentDate', 'วันที่แจ้ง',  '--');
+		$variable = getBillVariable('DocumentDate', 'วันที่แจ้ง',  getCallTime($data));
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('SaleName', 'ชื่อผู้ติดต่อ',  '--');
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayDate', 'วันที่นัดโอน',  '--');
+		$variable = getBillVariable('PayDate', 'วันที่นัดโอน',   getAppointDate($data));
 		array_push($bill->variables, $variable);
-		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  '--');
+		$variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  getAppointTime($data));
 		array_push($bill->variables, $variable);
 		
 		$variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  $data->SalesName );
@@ -200,6 +200,15 @@
 		$variable = getBillVariable('PriceRoomOfPayment', 'ค่าห้องชุดที่ต้องชำระ',  getPaymentPrice($data));
 		array_push($bill->variables, $variable);
 		
+		$variable = getBillVariable('Repayment','ค่าปลอด',  getRepayment($data));
+		array_push($bill->variables, $variable);
+
+		$variable = getBillVariable('ProjectName','ค่าปลอด', getProjectNameFromSaleData($data));
+		array_push($bill->variables, $variable);
+
+
+		
+
 		return $bill;
 	}
 	
@@ -258,7 +267,27 @@
 		return $sample;	
 	}
 
+	function actionGetPaymentIds()
+	{
 
+		$meters = array(
+			"electricMeter15Amp" => 6,
+			"electricMeter30Amp" => 26,
+			"waterMeter" => 25
+		);
+
+		$share_payment_id = 18;
+		$tranfer_payment_id = 34;
+		$share_fund_payment_id = 27;
+		$room_payment = 24;
+		return array(
+			"meters"=>$meters,
+			"share_payment_id" => $share_payment_id,
+			"tranfer_payment_id" => $tranfer_payment_id,
+			"share_fund_payment_id" => $share_fund_payment_id,
+			"room_payment" => $room_payment
+		);
+	}
 	
 	//testBill();
 	//header('Content-Type: text/html; charset=utf-8');

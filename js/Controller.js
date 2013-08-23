@@ -84,14 +84,26 @@ function HomeCtrl($scope, $rootScope, $routeParams, $location, Type, Template, U
 
 }
 
-function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
+function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type)
 {
 	//$scope.datas = Npop.query();
 
+	$scope.billPayment = Type.getBillPayment(function(data){
+		console.log('bill payment')
+		console.log(data);
+		$scope.meter_ids = [];
+		$.each(data.meters, function(index, value) {
+		    console.log(value);
+		    $scope.meter_ids.push(value);
+		}); 
+		$scope.getPaymentBase();
+	})
+
 	$scope.datas = Npop.get({uid: $routeParams.uid, tid: $routeParams.tid}, function(data) {
    	 //$scope.mainImageUrl = phone.images[0];
+   	 $scope.loading = false;
   	});
-
+	$scope.loading = true;
 
 	var billId = $routeParams.bid;
 	$scope.billId = billId;
@@ -116,12 +128,20 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
 		return myvar.name;
 	}
 
+	$scope.getPaymentByPaymentId = function(id)
+	{
+		//console.log('payments')
+		if(typeof($scope.datas.payments) != 'undefined')
+			return getPaymentByPaymentId(id, $scope.datas.payments, $scope.datas.variables);
+		else
+			return null;
+	}
+
 	$scope.getSumCustomerPayment = function()
 	{
 		if($scope.datas.payments == undefined)
 			return null;
 		var sum = 0;
-		
 		
 		for(var i = 0;i < $scope.datas.payments.length; i++)
 		{
@@ -134,6 +154,41 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
 				sum += value;
 			
 			
+		}
+		return sum;
+	}
+
+	$scope.getSumBankPayment = function()
+	{
+		if($scope.datas.payments == undefined)
+			return null;
+		var sum = 0;
+		//console.log('Sum Bank');
+		for(var i = 0;i < $scope.datas.payments.length; i++)
+		{
+			var raw_formula = $scope.datas.payments[i].formulas[BANK_INDEX];
+		//	console.log(raw_formula);
+			//$scope.datas.payments[i].formulas[index] = $scope.getFormulaValue(raw_formula);
+			var value = $scope.getFormulaValue(raw_formula);;		
+			if(value !=null && typeof(value) != "string")
+				sum += value;
+		}
+		return sum;
+	}
+
+	$scope.getSumCompanyPayment = function()
+	{
+		if($scope.datas.payments == undefined)
+			return null;
+		var sum = 0;
+		
+		for(var i = 0;i < $scope.datas.payments.length; i++)
+		{
+			var raw_formula = $scope.datas.payments[i].formulas[COMPANY_INDEX];
+			//$scope.datas.payments[i].formulas[index] = $scope.getFormulaValue(raw_formula);
+			var value = $scope.getFormulaValue(raw_formula);;		
+			if(value !=null && typeof(value) != "string")
+				sum += value;
 		}
 		return sum;
 	}
@@ -161,7 +216,48 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print)
 		return contract - actual;
 	}
 
+	$scope.getPaymentBase = function()
+	{
+		//meter
+		var meter_payment = 0;
+		for(var i = 0; i < $scope.meter_ids.length ;i++)
+		{
+			var id = $scope.meter_ids[i];
+			var payment = $scope.getPaymentByPaymentId(id);
+			if(payment != null)
+			{
+				payment = payment[CUSTOMER_INDEX];
+			meter_payment += payment;
+			}
+			
+		}
+	//	console.log('meter:'+meter_payment);
+	//	console.log($scope.billPayment.room_payment);
+		var room_payment = $scope.getPaymentByPaymentId($scope.billPayment.room_payment);
+		room_payment = room_payment[CUSTOMER_INDEX];
+		
+	//	console.log('ค่าห้อง'+room_payment);
+		var share_payment = $scope.getPaymentByPaymentId($scope.billPayment.share_payment_id);	
+		share_payment = share_payment[CUSTOMER_INDEX];
+	//	console.log('ค่าส่วนกลาง'+share_payment);;
+		var tranfer_payment = $scope.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id);
 
+		tranfer_payment = tranfer_payment[BANK_INDEX];
+	//	console.log('ค่าโอน'+tranfer_payment);;
+		var share_fund_payment = $scope.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id);	
+		share_fund_payment = share_fund_payment[CUSTOMER_INDEX];
+		//console.log('ค่ากองทุนกลาง'+share_fund_payment);
+		//ค่าห้อง
+		var payment_base = {
+			meter_payment:meter_payment,
+			room_payment:room_payment,
+			share_payment:share_payment,
+			tranfer_payment:tranfer_payment,
+			share_fund_payment:share_fund_payment
+		};
+		console.log(payment_base)
+		return payment_base;
+	}
 
 }
 
@@ -173,8 +269,9 @@ function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Templa
 	$scope.unit_ids = loadTempData();
 	$scope.templates = Template.query(function(data){
 		$scope.template_id = data[data.length-1].id;
-
+		$scope.loading = false;
 	});
+	$scope.loading = true;
 
 	var unit_id_str = convertUnitIdsToStr($scope.unit_ids);
 	$http({
@@ -782,6 +879,7 @@ function UnitListCtrl($scope, $rootScope, $location, Type, Template, Unit)
 
 function AppointCtrl($scope, $rootScope, $location, $routeParams, Appoint)
 {
+	$scope.authorize = "0";
 	var now = new Date();
 	$scope.appointdate =  {date: {date: new Date("2012-09-01T00:00:00.000Z")}};
 	$scope.refresh = function(){

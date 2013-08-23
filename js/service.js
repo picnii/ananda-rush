@@ -30,7 +30,8 @@ angular.module('dataServices', ['ngResource']).
   return $resource('service/index.php', {}, {
     getRoomType: {method:'GET', params:{action:'type', type:'room'}, isArray:true },
     getProjectsList: {method:'GET', params:{action:'type', type:'projects'}, isArray:true },
-    getCompaniesList: {method:'GET', params:{action:'type', type:'companies'}, isArray:true }
+    getCompaniesList: {method:'GET', params:{action:'type', type:'companies'}, isArray:true },
+    getBillPayment:{method:'GET',params:{action:'billPayment'}}
   });
 }).factory('Unit', function($resource){
   return $resource('service/index.php', {}, {

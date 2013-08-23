@@ -1,8 +1,15 @@
 <?php require('init.php'); ?>
 <!doctype html>
-<html ng-app="ananda">
+<html xmlns:ng="http://angularjs.org" id="ng-app" ng-app="ananda">
 <head>
+    <script type="text/javascript">
+        if (!window.console) 
+            console = function(data){} 
+   </script>
 	<link href="lib/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <!--[if lte IE 8]>
+      <script type="text/javascript/json-master/json2.js" src="lib/json-master/json2.js"></script>
+    <![endif]-->
 	<script type="text/javascript" src="lib/jquery.min.js"></script>
 
 	<script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
@@ -24,6 +31,18 @@
      <script type="text/javascript" src="js/init.js"></script>
     <script type="text/javascript" src="js/service.js"></script>
       <script type="text/javascript" src="js/Controller.js"></script>
+      <!--[if lte IE 8]>
+      <script>
+        document.createElement('ng-include');
+        document.createElement('ng-pluralize');
+        document.createElement('ng-view');
+ 
+        // Optionally these for CSS
+        document.createElement('ng:include');
+        document.createElement('ng:pluralize');
+        document.createElement('ng:view');
+      </script>
+    <![endif]-->
     <style type="text/css">
     	.hide{
     		display: none;

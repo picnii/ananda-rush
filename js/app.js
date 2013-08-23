@@ -31,8 +31,12 @@ angular.module('areaFilters', []).filter('up2area', function() {
   return function(input) {
   	if(input == 0)
   		return "-";
-   	if(typeof(input) == 'number')
-    	return input.formatMoney(2,',','.');  ;
+   	if(!isNaN(input))
+    {
+      input = Number(input);
+      return input.formatMoney(2,',','.'); 
+    }
+    
     return input;
   };
 }).filter('areaDifference', function() {

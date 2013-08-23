@@ -8,6 +8,8 @@ app.run(function($rootScope) {
 	utils
 */
 var CUSTOMER_INDEX = 2;
+var BANK_INDEX = 1;
+var COMPANY_INDEX = 0;
 
 function getVariables(varset, varname)
 {
@@ -64,6 +66,27 @@ function getFormulaValue(varset, formula)
 	//console.log(run_formula);
 
 	return eval(run_formula);
+}
+
+function getPaymentByPaymentId(id, payments, varset)
+{
+	for(var i =0; i < payments.length; i++)
+	{
+		if(payments[i].id == id)
+		{
+			var formulas = payments[i].formulas;
+
+			var answer = [];
+			for(var j =0; j < formulas.length; j++)
+			{
+				var formula = formulas[j];
+				answer[j] = getFormulaValue(varset, formula);
+			}
+			
+			return answer;
+		}
+	}
+	return null;
 }
 
 

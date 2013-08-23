@@ -68,8 +68,11 @@ function findPreID($tran_item){
 function findOldInformation($transaction_id)
 {
     $sql = "SELECT *, m.projID as project_code FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
-    LEFT JOIN master_project as mp ON m.projID = mp.proj_code
+    LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
+    LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = mp.id
+    LEFT JOIN tranfer_appointment_log as tapl ON tapl.id = tap.log_id
     WHERE transaction_id = {$transaction_id}";
+
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
      $row['q_type'] = 'oldInfo';
@@ -153,9 +156,12 @@ function findInformation($pre_id)
                      $SQL1.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                      $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
-                     $SQL1.=",t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC";
+                     $SQL1.=",t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC , t.IVZ_PROJSALESTITLEDEEDNUMBER ";
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
+
+                     $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time ";
+
                      $SQL1.="from Sale_Transection s ";
                      $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
                      $SQL1.="inner join master_transaction t on p.itemid = t.ItemId ";
@@ -164,6 +170,10 @@ function findInformation($pre_id)
                      $SQL1.="inner join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
                      $SQL1.="inner join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
                      $SQL1.="inner join master_project mp on mp.proj_code = t.projID ";
+
+                     $SQL1.="LEFT JOIN tranfer_appointment tap on tap.transaction_id = t.id ";
+                     $SQL1.="LEFT JOIN tranfer_appointment_log tapl on tapl.id = tap.log_id ";
+
                      $SQL1.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
                      $res = DB_query($GLOBALS['connect'],$SQL1);
                      $row = DB_num_rows($res);
@@ -193,15 +203,24 @@ function findInformation($pre_id)
                          $SQL.=",p.csnote as Preapp_csnote,p.RoomNo as Preapp_RoomNo,p.Building as Preapp_Building,p.Floor as Preapp_Floor";
                          $SQL.=",p.ItemType as Preapp_ItemType,p.ProjectName as Preapp_ProjectName,p.ProjID as Preapp_ProjID,p.lastupdate as Preapp_lastupdate";
                          $SQL.=",t.transaction_id,t.CompanyCode as master_CompanyCode,t.ProjID as master_ProjID,t.Brand as master_Brand,t.ItemID as master_ItemID,t.ItemName as master_ItemName,";
-                         $SQL.="t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC,";
+                         $SQL.="t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC, t.IVZ_PROJSALESTITLEDEEDNUMBER,";
                         $SQL.="t.Floor as master_Floor,t.UnitNo as master_UnitNo,t.RoomNo as master_RoomNo,t.Sqm as master_Sqm,t.Door as master_Door,t.Direction as master_Direction,";
                         $SQL.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                         $SQL.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE,mp.* ";
+
+                        $SQL.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time ";
+
                          $SQL.="from Sale_Transection s ";
                          $SQL.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
                          $SQL.="inner join master_transaction t on p.itemid = t.ItemId ";
                           $SQL.="inner join master_project mp on mp.proj_code = t.projID ";
+
+                        $SQL.="LEFT JOIN tranfer_appointment tap on tap.transaction_id = t.transaction_id ";
+                        $SQL.="LEFT JOIN tranfer_appointment_log tapl on tapl.id = tap.log_id ";
+                     
+
                          $SQL.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
+                         //echo $SQL;
                          $rs = DB_query($GLOBALS['connect'],$SQL);
                          $dt =  DB_fetch_array($rs);
                          return $dt;
@@ -854,9 +873,9 @@ function findAllBill($q)
    {
         $min_repayment = $bill->IVZ_LOANREPAYMENTMINIMUNAMT;
         $percent_reapayment = $bill->IVZ_LOANREPAYMENTPERC / 100;
-
+     
         return max($min_repayment , $percent_reapayment * getPriceOnContractFromSaleData($bill));
-        //return 0.75 * getPriceOnContractFromSaleData($bill);
+
    }
 
    function getSumBankPayments($bill)
@@ -892,14 +911,50 @@ function findAllBill($q)
         //case bank
    }
 
+   function  getCustomerHouseAddress($bill)
+   {
+    if(isset($bill->IVZ_PROJSALESTITLEDEEDNUMBER))
+        return $bill->IVZ_PROJSALESTITLEDEEDNUMBER;
+    else
+     return '?';
+   }
+
+   function getCallTime($bill)
+   {
+    if(isset($bill->call_time))
+    {
+     return $bill->call_time->format('Y/m/d H:i:s');
+    }else 
+      return "?";
+   }   
+
+   function getAppointDate($bill)
+   {
+    if(isset($bill->appoint_time))
+    {
+     return $bill->appoint_time->format('Y/m/d');
+    }else 
+      return "?";
+   }
+
+   function getAppointTime($bill)
+   {
+    if(isset($bill->appoint_time))
+    {
+     return $bill->appoint_time->format('H:i:s');
+    }else 
+      return "?";
+   }
+
    function getBillVariable($codename, $description, $value)
     {
         $variable = new stdClass;
         $variable->$codename = new stdClass;
         $variable->$codename->name = $description;
-        $variable->$codename->value = $value;
+        $variable->$codename->value = convertutf8($value);
         return $variable;
     }
+
 
 
 
