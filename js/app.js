@@ -16,7 +16,8 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
           when('/testprint', {templateUrl:'template/print.html', controller: BillPrintTestCtrl}).
           when('/testcheque', {templateUrl:'template/check.html', controller: ChequeTestCtrl}).
           when('/appoint/:itemId', {templateUrl:'template/appoint.html', controller: AppointCtrl}).
-          when('/transaction', {templateUrl:'template/transaction.html', controller: TransactionCtrl}).
+          when('/transactions', {templateUrl:'template/transactions.html', controller: TransactionCtrl}).
+          when('/transactions/print',{templateUrl:'template/print-transactions.html', controller:TransactionPrintCtrl} ).
 		      otherwise({redirectTo: '/'});
 		}]);
 

@@ -421,231 +421,9 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 		ids_str += "unit_ids[]=" + uids[i]
 	}
 	
-	$scope.getFormulaValue = function(variables, formula)
-	{
-		return getFormulaValue(variables, formula);
-	}
-
-	$scope.getSumCustomerPayment = function(variables, payments)
-	{
-		return $scope.getSumColumPayment(variables, payments, CUSTOMER_INDEX);;
-	}
-
-	$scope.getSumBankPayment = function(variables, payments)
-	{
-		return $scope.getSumColumPayment(variables, payments, BANK_INDEX);;
-	}
-
-	$scope.getSumCompanyPayment = function(variables, payments)
-	{
-		return $scope.getSumColumPayment(variables, payments, COMPANY_INDEX);;
-	}
-
-	$scope.getSumColumPayment = function(variables, payments, index)
-	{
-		if(payments == undefined)
-			return null;
-		var sum = 0;
-		
-		for(var i = 0;i < payments.length; i++)
-		{
-			var raw_formula = payments[i].formulas[index];
-			
-			//bill.payments[i].formulas[index] = bill.getFormulaValue(raw_formula);
-			var value = $scope.getFormulaValue(variables, raw_formula);;
-			
-			if(value !=null && typeof(value) != "string")
-				sum += value;
-			
-			
-		}
-		return sum;
-	}
-
-	/*$http({
-                method: 'POST',
-                url: 'service/index.php',
-                data: 'action=bills&template_id='+$routeParams.tid+ids_str,
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function(data, status) {*/
+	
     Bill.preview({action:'bills', unit_ids:uids, template_id:$routeParams.tid}, function(data){
-
-    	console.log(data);
-
-    //})
-      //          $scope.status = status;
-                	$scope.bills = data;
-                	console.log($scope.bills)
- 					for(var i=0; i<$scope.bills.length;i++)
- 					{
- 						var variables =$scope.bills[i].variables;
- 						var payments = $scope.bills[i].payments;
-						var bill =$scope.bills[i];
- 						
- 						var bill_vars = bill.variables;
-
-						bill.getFormulaValue  = function(formula)
-						{
-							return getFormulaValue(bill_vars, formula);
-						}
-
-						bill.getVar = bill.getVariablesValue = function(varname)
-						{
-							//console.log('log');
-							//console.log(bill_vars)
-							return getVariablesValue(bill_vars, varname)
-						}
-
-						bill.getName = function(varname)
-						{
-							var myvar =  getVariables(bill_vars, varname);
-							if(myvar == undefined)
-								return undefined;
-							return myvar.name;
-						}
-
-						bill.getPaymentByPaymentId = function(id)
-						{
-							//console.log('payments')
-							if(typeof(bill.payments) != 'undefined')
-								return getPaymentByPaymentId(id, bill.payments, bill_vars);
-							else
-								return null;
-						}
-
-						bill.getFinalCustomerPayment = function()
-						{
-							var getVar  = bill.getVar;
-							var firstSum = bill.getSumCustomerPayment();
-							var commonCharge = getVar("commonFeeCharge");
-							if(typeof(commonCharge) != 'number')
-								commonCharge = 0;
-							var commonFund = getVar("commonFeeFund");
-							if(typeof(commonFund) != 'number')
-								commonFund = 0;
-							
-							return firstSum + commonFund + commonCharge + getVar("feeForMinistryOfFinance") + getVar("feeForTranferCash")
-						}
-
-						bill.getDiffArea = function(actual, contract)
-						{
-							if(actual == null)
-								return null;
-							else if(contract)
-								return null;
-							return contract - actual;
-						}
-
-						bill.getShowBankPayment = function()
-						{
-							var payment_base = bill.getPaymentBase();
-							//var A = payment_base.meter_payment + payment_base.room_payment;
-							return Math.max(0, bill.getRealBankPayment() );
-
-						}
-
-						bill.getShowCompanyPayment = function()
-						{
-							var payment_base = bill.getPaymentBase();
-							var A = payment_base.room_payment + payment_base.meter_payment;
-							return A - bill.getRealBankPayment(); 
-						}
-
-						bill.getRealBankPayment = function()
-						{
-							var payment_base = bill.getPaymentBase();
-							var repayment = bill.getVar("Repayment");
-							if(isNaN(repayment))
-								repayment = 0;
-							return repayment - payment_base.sum_bank_loan;
-						}
-
-						bill.getPaymentBase = function()
-						{
-							//meter
-							var meter_payment = 0;
-							for(var i = 0; i < $scope.meter_ids.length ;i++)
-							{
-								var id = $scope.meter_ids[i];
-								var payment = bill.getPaymentByPaymentId(id);
-								if(payment != null)
-								{
-									payment = payment[CUSTOMER_INDEX];
-								meter_payment += payment;
-								}
-								
-							}
-							var room_payment = bill.getPaymentByPaymentId($scope.billPayment.room_payment);
-							room_payment = room_payment[CUSTOMER_INDEX];
-							
-							var share_payment = bill.getPaymentByPaymentId($scope.billPayment.share_payment_id);	
-							share_payment = share_payment[CUSTOMER_INDEX];
-
-							var tranfer_payment = bill.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id);
-
-							tranfer_payment = tranfer_payment[BANK_INDEX];
-
-							var share_fund_payment = bill.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id);	
-							share_fund_payment = share_fund_payment[CUSTOMER_INDEX];
-						
-							//ค่าห้อง
-							var payment_base = {
-								meter_payment:meter_payment,
-								room_payment:room_payment,
-								share_payment:share_payment,
-								tranfer_payment:tranfer_payment,
-								share_fund_payment:share_fund_payment,
-								sum_bank_loan:0
-							};
-							//console.log(payment_base)
-							return payment_base;
-						}
-
-						bill.getMinistryPayment = function()
-						{
-							var estimate = bill.getVar("EstimatePrice");
-							var estimate_payment = 0.01 * estimate;
-							var payment_base = bill.getPaymentBase();
-							var answer = estimate_payment + (payment_base.sum_bank_loan * 0.01);
-							return answer - bill.getCashPayment();
-						}
-
-						bill.getCashPayment = function()
-						{
-							return 1000;
-						}	
-
-						/**/
-						for(var k =0 ; k < bill_vars.length ;k++)
-						{
-							var cur_var = bill_vars[k];
-							var eval_str = '';
-							for(var key in cur_var)
-							{
-								if(isNaN(key))
-								{
-									eval_str += "bill."+key+" = bill.getVar('"+key+"')";
-									eval(eval_str);
-								}
-							}
-							//console.log(eval_str);
-						}
-						for(var k =0; k < bill.payments.length;k++)
-						{
-							var payment = bill.payments[k];
-
-							//payment.bankPayment = bill.getFormulaValue(payment.formulas[0]);
-							//payment.companyPayment = bill.getFormulaValue(payment.formulas[1]);
-							//payment.customerPayment = bill.getFormulaValue(payment.formulas[2]);
-							payment.bankFormula = payment.formulas[0];
-							payment.companyFormula = payment.formulas[1];
-							payment.customerFormula = payment.formulas[2];
-							//console.log( bill.getFormulaValue(payment.formulas[2]));
-						}
-
-
- 					}
-               
+       $scope.bills = convertBillPrint($scope, data)          
     });
 
 	/*$scope.template = Template.get({tid: $routeParams.tid}, function(data) {
@@ -1148,9 +926,71 @@ function AppointCtrl($scope, $rootScope, $location, $routeParams, Appoint)
 
 }
 
-function TransactionCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type)
+function TransactionCtrl($scope, $filter, $rootScope, $routeParams, $location, Bill, Print, Type)
 {
+	$scope.transactions  = Bill.list(function(transactions){
+		for(var i =0; i < transactions.length ; i++)
+		{
+			var transaction = transactions[i];
+			transaction.checked = true;
+		}
+	});
 
+	$scope.selectedTransactions = function () {
+    	return $filter('filter')($scope.transactions, {checked: true});
+	};
+
+	$scope.test = function()
+	{
+		console.log($scope.selectedTransactions());
+	}
+
+	$scope.toggleSelect = function()
+	{
+		for(var i =0 ; i < $scope.transactions.length; i++)
+		{
+			var transaction = $scope.transactions[i];
+			transaction.checked = ! transaction.checked;
+		}
+	}
+}
+
+function TransactionPrintCtrl($scope, $rootScope, $routeParams, $location, Bill, Print, Type)
+{
+	$scope.billPayment = Type.getBillPayment(function(data){
+		$scope.meter_ids = [];
+		$.each(data.meters, function(index, value) {
+		    console.log(value);
+		    $scope.meter_ids.push(value);
+		}); 
+		$scope.getPaymentBase();
+	})
+
+	
+
+	Bill.test(function(transactions){
+		console.log(transactions);
+		for(var i = 0 ; i < transactions.length ;i++)
+		{
+			transaction = transactions[i];
+			temp = JSON.parse(transaction.variables);
+			transaction.variables = temp.variables;
+			transaction.payments = temp.payments;
+			//transaction.payments = JSON.parse(transaction.payments);
+		}
+		$scope.bills = transactions;
+		$scope.bills = convertBillPrint($scope, transactions)
+		
+	});
+
+}
+
+function TransactionEditCtrl($scope, $rootScope, $routeParams, $location, Bill, Print, Type)
+{
+	var transaction_id = $routeParams.transaction_id;
+	Bill.view({id:transaction_id},function(data){
+		console.log(data);
+	});
 }
 
 var doOnceCount = 0;
@@ -1217,4 +1057,229 @@ function convertUnitIdsToStr(uids)
 		ids_str += "unit_ids[]=" + uids[i]
 	}
 	return ids_str;
+}
+
+function convertBillPrint($scope, data)
+{
+
+	$scope.bills = data;
+    console.log($scope.bills)
+	for(var i=0; i<$scope.bills.length;i++)
+	{
+		var variables =$scope.bills[i].variables;
+		var payments = $scope.bills[i].payments;
+		var bill =$scope.bills[i];
+		
+		var bill_vars = bill.variables;
+
+		bill.getFormulaValue  = function(formula)
+		{
+			return getFormulaValue(bill_vars, formula);
+		}
+
+		bill.getVar = bill.getVariablesValue = function(varname , variables)
+		{
+			//console.log('log');
+			//console.log(bill_vars)
+			if(variables == null)
+				return getVariablesValue(bill_vars, varname);
+			else
+				return getVariablesValue(variables, varname);
+		}
+
+		bill.getName = function(varname)
+		{
+			var myvar =  getVariables(bill_vars, varname);
+			if(myvar == undefined)
+				return undefined;
+			return myvar.name;
+		}
+
+		bill.getPaymentByPaymentId = function(id, variables, payments)
+		{
+			//console.log('payments')
+			if(typeof(bill.payments) != 'undefined')
+				return getPaymentByPaymentId(id, payments, variables);
+			else
+				return null;
+		}
+
+		bill.getFinalCustomerPayment = function(variables, payments)
+		{
+			var getVar  = bill.getVar;
+			var firstSum = $scope.getSumCustomerPayment(variables, payments);
+			var commonCharge = getVar("commonFeeCharge");
+			if(typeof(commonCharge) != 'number')
+				commonCharge = 0;
+			var commonFund = getVar("commonFeeFund");
+			if(typeof(commonFund) != 'number')
+				commonFund = 0;
+			
+			return firstSum + commonFund + commonCharge + getVar("feeForMinistryOfFinance", variables) + getVar("feeForTranferCash", variables)
+		}
+
+		bill.getDiffArea = function(actual, contract)
+		{
+			if(actual == null)
+				return null;
+			else if(contract)
+				return null;
+			return contract - actual;
+		}
+
+		bill.getShowBankPayment = function(variables, payments)
+		{
+			var payment_base = bill.getPaymentBase(variables, payments);
+			//var A = payment_base.meter_payment + payment_base.room_payment;
+			return Math.max(0, bill.getRealBankPayment(variables, payments) );
+
+		}
+
+		bill.getShowCompanyPayment = function(variables, payments)
+		{
+			var payment_base = bill.getPaymentBase(variables, payments);
+			var A = payment_base.room_payment + payment_base.meter_payment;
+			return A - bill.getRealBankPayment(variables, payments); 
+		}
+
+		bill.getRealBankPayment = function(variables, payments)
+		{
+			var payment_base = bill.getPaymentBase(variables, payments);
+			var repayment = bill.getVar("Repayment", variables);
+			if(isNaN(repayment))
+				repayment = 0;
+			return repayment - payment_base.sum_bank_loan;
+		}
+
+		bill.getPaymentBase = function(variables, payments)
+		{
+			//meter
+			var meter_payment = 0;
+			for(var i = 0; i < $scope.meter_ids.length ;i++)
+			{
+				var id = $scope.meter_ids[i];
+				var payment = bill.getPaymentByPaymentId(id, variables, payments);
+				if(payment != null)
+				{
+					payment = payment[CUSTOMER_INDEX];
+					meter_payment += payment;
+				}
+				
+			}
+			var room_payment = bill.getPaymentByPaymentId($scope.billPayment.room_payment, variables, payments);
+			room_payment = room_payment[CUSTOMER_INDEX];
+			
+			var share_payment = bill.getPaymentByPaymentId($scope.billPayment.share_payment_id, variables, payments);	
+			share_payment = share_payment[CUSTOMER_INDEX];
+
+			var tranfer_payment = bill.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id, variables, payments);
+
+			tranfer_payment = tranfer_payment[BANK_INDEX];
+
+			var share_fund_payment = bill.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id, variables, payments);	
+			share_fund_payment = share_fund_payment[CUSTOMER_INDEX];
+		
+			//ค่าห้อง
+			var payment_base = {
+				meter_payment:meter_payment,
+				room_payment:room_payment,
+				share_payment:share_payment,
+				tranfer_payment:tranfer_payment,
+				share_fund_payment:share_fund_payment,
+				sum_bank_loan:0
+			};
+			//console.log(payment_base)
+			return payment_base;
+		}
+
+		bill.getMinistryPayment = function(variables, payments)
+		{
+			var estimate = bill.getVar("EstimatePrice", variables);
+			var estimate_payment = 0.01 * estimate;
+			var payment_base = bill.getPaymentBase(variables, payments);
+			var answer = estimate_payment + (payment_base.sum_bank_loan * 0.01);
+			return answer - bill.getCashPayment(variables, payments);
+		}
+
+		bill.getCashPayment = function(variables, payments)
+		{
+			return 1000;
+		}	
+
+		/**/
+		for(var k =0 ; k < bill_vars.length ;k++)
+		{
+			var cur_var = bill_vars[k];
+			var eval_str = '';
+			for(var key in cur_var)
+			{
+				if(isNaN(key))
+				{
+					eval_str += "bill."+key+" = bill.getVar('"+key+"')";
+					eval(eval_str);
+				}
+			}
+			//console.log(eval_str);
+		}
+
+		for(var k =0; k < bill.payments.length;k++)
+		{
+			var payment = bill.payments[k];
+
+			//payment.bankPayment = bill.getFormulaValue(payment.formulas[0]);
+			//payment.companyPayment = bill.getFormulaValue(payment.formulas[1]);
+			//payment.customerPayment = bill.getFormulaValue(payment.formulas[2]);
+			payment.bankFormula = payment.formulas[0];
+			payment.companyFormula = payment.formulas[1];
+			payment.customerFormula = payment.formulas[2];
+			//console.log( bill.getFormulaValue(payment.formulas[2]));
+		}
+
+
+	}
+
+	/* Scope Fundamental */
+	$scope.getFormulaValue = function(variables, formula)
+	{
+		return getFormulaValue(variables, formula);
+	}
+
+	$scope.getSumCustomerPayment = function(variables, payments)
+	{
+		return $scope.getSumColumPayment(variables, payments, CUSTOMER_INDEX);;
+	}
+
+	$scope.getSumBankPayment = function(variables, payments)
+	{
+		return $scope.getSumColumPayment(variables, payments, BANK_INDEX);;
+	}
+
+	$scope.getSumCompanyPayment = function(variables, payments)
+	{
+		return $scope.getSumColumPayment(variables, payments, COMPANY_INDEX);;
+	}
+
+	$scope.getSumColumPayment = function(variables, payments, index)
+	{
+		if(payments == undefined)
+			return null;
+		var sum = 0;
+		
+		for(var i = 0;i < payments.length; i++)
+		{
+			var raw_formula = payments[i].formulas[index];
+			
+			//bill.payments[i].formulas[index] = bill.getFormulaValue(raw_formula);
+			var value = $scope.getFormulaValue(variables, raw_formula);;
+			
+			if(value !=null && typeof(value) != "string")
+				sum += value;
+			
+			
+		}
+		return sum;
+	}
+
+
+	return $scope.bills;
 }

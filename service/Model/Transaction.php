@@ -329,7 +329,8 @@ ELSE
 
 function findAllLastTransactions($selector = "*")
 {
-    $sql = "SELECT {$selector} FROM tranfer_transaction WHERE id IN ( SELECT MAX(id) as id from tranfer_transaction  GROUP BY unit_id, template_id ) ";
+    $sql = "SELECT {$selector} FROM tranfer_transaction  INNER JOIN master_transaction on master_transaction.transaction_id = tranfer_transaction.unit_id WHERE id IN ( SELECT MAX(id) as id from tranfer_transaction  GROUP BY unit_id, template_id )";
+    //echo $sql;
     $result = DB_query($GLOBALS['connect'],$sql);
     /*$numrow = DB_num_rows($result);
     if(!($numrow > 0))
@@ -428,10 +429,15 @@ function findTransaction($q)
 /*
 *
 */
-function findAllTransaction()
+function findAllTransaction($unit_ids=null)
 {
-	$SQL = "SELECT * FROM tranfer_transaction";
+    if($unit_ids == null)
+        $SQL = "SELECT * FROM tranfer_transaction ";
+    else
+	   $SQL = "SELECT * FROM tranfer_transaction WHERE ".getIdClauseFromParams($unit_ids, 'unit_id');
+  //  echo $SQL;
     $result = DB_query($GLOBALS['connect'],$SQL);
+
     $numrow = DB_num_rows($result);
 	if($numrow > 0){
         $data = array(); 

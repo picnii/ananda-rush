@@ -1,6 +1,6 @@
 <?php
 
-    $billActions = array('bills', 'bill','createBills', 'billPayment', 'transactions');
+    $billActions = array('bills', 'bill','createBills', 'billPayment', 'transactions', 'listTransactions');
 /* Bill Service */
 
 	if(isset($_POST['action']))
@@ -26,7 +26,9 @@
 		if($action == 'billPayment')
 			$response = actionGetPaymentIds();
 		if($action == 'transactions')
-			$response = actionTransactions(array(2157, 2158));
+			$response = actionTransactions(array(2168, 2169));
+		if($action == 'listTransactions')
+			$response = actionAllTransactions();
 		if($action == 'testtest')
 			$response = array('cool');
 	}

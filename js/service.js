@@ -48,6 +48,8 @@ angular.module('dataServices', ['ngResource']).
   return $resource('service/index.php', {}, {
     create:{method:'POST', params:{action:'createBills'}},
     preview:{method:'POST', isArray:true},
+    list:{method:'GET', params:{action:'listTransactions'}, isArray:true},
+    test:{method:'GET', params:{action:'transactions'}, isArray:true}
   });
 }).factory('Appoint', function($resource){
   return $resource('service/index.php', {}, {

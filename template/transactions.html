@@ -1,0 +1,27 @@
+<section ng-controller="TransactionCtrl" >
+
+	<table class="table">
+		<tr>
+			<td>
+				<input type="button" ng-click="toggleSelect()" value="toggle">
+			</td>
+			<td>
+				ItemID
+			</td>
+			<td>
+				UnitID
+			</td>
+			<td>
+
+			</td>
+		<tr>
+		<tr ng-repeat="transaction in transactions">
+			<td><input type="checkbox" name="transactions[]" ng-model="transaction.checked" ng-checked="transaction.checked" id="transaction-{{transaction.id}}"/></td>
+			<td>{{transaction.itemId}}</td>
+			<td>{{transaction.unit_id}}</td>
+			<td><button>โอน</button></td>
+		</tr>
+	</table>
+	<button ng-click="test()">Preview</button>
+
+</section>

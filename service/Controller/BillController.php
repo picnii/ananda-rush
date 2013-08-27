@@ -89,8 +89,13 @@
 
 	function actionTransactions($unit_ids)
 	{
-		$bills = findAllLastTransactionsByUnitIds($unit_ids);
+		$bills = findAllTransaction($unit_ids);
 		return $bills;
+	}
+
+	function actionAllTransactions()
+	{
+		return findAllLastTransactions("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id");
 	}
 
 
