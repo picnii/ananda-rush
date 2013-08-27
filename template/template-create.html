@@ -1,12 +1,36 @@
-<section ng-controller="TemplateCreateCtrl" class="container">
-
-
-	Name <input type="text" ng-model="template.name">
-	Color <input type="color" ng-model="template.color">
-	
-	<table>
+<section ng-controller="TemplateCreateCtrl">
+<div style="margin:auto; width:500px; ">
+    <h2>TemplateCreate</h2>
+</div>
+<div style="margin:auto; border:1px solid #ccc; padding:10px; padding-bottom:20px; width:500px;">
+	<div>
+        <span style="margin-right:70px;"> Name : </span>
+        <span style="margin-right:10px;">
+            <input type="text" ng-model="template.name" required placeholder="Template Name">
+        </span>
+    </div>
+    <div>
+	<span style="margin-right:71px;"> Color : </span>
+    <span style="margin-right:10px;">
+        <input type="color" ng-model="template.color">
+    </span>
+    </div>
+    <div>
+    <span style="margin-right:10px;"> รายการค่าใช้จ่าย : </span>
+    <span style="margin-right:10px;">
+        <select ng-model="select_payment_id">
+            <option ng-repeat="payment in payments" value="{{payment.id}}">
+                {{payment.name}}
+            </option>
+        </select>
+    </span>
+    <span style="margin-right:10px;">
+        <button ng-click="addPayment(select_payment_id)" class="btn btn-primary">Add Payment</button>
+    </span>
+    </div>
+	<table style="margin-top:10px;" >
 		<tr ng-repeat="payment in template.payments">
-			<td>{{payment.name}}</td>
+			<td  id="{{payment.name}}">{{payment.name}}</td>
 			<td>{{payment.description}}</td>
 			<td>{{payment.formulas[0]}}</td>
 			<td>{{payment.formulas[1]}}</td>
@@ -14,13 +38,13 @@
 			<td><button ng-click="removePayment(payment)" class="btn btn-danger">X</button>
 		</tr>
 	</table>
-	
-	<select ng-model="select_payment_id">
-		<option ng-repeat="payment in payments" value="{{payment.id}}">
-			{{payment.name}}
-		</option>
-	</select>
-	<button ng-click="addPayment(select_payment_id)">Add Payment</button>
-	<button ng-click="create()">Create</button>
-
+    <div style="margin-top:15px;">
+        <span style="margin-right:10px;">
+            <button ng-click="create()" class="btn btn-inverse">Create</button>
+        </span>
+    </div>
+ </div>
+ <div style="margin:auto; width:70px; margin-top:20px;">
+	<a href="#/templates" class="btn btn-warning">Back</a>
+</div>
 </section>

@@ -60,12 +60,22 @@ function getFormulaValue(varset, formula)
 		var exp = /[\w\d]+/g;
 		var var_name = raw_var_name.match(exp)[0];
 		replace_set[i] = getVariablesValue(varset, var_name);
+		if(replace_set[i] == '?')
+			return "";
 		run_formula  = run_formula.replace(raw_var_name, replace_set[i]);
 	//	console.log(run_formula);
 	}
 	//console.log(run_formula);
+	try {
+    	return eval(run_formula); 
+	} catch (e) {
+	    if (e instanceof SyntaxError) {
 
-	return eval(run_formula);
+	        console.log(e.message);
+	        console.log(run_formula);
+	    }
+	}
+	
 }
 
 function getPaymentByPaymentId(id, payments, varset)

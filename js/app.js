@@ -9,13 +9,14 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
 		      when('/bills/:bid/edit', {templateUrl: 'template/bill-edit.html',   controller: BillEditCtrl}).
           when('/payments', {templateUrl: 'template/payment.html',   controller: PaymentCtrl}).
           when('/templates', {templateUrl: 'template/template.html',   controller: TemplateCtrl}).
-           when('/templates/create', {templateUrl: 'template/template-create.html',   controller: TemplateCreateCtrl}).
+          when('/templates/create', {templateUrl: 'template/template-create.html',   controller: TemplateCreateCtrl}).
           when('/templates/:tid/edit', {templateUrl: 'template/template-edit.html',   controller: TemplateEditCtrl}).
           when('/variables', {templateUrl: 'template/variables.html',   controller: VariablesListCtrl}).
           when('/variables/create', {templateUrl: 'template/variable-create.html',   controller: VariableCreateCtrl}).
-          when('/testprint', {templateUrl:'template/print-test.html', controller: BillPrintTestCtrl}).
+          when('/testprint', {templateUrl:'template/print.html', controller: BillPrintTestCtrl}).
           when('/testcheque', {templateUrl:'template/check.html', controller: ChequeTestCtrl}).
           when('/appoint/:itemId', {templateUrl:'template/appoint.html', controller: AppointCtrl}).
+          when('/transaction', {templateUrl:'template/transaction.html', controller: TransactionCtrl}).
 		      otherwise({redirectTo: '/'});
 		}]);
 

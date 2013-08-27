@@ -1,6 +1,6 @@
 <?php
 
-    $billActions = array('bills', 'bill','createBills', 'billPayment');
+    $billActions = array('bills', 'bill','createBills', 'billPayment', 'transactions');
 /* Bill Service */
 
 	if(isset($_POST['action']))
@@ -25,6 +25,10 @@
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
 		if($action == 'billPayment')
 			$response = actionGetPaymentIds();
+		if($action == 'transactions')
+			$response = actionTransactions(array(2157, 2158));
+		if($action == 'testtest')
+			$response = array('cool');
 	}
 
 	if(isset($reqBody->action))

@@ -3,7 +3,8 @@
 	<div class="row">
 		<div class="span8">
 			<h2>Units</h2>
-			<table class="table">
+			<table class="table" style="font-size:13px !important;">
+            <div ng-show="loading" class="loading" style="margin-left: 200px;"><img src="images/loading.gif">LOADING...</div> 
 				<thead>
 					<tr>
 						<td>Item ID</td>
@@ -36,8 +37,8 @@
 			</div>
 		</div>
 	</div>
-	<button class="btn btn-inverse" ng-click="print()">Preview</button>
-	<button class="btn btn-danger" ng-click="save()">Save</button>
+	<button class="btn btn-primary" ng-click="print()">Preview</button>
+	<button class="btn btn-inverse" ng-click="save()">Save</button>
 
 
 </section>

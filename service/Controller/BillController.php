@@ -6,9 +6,12 @@
 
 		$sale_datas = getSaleDatas($unit_ids);
 		$bills = array();
+		$template = findTemplateById($template_id);
+		
 		foreach($sale_datas as $sale_data)
 		{
 			$bill = convertSaleDataToBill($sale_data, $template_id);
+			$bill->payments = $template->payments;
 			array_push($bills, $bill);
 		}
 		/*$samples[0] = getSampleBill();
@@ -23,16 +26,19 @@
 		$transaction_ids  = array();
 		$template = findTemplateById($template_id);
 		$payments_json = json_encode($template->payments);
-		$sale_data = getSaleDatas($unit_ids);
+		$sale_datas = getSaleDatas($unit_ids);
 		//print_r($sale_data);
-		$variable_units = $sale_data;//getVariableUnits($sales_data);
+		$variable_units = $sale_datas;//getVariableUnits($sales_data);
 		//print_r($variable_units);
+
 		for($i = 0;$i < count($unit_ids); $i++)
 		{
-			
-			$unit_id =  $variable_units[$i]->unit_id;
+			$unit_id =  $variable_units[$i]->transaction_id;
 			$variables = $variable_units[$i];
-			$variables_json = json_encode($variables);
+			$bill = convertSaleDataToBill($variables, $template_id);
+
+			$variables_json = json_encode($bill);
+			//echo $variables_json;
 			/*print_r(array(
 					'unit_id'=>$unit_id,
 					'template_id'=>$template_id,
@@ -80,6 +86,13 @@
 		//return $bill;*/
 		return $bill;
 	}
+
+	function actionTransactions($unit_ids)
+	{
+		$bills = findAllLastTransactionsByUnitIds($unit_ids);
+		return $bills;
+	}
+
 
 	function testBill()
 	{
@@ -201,6 +214,9 @@
 		array_push($bill->variables, $variable);
 		
 		$variable = getBillVariable('Repayment','ค่าปลอด',  getRepayment($data));
+		array_push($bill->variables, $variable);
+
+		$variable = getBillVariable('EstimatePrice','',  getEstimatePrice($data));
 		array_push($bill->variables, $variable);
 
 		$variable = getBillVariable('ProjectName','ค่าปลอด', getProjectNameFromSaleData($data));

@@ -47,7 +47,7 @@ angular.module('dataServices', ['ngResource']).
 }).factory('Bill', function($resource){
   return $resource('service/index.php', {}, {
     create:{method:'POST', params:{action:'createBills'}},
-    preview:{method:'POST'},
+    preview:{method:'POST', isArray:true},
   });
 }).factory('Appoint', function($resource){
   return $resource('service/index.php', {}, {

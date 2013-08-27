@@ -163,9 +163,9 @@
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
 						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{getVar("BankLoanName")}}</b> </div>
-						<div class="span3" align="right">{{getVar("PayCheckBank") | zeroDash}}</div>
+						<div class="span3" align="right">{{getShowBankPayment() | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{getVar("CompanyName")}}"</b> </div>
-						<div class="span3" align="right">{{getVar("PayCheckAnanda") | zeroDash}}</div>
+						<div class="span3" align="right">{{getShowCompanyPayment() | zeroDash}}</div>
 						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
 						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("ProjectName")}}"</b></div>
 						<div class="span1" align="right">{{getPaymentBase().share_payment | zeroDash}}</div>
@@ -174,11 +174,12 @@
 						<div class="span1" align="right">{{getPaymentBase().share_fund_payment | zeroDash}}</div>
 						<div class="span7">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ค่าจำนองอีก 1% เป็นแคชเชียร์เช็คสั่งจ่าย </div>
 						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
-						<div class="span1" align="right">{{getVar("PayFeeForMinistryOfFinance") | zeroDash}}</div>
+						<div class="span1" align="right">{{getMinistryPayment() | zeroDash}}</div>
 						<div class="span10" align="right"><b>และแบ่งเป็นเงินสด</b></div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{getVar("PayFeeForTranferCash") | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;">{{getCashPayment() | zeroDash}}</div>
 						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
-						<div class="span2" align="right" style="border-bottom-style:double"><b>{{getVar("FinalCustomerPayment") | zeroDash}}</b></div>
+						<div class="span2" align="right" style="border-bottom-style:double"><b>{{
+						 getCashPayment() + getMinistryPayment() + getPaymentBase().share_fund_payment + getPaymentBase().share_payment + getShowCompanyPayment()  + getShowBankPayment()| zeroDash}}</b></div>
 						
 		                </div>
 					
@@ -198,7 +199,7 @@
 
 			
 			</div>
-			<button ng-click="getPaymentBase()">Test</button>
+			<button ng-click="testing()">Test</button>
 		</section> 
 		<style type="text/css">
 	#main-menu

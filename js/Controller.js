@@ -143,7 +143,7 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 			return null;
 		var sum = 0;
 		
-		for(var i = 0;i < $scope.datas.payments.length; i++)
+		for(var i = 0;i < bill.payments.length; i++)
 		{
 			var raw_formula = $scope.datas.payments[i].formulas[CUSTOMER_INDEX];
 			
@@ -216,6 +216,30 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 		return contract - actual;
 	}
 
+	$scope.getShowBankPayment = function()
+	{
+		var payment_base = $scope.getPaymentBase();
+		//var A = payment_base.meter_payment + payment_base.room_payment;
+		return Math.max(0, $scope.getRealBankPayment() );
+
+	}
+
+	$scope.getShowCompanyPayment = function()
+	{
+		var payment_base = $scope.getPaymentBase();
+		var A = payment_base.room_payment + payment_base.meter_payment;
+		return A - $scope.getRealBankPayment(); 
+	}
+
+	$scope.getRealBankPayment = function()
+	{
+		var payment_base = $scope.getPaymentBase();
+		var repayment = $scope.getVar("Repayment");
+		if(isNaN(repayment))
+			repayment = 0;
+		return repayment - payment_base.sum_bank_loan;
+	}
+
 	$scope.getPaymentBase = function()
 	{
 		//meter
@@ -231,32 +255,54 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 			}
 			
 		}
-	//	console.log('meter:'+meter_payment);
-	//	console.log($scope.billPayment.room_payment);
 		var room_payment = $scope.getPaymentByPaymentId($scope.billPayment.room_payment);
 		room_payment = room_payment[CUSTOMER_INDEX];
 		
-	//	console.log('ค่าห้อง'+room_payment);
 		var share_payment = $scope.getPaymentByPaymentId($scope.billPayment.share_payment_id);	
 		share_payment = share_payment[CUSTOMER_INDEX];
-	//	console.log('ค่าส่วนกลาง'+share_payment);;
+
 		var tranfer_payment = $scope.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id);
 
 		tranfer_payment = tranfer_payment[BANK_INDEX];
-	//	console.log('ค่าโอน'+tranfer_payment);;
+
 		var share_fund_payment = $scope.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id);	
 		share_fund_payment = share_fund_payment[CUSTOMER_INDEX];
-		//console.log('ค่ากองทุนกลาง'+share_fund_payment);
+	
 		//ค่าห้อง
 		var payment_base = {
 			meter_payment:meter_payment,
 			room_payment:room_payment,
 			share_payment:share_payment,
 			tranfer_payment:tranfer_payment,
-			share_fund_payment:share_fund_payment
+			share_fund_payment:share_fund_payment,
+			sum_bank_loan:0
 		};
-		console.log(payment_base)
+		//console.log(payment_base)
 		return payment_base;
+	}
+
+	$scope.getMinistryPayment = function()
+	{
+		var estimate = $scope.getVar("EstimatePrice");
+		var estimate_payment = 0.01 * estimate;
+		var payment_base = $scope.getPaymentBase();
+		var answer = estimate_payment + (payment_base.sum_bank_loan * 0.01);
+		return answer - $scope.getCashPayment();
+	}
+
+	$scope.getCashPayment = function()
+	{
+		return 1000;
+	}
+
+	$scope.testing = function()
+	{
+		console.log('$scope.getShowBankPayment')
+		console.log($scope.getShowBankPayment());
+		console.log('$scope.getRealBankPayment');
+		console.log($scope.getRealBankPayment());
+		console.log('$scope.getShowCompanyPayment');
+		console.log($scope.getShowCompanyPayment());
 	}
 
 }
@@ -339,11 +385,20 @@ function BillEditCtrl($scope, $rootScope, $routeParams, $location, Npop)
 
 }
 
-function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
+function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill, Type)
 {
 	
 	$scope.url = 'service/index.php';
-	
+	$scope.billPayment = Type.getBillPayment(function(data){
+		console.log('bill payment')
+		console.log(data);
+		$scope.meter_ids = [];
+		$.each(data.meters, function(index, value) {
+		    console.log(value);
+		    $scope.meter_ids.push(value);
+		}); 
+		$scope.getPaymentBase();
+	})
 	/*$scope.bills = Print.save({action:"bills", template_id:$routeParams.tid, unit_ids:uids}, function(data){
 		console.log(data)
 	})*/
@@ -365,6 +420,48 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
 			ids_str +="&";
 		ids_str += "unit_ids[]=" + uids[i]
 	}
+	
+	$scope.getFormulaValue = function(variables, formula)
+	{
+		return getFormulaValue(variables, formula);
+	}
+
+	$scope.getSumCustomerPayment = function(variables, payments)
+	{
+		return $scope.getSumColumPayment(variables, payments, CUSTOMER_INDEX);;
+	}
+
+	$scope.getSumBankPayment = function(variables, payments)
+	{
+		return $scope.getSumColumPayment(variables, payments, BANK_INDEX);;
+	}
+
+	$scope.getSumCompanyPayment = function(variables, payments)
+	{
+		return $scope.getSumColumPayment(variables, payments, COMPANY_INDEX);;
+	}
+
+	$scope.getSumColumPayment = function(variables, payments, index)
+	{
+		if(payments == undefined)
+			return null;
+		var sum = 0;
+		
+		for(var i = 0;i < payments.length; i++)
+		{
+			var raw_formula = payments[i].formulas[index];
+			
+			//bill.payments[i].formulas[index] = bill.getFormulaValue(raw_formula);
+			var value = $scope.getFormulaValue(variables, raw_formula);;
+			
+			if(value !=null && typeof(value) != "string")
+				sum += value;
+			
+			
+		}
+		return sum;
+	}
+
 	/*$http({
                 method: 'POST',
                 url: 'service/index.php',
@@ -373,7 +470,7 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
             }).success(function(data, status) {*/
     Bill.preview({action:'bills', unit_ids:uids, template_id:$routeParams.tid}, function(data){
 
-
+    	console.log(data);
 
     //})
       //          $scope.status = status;
@@ -384,50 +481,39 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
  						var variables =$scope.bills[i].variables;
  						var payments = $scope.bills[i].payments;
 						var bill =$scope.bills[i];
- 						$scope.bills[i].getVar = function(varname)
- 						{
+ 						
+ 						var bill_vars = bill.variables;
 
- 							return getVariablesValue(variables, varname);
- 						}
+						bill.getFormulaValue  = function(formula)
+						{
+							return getFormulaValue(bill_vars, formula);
+						}
 
- 						$scope.bills[i].getName = function(varname)
- 						{
- 							var myvar =  getVariables(variables, varname);
+						bill.getVar = bill.getVariablesValue = function(varname)
+						{
+							//console.log('log');
+							//console.log(bill_vars)
+							return getVariablesValue(bill_vars, varname)
+						}
+
+						bill.getName = function(varname)
+						{
+							var myvar =  getVariables(bill_vars, varname);
 							if(myvar == undefined)
 								return undefined;
 							return myvar.name;
- 						}
-
- 						$scope.bills[i].getFormulaValue = function(formula)
-						{
-							return getFormulaValue(variables, formula);
 						}
 
-						/* additional get*/
-						$scope.bills[i].getSumCustomerPayment = function()
+						bill.getPaymentByPaymentId = function(id)
 						{
-
-							if(payments == undefined)
+							//console.log('payments')
+							if(typeof(bill.payments) != 'undefined')
+								return getPaymentByPaymentId(id, bill.payments, bill_vars);
+							else
 								return null;
-							var sum = 0;
-							
-							
-							for(var i = 0;i < payments.length; i++)
-							{
-								var raw_formula = payments[i].formulas[CUSTOMER_INDEX];
-								
-								//$scope.datas.payments[i].formulas[index] = $scope.getFormulaValue(raw_formula);
-								var value = bill.getFormulaValue(raw_formula);;
-								
-								if(value !=null && typeof(value) != "string")
-									sum += value;
-								
-								
-							}
-							return sum;
 						}
 
-						$scope.bills[i].getFinalCustomerPayment = function()
+						bill.getFinalCustomerPayment = function()
 						{
 							var getVar  = bill.getVar;
 							var firstSum = bill.getSumCustomerPayment();
@@ -441,13 +527,120 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill)
 							return firstSum + commonFund + commonCharge + getVar("feeForMinistryOfFinance") + getVar("feeForTranferCash")
 						}
 
-						$scope.bills[i].getDiffArea = function(actual, contract)
+						bill.getDiffArea = function(actual, contract)
 						{
 							if(actual == null)
 								return null;
 							else if(contract)
 								return null;
 							return contract - actual;
+						}
+
+						bill.getShowBankPayment = function()
+						{
+							var payment_base = bill.getPaymentBase();
+							//var A = payment_base.meter_payment + payment_base.room_payment;
+							return Math.max(0, bill.getRealBankPayment() );
+
+						}
+
+						bill.getShowCompanyPayment = function()
+						{
+							var payment_base = bill.getPaymentBase();
+							var A = payment_base.room_payment + payment_base.meter_payment;
+							return A - bill.getRealBankPayment(); 
+						}
+
+						bill.getRealBankPayment = function()
+						{
+							var payment_base = bill.getPaymentBase();
+							var repayment = bill.getVar("Repayment");
+							if(isNaN(repayment))
+								repayment = 0;
+							return repayment - payment_base.sum_bank_loan;
+						}
+
+						bill.getPaymentBase = function()
+						{
+							//meter
+							var meter_payment = 0;
+							for(var i = 0; i < $scope.meter_ids.length ;i++)
+							{
+								var id = $scope.meter_ids[i];
+								var payment = bill.getPaymentByPaymentId(id);
+								if(payment != null)
+								{
+									payment = payment[CUSTOMER_INDEX];
+								meter_payment += payment;
+								}
+								
+							}
+							var room_payment = bill.getPaymentByPaymentId($scope.billPayment.room_payment);
+							room_payment = room_payment[CUSTOMER_INDEX];
+							
+							var share_payment = bill.getPaymentByPaymentId($scope.billPayment.share_payment_id);	
+							share_payment = share_payment[CUSTOMER_INDEX];
+
+							var tranfer_payment = bill.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id);
+
+							tranfer_payment = tranfer_payment[BANK_INDEX];
+
+							var share_fund_payment = bill.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id);	
+							share_fund_payment = share_fund_payment[CUSTOMER_INDEX];
+						
+							//ค่าห้อง
+							var payment_base = {
+								meter_payment:meter_payment,
+								room_payment:room_payment,
+								share_payment:share_payment,
+								tranfer_payment:tranfer_payment,
+								share_fund_payment:share_fund_payment,
+								sum_bank_loan:0
+							};
+							//console.log(payment_base)
+							return payment_base;
+						}
+
+						bill.getMinistryPayment = function()
+						{
+							var estimate = bill.getVar("EstimatePrice");
+							var estimate_payment = 0.01 * estimate;
+							var payment_base = bill.getPaymentBase();
+							var answer = estimate_payment + (payment_base.sum_bank_loan * 0.01);
+							return answer - bill.getCashPayment();
+						}
+
+						bill.getCashPayment = function()
+						{
+							return 1000;
+						}	
+
+						/**/
+						for(var k =0 ; k < bill_vars.length ;k++)
+						{
+							var cur_var = bill_vars[k];
+							var eval_str = '';
+							for(var key in cur_var)
+							{
+								if(isNaN(key))
+								{
+									eval_str += "bill."+key+" = bill.getVar('"+key+"')";
+									eval(eval_str);
+								}
+							}
+							//console.log(eval_str);
+						}
+						for(var k =0; k < bill.payments.length;k++)
+						{
+							var payment = bill.payments[k];
+
+							//payment.bankPayment = bill.getFormulaValue(payment.formulas[0]);
+							//payment.companyPayment = bill.getFormulaValue(payment.formulas[1]);
+							//payment.customerPayment = bill.getFormulaValue(payment.formulas[2]);
+							payment.bankFormula = payment.formulas[0];
+							payment.companyFormula = payment.formulas[1];
+							payment.customerFormula = payment.formulas[2];
+							//console.log( bill.getFormulaValue(payment.formulas[2]));
 						}
 
 
@@ -952,6 +1145,11 @@ function AppointCtrl($scope, $rootScope, $location, $routeParams, Appoint)
 		
 	})
 	
+
+}
+
+function TransactionCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type)
+{
 
 }
 

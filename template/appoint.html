@@ -3,6 +3,7 @@
 <div id="appoint_main" style="margin-left:20px;">
  <h2>Unit</h2>
 
+<div><b>ชื่อลูกค้า :</b> {{unit.customer_name}} </div>
 <div><b>Item Id :</b> {{unit.item_id}} </div>
 <div><b>Item Name :</b> {{unit.item_name}} </div>
 <div><b>Room Number :</b> {{unit.room_no}} </div>
@@ -10,18 +11,20 @@
 <div><b>Floor :</b> {{unit.floor}}</div>
 
 
-    <h2>Create Appoint  <button ng-click="" class="btn">Promotions</button></h2>
+    <h2>Create Appointment  <button ng-click="" class="btn btn-inverse">Promotions</button></h2>
     <form>
         <div class="appoint_text" style="margin-bottom:10px;">
             <span style="margin-right:5px;">ประเภทการติดต่อ : </span>
-            <span style="margin-right:10px;">
+            <span style="margin-right:37px;">
                 <span><input type="radio" value="0"  ng-model="type" checked /> โทรศัพท์</span>
                 <span><input type="radio" value="1"  ng-model="type" /> ส่งข้อความ</span>
                 <span><input type="radio" value="2"  ng-model="type"/> ส่งอีเมล์</span>
             </span>
+            <span style="margin-right:10px;">มอบฉันทะ : </span>
+            <span><input type="checkbox"  ng-model="authorize"  ng-false-value="0" ng-true-value="1"></span>
         </div>
         <div class="appoint_text">
-            <span style="margin-right:44px;">วันที่แจ้ง : </span>
+            <span style="margin-right:41px;">วันที่แจ้ง : </span>
             <span style="margin-right:10px;">
             	<!--<input type="text" required placeholder="Call Date" ng-model="calldate">-->
                 <div class="control-group input-append">
@@ -38,14 +41,14 @@
                   <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
                 </div>
             </span>            
-            <span style="margin-right:10px;">ระยะเวลาที่โทร : </span>
-            <span style="margin-right:10px;"><input type="text" required placeholder="Call duration" ng-model="callduration"></span>
+            <span style="margin-right:11px;">ระยะเวลาที่โทร : </span>
+            <span style="margin-right:10px;"><input type="text" required placeholder="ระยะเวลาที่โทร" ng-model="callduration"></span>
             
         </div>
         <div class="appoint_text">
-            <span style="margin-right:42px;">ชื่อลูกค้า : </span>
-            <span style="margin-right:10px;"><input type="text" required placeholder="Customer Name" ng-model="people"></span>
-            <span style="margin-right:44px;">วันนัดโอน : </span>
+            <span style="margin-right:36px;">กรรมสิทธิ์ : </span>
+            <span style="margin-right:51px;"><input type="text" required placeholder="ชื่อกรรมสิทธิ์" ng-model="people"></span>
+            <span style="margin-right:41px;">วันนัดโอน : </span>
             <span style="margin-right:10px;">
             	<div class="control-group input-append">
                   <input type="text" ng-model="appointdate" data-date-format="dd/mm/yyyy" class="datepicker" bs-datepicker>
@@ -65,17 +68,17 @@
             
         </div>
         <div class="appoint_text">
-           <span style="margin-right:10px;">สถานะการโทร : </span>
-            <span style="margin-right:10px;">
+           <span style="margin-right:8px;">สถานะการโทร : </span>
+            <span style="margin-right:50px;">
 				<select  id="select_status" ng-model="status">
 						<!-- <option value="0">----กรุณาเลือกสถานะการโทร----</option> -->
-						<option value="0">ไม่รับสาย</option>
-						<option value="1">รับสาย</option>
+						<option value="0">ไม่รับโทรศัพท์</option>
+						<option value="1">รับโทรศัพท์</option>
 						<option value="2">สายไม่ว่าง</option>
 				</select>
 			</span>
-            <span style="margin-right:12px;">ประเภทการโอน : </span>
-            <span style="margin-right:10px;">
+            <span style="margin-right:10px;">ประเภทการโอน : </span>
+            <span style="margin-right:50px;">
                 <select id="select_status"  ng-model="payment_type">
 						<!-- <option value="0">----กรุณาเลือกการโอน----</option> -->
 						<option value="0">โอนสด</option>
@@ -83,7 +86,7 @@
 						<option value="2">ยังไม่ตัดสินใจ</option>
 				</select>
             </span>
-            <span style="margin-right:20px;">สถานะการนัด : </span>
+            <span style="margin-right:21px;">สถานะการนัด : </span>
             <span style="margin-right:10px;">
                 <select id="select_status" ng-model="coming_status">
 						<!-- <option value="0">----กรุณาสถานะของการนัด----</option> -->
@@ -96,8 +99,8 @@
         </div>
         <div class="appoint_text">
             <span style="margin-right:67px;">อื่นๆ : </span>
-            <span style="margin-right:126px;"><input type="text" required placeholder="อื่นๆ" ng-model="remark"></span>
-            <span><button ng-click="createAppoint()" class="btn">Create</button></span>
+            <span style="margin-right:166px;"><input type="text"  ng-model="remark"></span>
+            <span><button ng-click="createAppoint()" class="btn btn-danger">Create</button></span>
             <span><button ng-click="" class="btn">Cancel</button></span>
         </div>
         <div class="appoint_text"></div>
@@ -110,29 +113,33 @@
 
  <h2>Appoint Log</h2>
 <table class="table">
-	<tr>
+	<tr style="font-weight:bold;">
 		<td>ID</td>
-		<td>Call Date</td>
-		<td>Call Time</td>
-		<td>Call Duration</td>
-		<td>Type</td>
-		<td>Status</td>
-		<td>Payment Type</td>
-		<td>Coming Status</td>
-		<td>Appoint Date</td>
-		<td>Appoint Time</td>
+		<td>วันที่แจ้ง</td>
+		<td>เวลาที่แจ้ง</td>
+		<td>ระยะเวลาที่โทร</td>
+		<td>กรรมสิทธิ์</td>
+		<td>ประเภทการติดต่อ</td>
+		<td>สถานะการโทร</td>
+		<td>ประเภทการโอน</td>
+		<td>สถานะการนัด</td>
+		<td>วันนัดโอน</td>
+		<td>เวลานัดโอน</td>
+		<td>มอบฉันทะ</td>
 	</tr>
 	<tr ng-repeat="log in logs | orderBy:'-id':reverse">
 		<td>{{log.id}}</td>
 		<td>{{log.display_call_date}}</td>
 		<td>{{log.display_call_time}}</td>
 		<td>{{log.call_duration}}</td>
+		<td>{{log.people}}</td>
 		<td>{{log.type}}</td>
 		<td>{{log.status}}</td>
 		<td>{{log.payment_type}}</td>
 		<td>{{log.coming_status}}</td>
 		<td>{{log.display_appoint_date}}</td>
 		<td>{{log.display_appoint_time}}</td>
+		<td>{{log.authorize}}</td>
 	</tr>
 <table>
 </div>

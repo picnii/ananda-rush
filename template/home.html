@@ -1,47 +1,62 @@
 <section ng-controller="HomeCtrl" class="container">
-	
-
 	<h2>Search</h2>
 	<form>
-		<label>Item ID</label>
-		<input type="text" ng-model="search.unit" />
-		<label>Company</label>
-		<select ng-model="search.company" >
-			<option  value="*">
-				ALL
-			</option>
-			<option ng-repeat="type in company_types" value="{{type.value}}">
-				{{type.name}}
-			</option>
-		</select>
-		<label>Project</label>
-		<select ng-model="search.project" >
-			<option  value="*">
-				ALL
-			</option>
-			<option ng-repeat="type in project_types" value="{{type.value}}">
-				{{type.name}}
-			</option>
-		</select>
-		<label>Room Type</label>
-		<select ng-model="search.type" >
-			<option  value="*">
-				ALL
-			</option>
-			<option ng-repeat="type in room_types" value="{{type.value}}">
-				{{type.name}}
-			</option>
-		</select>
-		<label>Floor</label>
-		<input type="text" ng-model="search.floor" />
-		<button class="btn" ng-click="search()">Search</button>
-		search query is {{search.unit}} {{search.project}} {{search.type}}
+		<div>
+            <span style="margin-right:38px;">Item ID : </span>
+            <span style="margin-right:10px;">
+                <input type="text" ng-model="search.unit" /> 
+            </span>
+            <span style="margin-right:10px;">Company :  </span>
+             <span style="margin-right:10px;">
+                <select ng-model="search.company" >
+                    <option  value="*">
+                        ALL
+                    </option>
+                    <option ng-repeat="type in company_types" value="{{type.value}}">
+                        {{type.name}}
+                    </option>
+                </select>
+            </span>
+            <span style="margin-right:5px;">Project :  </span>
+             <span style="margin-right:10px;">
+                <select ng-model="search.project" >
+                    <option  value="*">
+                        ALL
+                    </option>
+                    <option ng-repeat="type in project_types" value="{{type.value}}">
+                        {{type.name}}
+                    </option>
+                </select>
+            </span>
+        </div>
+        <div>
+            <span style="margin-right:10px;">Room Type :  </span>
+             <span style="margin-right:10px;">
+                <select ng-model="search.type" >
+                    <option  value="*">
+                        ALL
+                    </option>
+                    <option ng-repeat="type in room_types" value="{{type.value}}">
+                        {{type.name}}
+                    </option>
+                </select>
+            </span>
+            <span style="margin-right:37px;">Floor :  </span>
+             <span style="margin-right:72px;">
+                <input type="text" ng-model="search.floor" />
+            </span>
+            <span style="margin-right:10px;">
+                <button class="btn btn-inverse" ng-click="search()">Search</button>
+            </span>
+            search query is {{search.unit}} {{search.project}} {{search.type}}
+        </div>
 	</form>
 	<h2>Unit</h2>
 	<button ng-click="next()">Next</button>
 	<button ng-click="back()">Back</button>
 	<form>
-		<table class="table">
+   <div ng-show="loading" class="loading" style="margin-left: 334px;"><img src="images/loading.gif">LOADING...</div> 
+		<table class="table" style="font-size:13px !important;">
 			<tr>
 				<td>transaction_id</td>
 				<td>item id</td>
@@ -68,7 +83,7 @@
 				<td><!--<a href="#/bills/{{unit.billId}}/edit">edit</a>--></td>
 			</tr>
 		</table>
-		<button ng-click="match()">Match With Template</button>
+		<button ng-click="match()" class="btn btn-info">Match With Template</button>
 
 	</form>
 
