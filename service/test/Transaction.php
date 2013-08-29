@@ -1,6 +1,6 @@
 <?php
 
-	$transaction_ids = array(1352, 2302, 1307, 1835, 1854);
+	$transaction_ids = array(1352, 2302, 1307, 2174, 1835, 1854, 2169, 2157);
 	$rows = fetchBillInformation($transaction_ids);
 
 	$bills = getVariableUnits($rows);
@@ -35,7 +35,7 @@
 		assertEquals(true, is_string($company_address));
 	}
 
-	//check for company tel
+	//chdir(directory)eck for company tel
 
 	//check for company fax
 
@@ -170,7 +170,7 @@
 			$area = $area ;
 		else
 			echo "price per sqm wrong at{$bill->transaction_id}:";
-		assertEquals(true, is_numeric($area));
+		assertEquals(true, is_numeric($area), array("pice per sqm wrong"=>$bill->transaction_id));
 	}
 
 	foreach($bills as $bill)
@@ -179,12 +179,15 @@
 		$bank = getBanksVariable($bill);
 		if($result)
 		{
-			assertEquals(true, is_numeric($bank->BankLoanRoom), $bank);
-			assertEquals(true, is_numeric($bank->BankLoanInsurance), $bank);
-			assertEquals(true, is_numeric($bank->BankLoanDecorate), $bank);
+			assertEquals(true, is_numeric($bank->BankLoanRoom), "bank loan room {$bill->transaction_id}");
+			assertEquals(true, is_numeric($bank->BankLoanInsurance), "BankLoanInsurance {$bill->transaction_id}");
+			assertEquals(true, is_numeric($bank->BankLoanDecorate), "BankLoanDecorate {$bill->transaction_id}");
 			assertEquals(true, is_numeric($bank->BankLoanMulti), $bank);
-			assertEquals(true, is_numeric($bank->SumBankLoan), $bank);
-			assertEquals(true, is_numeric($bank->BankLoanOther), $bank);
+			assertEquals(true, is_numeric($bank->BankLoanOther), "BankLoanOther {$bill->transaction_id}");
+			assertEquals(true, is_numeric($bank->SumBankLoan), "SumBankLoan {$bill->transaction_id}");
+			$sum_state = $bank->BankLoanInsurance > 0 || $bank->BankLoanRoom > 0 || $bank->BankLoanDecorate > 0 || $bank->BankLoanMulti > 0 || $bank->BankLoanOther;
+			if($sum_state)
+				assertEquals(true, $bank->SumBankLoan > 0 , $bank);
 		}else
 		{
 			assertEquals(true, $bank->BankLoanRoom == 0 || $bank->BankLoanRoom == '-', $bank);

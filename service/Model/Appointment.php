@@ -132,7 +132,10 @@ function convertRowToAppoint($row)
 	$appoint = new stdClass;
 	foreach($row as $key => $value)
 	{
-		$appoint->$key = convertutf8($value);
+		if($key != 'call_time' && $key != 'appoint_time')
+			$appoint->$key = convertutf8($value);
+		else
+			$appoint->$key = $value;
 	}
 	return $appoint;
 }

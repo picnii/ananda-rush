@@ -139,9 +139,9 @@
 		                                    <td align="center" style="">{{payment.order}}.</td>
 											<td style="padding-left:10px;">{{payment.name}}</td>
 											<TD align="center">{{payment.description}}</TD>
-		                                    <TD align="center">{{bill.getFormulaValue(payment.formulas[0]) | zeroDash }}</TD>
-		                                    <TD align="center">{{bill.getFormulaValue(payment.formulas[1]) | zeroDash }}</TD>
-		                                    <TD align="center">{{getFormulaValue(bill.variables, payment.formulas[2]) | zeroDash }}</TD>
+		                                    <TD align="center">{{payment.formulas[0] | zeroDash }}</TD>
+		                                    <TD align="center">{{payment.formulas[1] | zeroDash }}</TD>
+		                                    <TD align="center">{{ payment.formulas[2] | zeroDash }}</TD>
 		                                 
 		                          </tr>
 								  <tr>

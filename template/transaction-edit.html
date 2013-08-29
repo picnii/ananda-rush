@@ -1,11 +1,12 @@
-<section ng-controller="BillPrintCtrl" class="container">
-	<header>
-		<button ng-click="save()">Save</button>
-	</header>
-	<section ng-repeat="bill in bills">
+<section ng-controller="TransactionEditCtrl" class="container">
+	<button ng-click="save()">Save Transaction</button>
+	<div>
+		ค่าปลอด <input type="text" ng-model="bill.Repayment">
+		EsitmatePrice <input type="text" ng-model="bill.EstimatePrice" />
+	</div>
 	<!--- Start Loop Print-->	
 		<div class="row" >
-			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน {{bill.AppointmentMonth}} เท่านั้น</h4></div>
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน <input type="text" ng-model="bill.AppointmentMonth">เท่านั้น</h4></div>
 			<div class="span12" align="center"> <h4>โครงการไอดีโอ มอร์ฟ 38 </h4>
 			</div>
 			<div  class="span12" align="center">
@@ -19,14 +20,14 @@
 		<div class="row">
 		<font size="2">
 		<div class="offset6 span1">UNIT NO.</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.UnitNumber}}</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center"><input type="text" ng-model="bill.UnitNumber"></div>
 		<div class="span1">บ้านเลขที่</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseNumber}}</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center"><input type="text" ng-model="bill.HouseNumber"></div>
 		
 		<div class="offset6 span1">แบบบ้าน</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseType}}</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center"><input type="text" ng-model="bill.HouseType"></div>
 		<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}}</div>
+		<div class="span2" style="border-bottom-style:groove;" align="center"><input type="text" ng-model="bill.HouseSize"></div>
 		</font>
 		</div>
 		
@@ -36,17 +37,17 @@
 			<div class="row">
 				<font size="2">
 					<div class="span1"><b>วันที่แจ้ง</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.DocumentDate}}</div>
+					<div class="span5" style="border-bottom: groove;"><input type="text" ng-model="bill.DocumentDate"></div>
 					<div class="span1"><b>จาก</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.SaleName}}</div><br>
+					<div class="span5" style="border-bottom: groove;"><input type="text" ng-model="bill.SaleName"></div><br>
 					<div class="span1"><b>วันนัดโอน</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.PayDate}}</div>
+					<div class="span5" style="border-bottom: groove;"><input type="text" ng-model="bill.PayDate"></div>
 					<div class="span1"><b>เวลา :</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.PayTime}}</div><br>
+					<div class="span5" style="border-bottom: groove;"><input type="text" ng-model="bill.PayTime"></div><br>
 					<div class="span1"><b>เรียน</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.CustomerName}}</div>
+					<div class="span5" style="border-bottom: groove;"><input type="text" ng-model="bill.CustomerName"></div>
 					<div class="span1"><b>โทร. :</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.CustomerTel}}</div><br><br>
+					<div class="span5" style="border-bottom: groove;"><input type="text" ng-model="bill.CustomerTel"></div><br><br>
 					<div class="span12" style="border-bottom-style:groove;"></div>
 					
 				</div>
@@ -56,66 +57,66 @@
 						<font size="2">
 						<div class="span1"><b><u>1.1 ราคา</u></b></div>
 						<div class="span3">ราคาตามสัญญา</div>
-						<div class="span1" align="right">{{bill.PriceOnContract | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.PriceOnContract"></div>
 						<div class="span1" align="center">บาท</div>
 						
 						<div class="span6"><b><u>1.2 วิธีการโอนกรรมสิทธิ์</u></b></div>
 						<div class="offset1 span3">ราคาต่อตารางเมตร</div>
-						<div class="span1" align="right">{{bill.PricePerArea | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.PricePerArea"></div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span6">โอนสด</div>
 						
 						<div class="offset1 span3">หัก ส่วนลดพิเศษ</div>
-						<div class="span1" align="right">{{ bill.SpecialDiscount | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.SpecialDiscount"></div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span2">ใช้สินเชื่อ  ธนาคาร/สาขา</div>
-						<div class="span4">{{bill.BankLoanName | zeroDash}}</div>
+						<div class="span4"><input type="text" ng-model="bill.BankLoanName"></div>
 						
 						<div class="offset1 span3">พื้นที่ตามสัญญา</div>
-						<div class="span1" align="right">{{bill.ContractSpace | currency:"" | zeroDash}}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.ContractSpace"></div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติค่าห้อง</div>
-						<div class="span2" align="right">{{bill.BankLoanRoom | zeroDash}}</div>
+						<div class="span2" align="right"><input type="text" ng-model="bill.BankLoanRoom"></div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span3">พื้นที่จริง</div>
-						<div class="span1" align="right">{{bill.ActualSpace | up2area }}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.ActualSpace"></div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าประกัน</div>
-						<div class="span2" align="right">{{bill.BankLoanInsurance | zeroDash}}</div>
+						<div class="span2" align="right"><input type="text" ng-model="bill.BankLoanInsurance"></div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span3">ส่วนต่างพื้นที่ {{bill.ActualSpace - bill.ContractSpace | up2area }} ตร.ม.</div>
-						<div class="span1" align="right">{{bill.DifferenOfSpace | zeroDash}}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.DifferenOfSpace"></div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าตกแต่ง</div>
-						<div class="span2" align="right">{{bill.BankLoanDecorate | zeroDash}}</div> 
+						<div class="span2" align="right"><input type="text" ng-model="bill.BankLoanDecorate"></div> 
 						<div class="span1">บาท</div> 
 						
 						
 						<div class="offset1 span3">ราคาห้องชุด ณ วันโอน</div>
-						<div class="span1" align="right">{{bill.PriceDateOfPayment | zeroDash}}</div>
+						<div class="span1" align="right"><input type="text" ng-model="bill.PriceDateOfPayment"></div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินเอนกประสงค์</div>
-						<div class="span2" align="right">{{bill.BankLoanMulti | zeroDash}}</div>
+						<div class="span2" align="right"><input type="text" ng-model="bill.BankLoanMulti"></div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span2">หัก  ชำระแล้ว</div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.PaidAmount  | currency:"" | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;"><input type="text" ng-model="bill.PaidAmount"></div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินอื่น ๆ </div>
-						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.BankLoanOther | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style:groove;"><input type="text" ng-model="bill.BankLoanOther"></div>
 						<div class="span1">บาท</div>
 						
 						
 						<div class="offset1 span2"><b>ค่าห้องชุดต้องชำระ</b></div>
-						<div class="span2" align="right" style="border-bottom-style: double;"><b>{{bill.PriceRoomOfPayment | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style: double;"><b><input type="text" ng-model="bill.PriceRoomOfPayment"></div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">วงเงินจำนองรวม</div>
-						<div class="span2" align="right" style="border-bottom-style: double;">{{bill.SumBankLoan | zeroDash}}</div>
+						<div class="span2" align="right" style="border-bottom-style: double;"><input type="text" ng-model="bill.SumBankLoan"></div>
 						<div class="span1">บาท</div>
 						<br><br>
 							
@@ -142,9 +143,11 @@
 		                                    <td align="center" style="">{{payment.order}}.</td>
 											<td style="padding-left:10px;">{{payment.name}}</td>
 											<TD align="center">{{payment.description}}</TD>
-		                                    <TD align="center">{{payment.formulas[0] | zeroDash }}</TD>
-		                                    <TD align="center">{{payment.formulas[1] | zeroDash }}</TD>
-		                                    <TD align="center">{{ payment.formulas[2] | zeroDash }}</TD>
+		                                    <TD align="center">
+		                                    	<input type="text" ng-model="payment.formulas[0]" />
+		                                    	</TD>
+		                                    <TD align="center">	<input type="text" ng-model="payment.formulas[1]" /></TD>
+		                                    <TD align="center">	<input type="text" ng-model="payment.formulas[2]" /></TD>
 		                                 
 		                          </tr>
 								  <tr>
@@ -168,7 +171,7 @@
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
 						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{bill.BankLoanName}}</b> </div>
-						<div class="span3" align="right">{{getShowBankPayment(bill.variables) | zeroDash}}</div>
+						<div class="span3" align="right">{{bill.getShowBankPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.CompanyName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowCompanyPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
@@ -184,7 +187,7 @@
 						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.getCashPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
 						<div class="span2" align="right" style="border-bottom-style:double"><b>{{
-						 bill.getCashPayment(bill.variables, bill.payments) + bill.getMinistryPayment(bill.variables, bill.payments) + bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment + bill.getPaymentBase(bill.variables, bill.payments).share_payment + bill.getShowCompanyPayment(bill.variables, bill.payments)  + bill.getShowBankPayment(bill.variables, bill.payments)| zeroDash}}</b></div>
+						 bill.getFinalCustomerPayment(bill.variables, bill.payments) | zeroDash}}</b></div>
 						
 		                </div>
 					
@@ -204,7 +207,10 @@
 
 			
 			</div>
-
-	</section>
-
+<style type="text/css">
+	input
+	{
+		width:60px;
+	}
+</style>
 </section>

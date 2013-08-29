@@ -5,10 +5,10 @@ function findAllPromotionFromItemId($itemId)
 	$pro_ax = findPromotionAx($itemId);
 	$pro_preapprove = findAllPromotionsPreapprove($itemId);
 	$promotions = array();
-	foreach($pro_ax as $ax)
+	/*foreach($pro_ax as $ax)
 	{
 		array_push($promotions, $ax);
-	}
+	}*/
 	foreach ($pro_preapprove as $pro) {
 		array_push($promotions, $pro);
 	}
@@ -21,7 +21,9 @@ function findPromotionAx($itemId)
 	//always baht
 	//back cash = ? 
 	//PromotionAx
-
+	$sql = "SELECT * FROM Promotion_AX 
+		INNER JOIN 
+	";
 
 }
 
@@ -30,13 +32,15 @@ function findAllPromotionsAxByRecId($rec_id)
 	return array();
 }
 
+
 function findAllPromotionsPreapprove($itemId, $invoiceAccount)
 {
 	//table: PreapPromo
 	$sql = "SELECT * FROM PreapPromo
 	 INNER JOIN Master_Promotion ON Master_Promotion.id_promotion = PreapPromo.id_promotion
+	 INNER JOIN master_promotion_item ON master_promotion_item.id_promotion = Master_Promotion.id_promotion
+	 INNER JOIN Item_Promotion ON Item_Promotion.id_item_promotion = master_promotion_item.id_item_promotion
 	 WHERE itemID = '$itemId' AND InvoiceAccount = '$invoiceAccount'";
-	//echo $sql;
 	$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	$promotions = array();
 	while($row = DB_fetch_array($result))
@@ -68,14 +72,37 @@ function convertPromotionRowAxToPromotion($row)
 function convertPromotionPreApproveRowToPromotion($row)
 {
 	$promotion = new stdClass;
-	$promotion->row = $row;
+	
 	$promotion->type = getPromotionType('Preapprove');
+	$promotion->type_name = 'pre_approve';
+
 	foreach($row as $key => $value)
 	{
 		$promotion->$key = $value;
+
 	}
+	//$promotion->row = $row;
+	$promotion->id = $promotion->id_pro_pre;
+	if(isRowSpacialDiscount($promotion))
+		$promotion->spacial_discount = $promotion->Price;
+	else
+		$promotion->spacial_discount = 0;
+	if($promotion->id_type_Price == getPromotionPreapproveType("%"))
+		$promotion->is_discount_percent = true;
+	else
+		$promotion->is_discount_percent = false;
 	return $promotion;
 }
+
+function isRowSpacialDiscount($promotion)
+{
+	if($promotion->id_Type_item_promotion == 4 || $promotion->id_Type_item_promotion == 5)
+	{
+		return true;
+	}
+		return false;
+}
+
 
 function getPromotionTypes()
 {
@@ -104,6 +131,17 @@ function getPromotionPreapproveTypes()
 	);
 }
 
+function getPromotionPreapproveType($typename)
+{
+	$types = getPromotionPreapproveTypes();
+	$hashT = array();
+	foreach ($types as $key => $value) {
+		# code...
+		$hashT[$value]  = $key;
+	}
+	return $hashT[$typename];
+}
+
 function getPromotionItemPreapproveTypes()
 {
 	return array(
@@ -115,4 +153,13 @@ function getPromotionItemPreapproveTypes()
 	);
 }
 
+function createUnitPromotion($unit_id, $promotion_id, $promotion_type)
+{
+
+}
+
+function getSelectedPromotions($unit_id)
+{
+
+}
 ?>

@@ -1,5 +1,61 @@
 <section ng-controller="TransactionCtrl" >
 
+	<h2>Search</h2>
+	<form>
+		<div>
+            <span style="margin-right:38px;">Item ID : </span>
+            <span style="margin-right:10px;">
+                <input type="text" ng-model="search.unit" /> 
+            </span>
+            <span style="margin-right:10px;">Company :  </span>
+             <span style="margin-right:10px;">
+                <select ng-model="search.company" >
+                    <option  value="*">
+                        ALL
+                    </option>
+                    <option ng-repeat="type in company_types" value="{{type.value}}">
+                        {{type.name}}
+                    </option>
+                </select>
+            </span>
+            <span style="margin-right:5px;">Project :  </span>
+             <span style="margin-right:10px;">
+                <select ng-model="search.project" >
+                    <option  value="*">
+                        ALL
+                    </option>
+                    <option ng-repeat="type in project_types" value="{{type.value}}">
+                        {{type.name}}
+                    </option>
+                </select>
+            </span>
+        </div>
+        <div>
+            <span style="margin-right:10px;">Room Type :  </span>
+             <span style="margin-right:10px;">
+                <select ng-model="search.type" >
+                    <option  value="*">
+                        ALL
+                    </option>
+                    <option ng-repeat="type in room_types" value="{{type.value}}">
+                        {{type.name}}
+                    </option>
+                </select>
+            </span>
+            <span style="margin-right:37px;">Floor :  </span>
+             <span style="margin-right:72px;">
+                <input type="text" ng-model="search.floor" />
+            </span>
+            <span style="margin-right:10px;">
+                <button class="btn btn-inverse" ng-click="search()">Search</button>
+               
+            </span>
+             <button ng-click="print()" class="primary">Print</button>
+				<button ng-click="tranfer()" class="danger">Tranfer</button>
+        </div>
+	</form>
+	
+	
 	<table class="table">
 		<tr>
 			<td>
@@ -9,7 +65,7 @@
 				ItemID
 			</td>
 			<td>
-				UnitID
+				Unit Number
 			</td>
 			<td>
 
@@ -18,10 +74,12 @@
 		<tr ng-repeat="transaction in transactions">
 			<td><input type="checkbox" name="transactions[]" ng-model="transaction.checked" ng-checked="transaction.checked" id="transaction-{{transaction.id}}"/></td>
 			<td>{{transaction.itemId}}</td>
-			<td>{{transaction.unit_id}}</td>
-			<td><button>โอน</button></td>
+			<td><a href="#/transactions/{{transaction.id}}/edit">{{transaction.unit_number}}</a></td>
+			<td><a class="btn btn-inverse" href="#/transactions/{{transaction.id}}/edit">แก้ไข</a>
+				<button ng-click="tranfer()">โอน</button>
+			</td>
 		</tr>
 	</table>
-	<button ng-click="test()">Preview</button>
+	
 
 </section>

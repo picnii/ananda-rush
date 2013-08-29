@@ -18,6 +18,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
           when('/appoint/:itemId', {templateUrl:'template/appoint.html', controller: AppointCtrl}).
           when('/transactions', {templateUrl:'template/transactions.html', controller: TransactionCtrl}).
           when('/transactions/print',{templateUrl:'template/print-transactions.html', controller:TransactionPrintCtrl} ).
+          when('/transactions/:transaction_id/edit', {templateUrl:'template/transaction-edit.html', controller:TransactionEditCtrl}).
 		      otherwise({redirectTo: '/'});
 		}]);
 

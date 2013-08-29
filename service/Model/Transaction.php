@@ -69,7 +69,7 @@ function findOldInformation($transaction_id)
 {
     $sql = "SELECT *, m.projID as project_code FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
     LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
-    LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = mp.id
+    LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = m.transaction_id
     LEFT JOIN tranfer_appointment_log as tapl ON tapl.id = tap.log_id
     WHERE transaction_id = {$transaction_id}";
 
@@ -125,6 +125,7 @@ function findBankLoanInfo($pre_approve_bank_id)
     $SQL.="join Type_Select ts on b.status_user_select = ts.id_type_select ";
     $SQL.="where b.id_preapprove_bank ='".$pre_approve_bank_id."' ";
     $res = DB_query($GLOBALS['connect'],$SQL);
+    //echo $SQL;
     $numrows = DB_num_rows($res);
 
     $result = new StdClass;
@@ -171,7 +172,7 @@ function findInformation($pre_id)
                      $SQL1.="inner join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
                      $SQL1.="inner join master_project mp on mp.proj_code = t.projID ";
 
-                     $SQL1.="LEFT JOIN tranfer_appointment tap on tap.transaction_id = t.id ";
+                     $SQL1.="LEFT JOIN tranfer_appointment tap on tap.transaction_id = t.transaction_id ";
                      $SQL1.="LEFT JOIN tranfer_appointment_log tapl on tapl.id = tap.log_id ";
 
                      $SQL1.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
@@ -179,6 +180,7 @@ function findInformation($pre_id)
                      $row = DB_num_rows($res);
                      $rt =  DB_fetch_array($res);
                      $data = array();
+                  //   echo $SQL1;
                      if($rt["id_preapprove_bank"] != ''){
                         $pre_approve_bank_id = $rt["id_preapprove_bank"];
                         $bank = findBankLoanInfo($pre_approve_bank_id);
@@ -232,6 +234,7 @@ function getSaleDatas($unit_ids)
 {
     //print_r($unit_ids);
     //echo "<br/></br>";
+
     $bill_datas = fetchBillInformation($unit_ids);
     $variables_unit =  getVariableUnits($bill_datas);
     return $variables_unit;
@@ -314,7 +317,8 @@ ELSE
     INSERT INTO Table1 VALUES (...)
     */
 	$SQL  = "INSERT INTO tranfer_transaction(unit_id,template_id,create_time, payments, variables)  VALUES ('$unit_id', '$template_id',GETDATE(), '{$payments_json}' ,'{$variables_json}'); SELECT SCOPE_IDENTITY()";
-    //echo $SQL;
+
+  //  echo $SQL;
     //echo "<br/><br/>";
      $result = DB_query($GLOBALS['connect'],converttis620($SQL));
     if($result){
@@ -327,7 +331,7 @@ ELSE
     }
 }
 
-function findAllLastTransactions($selector = "*")
+function findAllLastTransactions($selector = "*", $unit_ids = null)
 {
     $sql = "SELECT {$selector} FROM tranfer_transaction  INNER JOIN master_transaction on master_transaction.transaction_id = tranfer_transaction.unit_id WHERE id IN ( SELECT MAX(id) as id from tranfer_transaction  GROUP BY unit_id, template_id )";
     //echo $sql;
@@ -345,15 +349,17 @@ function findAllLastTransactions($selector = "*")
     return $transactions;
 }
 
-function findAllLastTransactionsByUnitIds($unit_ids)
+function findAllLastTransactionsByUnitIds($selector = "*",$unit_ids)
 {
-    $sql = "SELECT *
+    $sql = "SELECT {$selector}
         FROM tranfer_transaction
+         INNER JOIN master_transaction on master_transaction.transaction_id = tranfer_transaction.unit_id
         WHERE id IN
         (
         SELECT MAX(id) as id from tranfer_transaction WHERE ".getIdClauseFromParams($unit_ids, 'unit_id')." GROUP BY unit_id, template_id
         )
         ";
+    //echo $sql;
     $result = DB_query($GLOBALS['connect'],$sql);
     /*$numrow = DB_num_rows($result);
     if(!($numrow > 0))
@@ -392,10 +398,12 @@ function convertToTransaction($row)
 
 function findTransactionById($id)
 {
-     $SQL  = "select * from tranfer_transaction where id = $id";
+    $SQL  = "select * from tranfer_transaction where id = $id";
+    //echo $SQL;
 	 $result = DB_query($GLOBALS['connect'],$SQL);
      $numrow = DB_num_rows($result);
 	 $row = DB_fetch_array($result);
+     
      if($numrow > 0){
         return $row;
     }else{
@@ -432,7 +440,7 @@ function findTransaction($q)
 function findAllTransaction($unit_ids=null)
 {
     if($unit_ids == null)
-        $SQL = "SELECT * FROM tranfer_transaction ";
+        $SQL = "SELECT * FROM tranfer_transaction";
     else
 	   $SQL = "SELECT * FROM tranfer_transaction WHERE ".getIdClauseFromParams($unit_ids, 'unit_id');
   //  echo $SQL;
@@ -450,6 +458,7 @@ function findAllTransaction($unit_ids=null)
        return false;
     }
 }
+
 
 function updateTransaction($transaction_id, $args)
 {
@@ -582,7 +591,7 @@ function findAllBill($q)
     function getProjectNameFromSaleData($bill)
     {
         if(isset($bill->proj_name_th))
-            $project_name = $bill->proj_name_en;
+            $project_name = $bill->proj_name_th;
         else
             $project_name = '?';
         return $project_name;
@@ -751,9 +760,11 @@ function findAllBill($q)
 
    function getIsBank($bill)
    {
-        $reason_id = $bill->preapp_appoint_reason1_id;
+       // print_r($bill);
+        $reason_id = $bill->Preapp_appoint_reason1_id;
         if(isset($bill->banks))
         {
+
             $select_banks = array();
             foreach($bill->banks as $bank)
             {
@@ -764,6 +775,7 @@ function findAllBill($q)
                 return false;
             else
             {
+
                 return $select_banks;
             }
         }
@@ -773,6 +785,7 @@ function findAllBill($q)
    function getBanksVariable($bill)
    {
         $banks = getIsBank($bill);
+        $bank_name = '-';
         $return_bank = new stdClass;
         $firstBank = $banks[0];
         if($banks)
@@ -807,6 +820,7 @@ function findAllBill($q)
                  $banks_variable_flag['BankLoanRoom'] = true;
                  $return_bank->BankLoanRoom =  $bank['Price_Approve'];
                  array_push($bill->variables, $variable);
+                 $bank_name = $bank['master_bank_name'];
             }
             else if($bank['id_credit_approval'] == 2)
             {
@@ -814,29 +828,34 @@ function findAllBill($q)
                  $banks_variable_flag['BankLoanInsurance'] = true;
                  $return_bank->BankLoanInsurance =  $bank['Price_Approve'];
                  array_push($bill->variables, $variable);
+                 $bank_name = $bank['master_bank_name'];
             }else if($bank['id_credit_approval'] == 3)
             {
                  $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  $bank['Price_Approve']);
                  $banks_variable_flag['BankLoanDecorate'] = true;
                  $return_bank->BankLoanDecorate =  $bank['Price_Approve'];
                  array_push($bill->variables, $variable);
+                 $bank_name = $bank['master_bank_name'];
             }else if($bank['id_credit_approval'] == 5)
             {
                 $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  $bank['Price_Approve']);
                 $banks_variable_flag['BankLoanMulti'] = true; 
                 $return_bank->BankLoanMulti =  $bank['Price_Approve'];
                 array_push($bill->variables, $variable);  
+                $bank_name = $bank['master_bank_name'];
             }else if($bank['id_credit_approval'] == 6)
             {
-                $variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  $bank['Price_Approve']);
+                /*$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  $bank['Price_Approve']);
                 $banks_variable_flag['SumBankLoan'] = true;  
                  $return_bank->SumBankLoan =  $bank['Price_Approve']; 
-                array_push($bill->variables, $variable);
+                array_push($bill->variables, $variable);*/
             }else
             {
                 array_push( $bank_other_loans,  $bank['Price_Approve']);        
+                $bank_name = $bank['master_bank_name'];
                 //$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
             }
+
             
                 /*$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
                 array_push($bill->variables, $variable);
@@ -851,6 +870,7 @@ function findAllBill($q)
         }
 
         $bank_sum = 0;
+
         foreach($bank_other_loans as $key => $value)
         {
            $bank_other_paid =  $bank_other_loans[$key];
@@ -858,7 +878,7 @@ function findAllBill($q)
         }
         $variable = getBillVariable('BankLoanOther', '-',  $bank_sum);
         array_push($bill->variables, $variable);
-        $return_bank->BankLoanOther =  $bank['Price_Approve'];
+        $return_bank->BankLoanOther =  $bank_sum;
 
         foreach($banks_variable_flag as $key => $value)
         {
@@ -869,9 +889,32 @@ function findAllBill($q)
                     $variable = getBillVariable($key, '-',  0);
                 else
                     $variable = getBillVariable($key, '-', '-');
-                array_push($bill->variables, $variable);
+                if($key != "SumBankLoan" && $key != "BankLoanOther")
+                {
+                     $return_bank->$key = 0;
+                     array_push($bill->variables, $variable);
+                }
+               
             }
         }
+        $sum_bank =0;
+        foreach ($return_bank as $key => $value) {
+            # code...
+            $sum_bank += $return_bank->$key;
+        }
+        $return_bank->SumBankLoan = $sum_bank;
+        $variable = getBillVariable('SumBankLoan', '-',  $sum_bank);
+        array_push($bill->variables, $variable);
+        $return_bank->BankLoanName = $bank_name;
+        
+        $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  $bank_name);
+        array_push($bill->variables, $variable);
+        
+       // $return_bank->test = "sompo";
+        if(isset($return_bank))
+            return $return_bank;
+        else
+            return array('test'=>"wrong");
        
    }
 

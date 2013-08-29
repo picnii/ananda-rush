@@ -21,6 +21,49 @@
 		return $bills;
 	}
 
+	function actionTranfer($unit_id)
+	{
+
+	}
+
+	function actionCreateTransactions($template_id, $bills)
+	{
+		$transaction_ids  = array();
+		
+		//$sale_datas = getSaleDatas($unit_ids);
+		//print_r($sale_data);
+		//$variable_units = $sale_datas;//getVariableUnits($sales_data);
+		//print_r($variable_units);
+
+		for($i = 0;$i < count($bills); $i++)
+		{
+			$bill = $bills[$i];
+			$unit_id =  $bill->unit_id;
+		//	$variables = $variable_units[$i];
+		//	$bill = convertSaleDataToBill($variables, $template_id);
+			$variables_json = json_encode($bill->variables);
+			$payments_json = json_encode($bill->payments);
+			//echo $variables_json;
+			/*print_r(array(
+					'unit_id'=>$unit_id,
+					'template_id'=>$template_id,
+					'payments_json'=>$payments_json,
+					'variables_json'=>$variables_json
+				));*/
+			if(isset($unit_id) && isset($variables_json) && isset($payments_json))
+			{
+				
+					$created_id = createTransaction($unit_id, $template_id, $payments_json, $variables_json);	
+					array_push($transaction_ids, $created_id);
+			}
+		
+			//$created_id = createTransaction($unit_ids[$i], $template_id);
+			
+			
+		}
+		return $transaction_ids;
+	}
+
 	function actionCreateBills($unit_ids, $template_id)
 	{
 		$transaction_ids  = array();
@@ -93,9 +136,47 @@
 		return $bills;
 	}
 
+	function actionSearchTransaction($q, $from=null, $to=null)
+	{
+		$search_query = $q;
+		
+		if($q=="*" && $from== null && $to==null)
+		{
+			
+			$units = findAllUnits();
+		}
+		else if($q == "*")
+		{
+			$units = findAllUnits($from, $to);
+		
+		}
+		else
+		{
+		//	echo "q = {$q}";
+			$params = getParamsFromSearchQuery($q, 'master_transaction');
+			$units = findAllUnitsByQuery($params);
+		}
+		$unit_ids = array();
+		for( $i=0; $i < count($units);$i++)
+		{
+			array_push($unit_ids, $units[$i]->id)
+			;
+		}
+		
+		return findAllLastTransactionsByUnitIds("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id, master_transaction.UnitNo as unit_number", $unit_ids);
+	}
+
+	function actionViewTransaction($id)
+	{
+		$bill =  findTransactionById($id);
+		$bill['variables'] = json_decode($bill['variables']);
+		$bill['payments'] = json_decode($bill['payments']);
+		return $bill;
+	}
+
 	function actionAllTransactions()
 	{
-		return findAllLastTransactions("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id");
+		return findAllLastTransactions("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id, master_transaction.UnitNo as unit_number");
 	}
 
 
@@ -121,7 +202,7 @@
 			array_push($bill->variables, $variable);
 		}
 
-		$isBankPay = getIsBank($data);
+		
 		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('UnitNumber', 'UNIT NO.', getUnitNumberFromSaleData($data));
@@ -168,12 +249,20 @@
 		$variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  getAreaDiffFromSaleData($data));
 		array_push($bill->variables, $variable);
 
+		$isBankPay = getIsBank($data);
+	;
 		if($isBankPay)
-		{
+		{	
 			
-			getBanksVariable($bill);
+			$bank = getBanksVariable($data);
+			foreach ($bank as $key => $value) {
+				# code...
+				$variable = getBillVariable($key, $key,  $value);
+				array_push($bill->variables, $variable);
+			}
 		}else
 		{
+		
 			$variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  '-');
 			array_push($bill->variables, $variable);
 			$variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '-');
@@ -227,7 +316,11 @@
 		$variable = getBillVariable('ProjectName','ค่าปลอด', getProjectNameFromSaleData($data));
 		array_push($bill->variables, $variable);
 
-
+		if(isset( $data->master_transaction_id))
+			$variable = getBillVariable('UnitId', '-',  $data->master_transaction_id);
+		else
+			$variable = getBillVariable('UnitId', '-',  $data->transaction_id);
+		array_push($bill->variables, $variable);
 		
 
 		return $bill;

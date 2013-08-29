@@ -43,6 +43,10 @@ function getFormulaValue(varset, formula)
 {
 	if(formula == "")
 		return "";
+	if(!isNaN(formula))
+		return formula;
+	if(typeof(formula) == 'undefined')
+		return 0;
 	if(formula[0] == "#")
 		return formula.substr(1);
 	var express = /{[\w\d]*}/g;

@@ -80,7 +80,7 @@
                      <li><a href="#/variables">จัดการ ตัวแปร</a></li>
                 </ul>
             </li>
-          <li><a href="#">ดูข้อมูล Transaction</a></li>
+          <li><a href="#/transactions">ดูใบค่าใช้จ่าย</a></li>
           <li><a href="#">ดู Report</a></li>
         </ul>
       </div>
