@@ -277,6 +277,8 @@
 			array_push($bill->variables, $variable);
 			$variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
 			array_push($bill->variables, $variable);
+			$variable = getBillVariable('SumBankDiff', 'ผลต่างระหว่าง ค่าห้อง กับสินเชื่อรวม',  '-');
+			array_push($bill->variables, $variable);
 		}
 		
 		$variable = getBillVariable('ActualSpace', 'พื้นที่จริง',  getActualAreaFromSaleData($data));

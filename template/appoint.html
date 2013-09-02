@@ -11,7 +11,16 @@
 <div><b>Floor :</b> {{unit.floor}}</div>
 
 
-    <h2>Create Appointment  <button ng-click="" class="btn btn-inverse">Promotions</button></h2>
+    <h2>Create Appointment</h2>
+    <button ng-click="togglePromotion()" class="btn btn-inverse">Promotions</button>
+    <div >
+        <ul>
+            <li ng-repeat="promotion in promotions">
+                <input type="checkbox" ng-model="promotion.checked" ng-checked="promotion.checked">
+                {{promotion.Name_promotion}}
+            </li>
+        </ul>
+    </div>
     <form>
         <div class="appoint_text" style="margin-bottom:10px;">
             <span style="margin-right:5px;">ประเภทการติดต่อ : </span>

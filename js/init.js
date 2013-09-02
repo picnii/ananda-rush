@@ -75,8 +75,8 @@ function getFormulaValue(varset, formula)
 	} catch (e) {
 	    if (e instanceof SyntaxError) {
 
-	        console.log(e.message);
-	        console.log(run_formula);
+	      //  console.log(e.message);
+	        //console.log(run_formula);
 	    }
 	}
 	

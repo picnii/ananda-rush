@@ -168,7 +168,7 @@
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
 						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{bill.BankLoanName}}</b> </div>
-						<div class="span3" align="right">{{getShowBankPayment(bill.variables) | zeroDash}}</div>
+						<div class="span3" align="right">{{bill.getShowBankPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.CompanyName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowCompanyPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>

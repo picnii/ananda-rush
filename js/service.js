@@ -58,5 +58,10 @@ angular.module('dataServices', ['ngResource']).
     get:{method:'GET', params:{action:'appoint', itemId:'*'}},
     create:{method:'POST', params:{action:'createAppoint'} }
   });
+}).factory('Promotion', function($resource){
+  return $resource('service/index.php', {}, {
+    forUser:{method:'GET', params:{action:'promotions'}, isArray:true},
+  
+  });
 })
     //, params:{unitId:'data'}, isArray:false

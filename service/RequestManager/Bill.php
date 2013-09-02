@@ -21,6 +21,8 @@
 		$action = $_GET['action'];
 		if(gotAction($action, $billActions))
 			require_once 'Controller/BillController.php';
+		if($action == 'bills')
+			$response = actionBills($_GET['unit_ids'], $_GET['template_id']);
 		if($action == 'bill')
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
 		if($action == 'billPayment')

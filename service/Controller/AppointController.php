@@ -46,8 +46,15 @@
 		$reqBody->call_datetime_str = $reqBody->call_date.' '.$reqBody->call_time.'.0';
 //		$result = $reqBody;
 		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration, $reqBody->authorize);
+		$result_promotion  = array();
+		foreach ($reqBody->promotions as $promotion) {
+			# code...
+			array_push($result_promotion, createAppointmentLogPromotion($result, $promotion->id, $promotion->type)) ;
+		}
+		
 		return array(
 			'result'=>$result,
+			'result_promotion' => $result_promotion,
 			'reqBody'=>$reqBody
 		);
 	}

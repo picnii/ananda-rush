@@ -31,6 +31,7 @@
      <script type="text/javascript" src="js/init.js"></script>
     <script type="text/javascript" src="js/service.js"></script>
       <script type="text/javascript" src="js/Controller.js"></script>
+      <script type="text/javascript" src="js/BillController.js"></script>
       <!--[if lte IE 8]>
       <script>
         document.createElement('ng-include');

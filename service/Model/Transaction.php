@@ -71,7 +71,7 @@ function findOldInformation($transaction_id)
     LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
     LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = m.transaction_id
     LEFT JOIN tranfer_appointment_log as tapl ON tapl.id = tap.log_id
-    WHERE transaction_id = {$transaction_id}";
+    WHERE m.transaction_id = {$transaction_id}";
 
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
@@ -146,7 +146,7 @@ function findBankLoanInfo($pre_approve_bank_id)
 function findInformation($pre_id)
 {    
             if($pre_id){
-                    $SQL1 ="select DISTINCT top 1 s.*,p.id_preapprove as Preapp_id_preapprove,p.itemid as Preapp_itemid,p.appoint_reason2_id as Preapp_appoint_reason2_id";
+                    $SQL1 ="select  s.*,p.id_preapprove as Preapp_id_preapprove,p.itemid as Preapp_itemid,p.appoint_reason2_id as Preapp_appoint_reason2_id";
                      $SQL1.=",p.appoint_reason1_id as Preapp_appoint_reason1_id,p.id_status as Preapp_id_status,p.id_status_Document as Preapp_id_status_Document";
                      $SQL1.=",p.remak_appoint_reason1 as Preapp_remak_appoint_reason1,p.remak_appoint_reason2 as Preapp_remak_appoint_reason2";
                      $SQL1.=",p.IVZ_ProjSalesContractId as Preapp_IVZ_ProjSalesContractId,p.InvoiceAccount as Preapp_InvoiceAccount";
@@ -158,8 +158,8 @@ function findInformation($pre_id)
                      $SQL1.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                      $SQL1.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE";
                      $SQL1.=",t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC , t.IVZ_PROJSALESTITLEDEEDNUMBER, t.IVZ_ESTIMATEPRICE ";
-                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
-                     $SQL1.="pri.id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
+                     $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,b.status_user_select,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
+                     $SQL1.="pri.id_preapprove_bank as priceApp_id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
 
                      $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time ";
 
@@ -168,14 +168,14 @@ function findInformation($pre_id)
                      $SQL1.="inner join master_transaction t on p.itemid = t.ItemId ";
                      $SQL1.="inner join preapprove_bank b on p.itemid = b.itemID and p.InvoiceAccount = b.InvoiceAccount ";
                      $SQL1.="inner join appointment_reason1 ar on p.appoint_reason1_id = ar.appoint_reason1_id ";
-                     $SQL1.="inner join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
-                     $SQL1.="inner join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
+                     $SQL1.="LEFT join Price_Approve pri on b.id_preapprove_bank = pri.id_preapprove_bank ";
+                     $SQL1.="LEFT join credit_approval_type cr on pri.id_credit_approval = cr.id_credit_approval ";
                      $SQL1.="inner join master_project mp on mp.proj_code = t.projID ";
 
                      $SQL1.="LEFT JOIN tranfer_appointment tap on tap.transaction_id = t.transaction_id ";
                      $SQL1.="LEFT JOIN tranfer_appointment_log tapl on tapl.id = tap.log_id ";
 
-                     $SQL1.="where p.id_preapprove = '".$pre_id."' order by p.lastupdate DESC ";
+                     $SQL1.="where p.id_preapprove = '".$pre_id."' and b.status_user_select = '2' order by p.lastupdate DESC ";
                      $res = DB_query($GLOBALS['connect'],$SQL1);
                      $row = DB_num_rows($res);
                      $rt =  DB_fetch_array($res);
@@ -910,6 +910,9 @@ function findAllBill($q)
         $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  $bank_name);
         array_push($bill->variables, $variable);
         
+        $return_bank->SumBankDiff = $sum_bank - $return_bank->BankLoanRoom;
+        $variable = getBillVariable('SumBankDiff', '-',  $return_bank->SumBankDiff);
+        array_push($bill->variables, $variable);
        // $return_bank->test = "sompo";
         if(isset($return_bank))
             return $return_bank;

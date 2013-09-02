@@ -54,7 +54,7 @@
 	<!--<button ng-click="next()">Next</button>
 	<button ng-click="back()">Back</button>-->
 	<form>
-   <div ng-show="loading" class="loading" style="margin-left: 334px;"><img src="images/loading.gif">LOADING...</div> 
+   
 		<table class="table" style="font-size:13px !important;">
 			<tr>
 				<td>transaction_id</td>
@@ -82,6 +82,7 @@
 				<td><!--<a href="#/bills/{{unit.billId}}/edit">edit</a>--></td>
 			</tr>
 		</table>
+        <div ng-show="loading" class="loading" style="margin-left: 334px;"><img src="images/loading.gif">LOADING...</div> 
 		<button ng-click="match()" class="btn btn-info">Match With Template</button>
 
 	</form>

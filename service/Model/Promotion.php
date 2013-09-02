@@ -35,11 +35,16 @@ function findAllPromotionsAxByRecId($rec_id)
 
 function findAllPromotionsPreapprove($itemId, $invoiceAccount)
 {
+	/*
+	* INNER JOIN เช่อมืี่บอก Type
+	 LEFT JOIN เชื่อม Payment ON type = 4
+	*/
 	//table: PreapPromo
 	$sql = "SELECT * FROM PreapPromo
 	 INNER JOIN Master_Promotion ON Master_Promotion.id_promotion = PreapPromo.id_promotion
 	 INNER JOIN master_promotion_item ON master_promotion_item.id_promotion = Master_Promotion.id_promotion
 	 INNER JOIN Item_Promotion ON Item_Promotion.id_item_promotion = master_promotion_item.id_item_promotion
+	
 	 WHERE itemID = '$itemId' AND InvoiceAccount = '$invoiceAccount'";
 	$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	$promotions = array();

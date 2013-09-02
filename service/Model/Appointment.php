@@ -33,7 +33,6 @@ function createAppointment($transaction_id, $type, $call_time, $appoint_time, $s
     }
 }
 
-
 function findAppointmentByUnitId($unit_id)
 {
 	$sql = "SELECT tranfer_appointment.id as main_id, * FROM tranfer_appointment  INNER JOIN tranfer_appointment_log  on tranfer_appointment.log_id = tranfer_appointment_log.id WHERE tranfer_appointment.transaction_id = '{$unit_id}'";
@@ -90,6 +89,24 @@ function updateAppointmentLog($appointment_id)
 {
 
 }
+
+function createAppointmentLogPromotion($appointment_log_id, $promotion_id, $type)
+{
+	$sql = "INSERT INTO tranfer_appointment_promotion(appointment_id, promotion_id, promotion_type)  VALUES 
+	('$appointment_log_id', '$promotion_id', '$type'); SELECT SCOPE_IDENTITY()";
+	//echo $sql;
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	if($result){
+        sqlsrv_next_result($result); 
+        sqlsrv_fetch($result); 
+        $created_id = sqlsrv_get_field($result, 0); 
+        return $created_id;
+    }else{
+        return false;
+    }
+}
+
+
 
 function getAppointmentTypes()
 {
