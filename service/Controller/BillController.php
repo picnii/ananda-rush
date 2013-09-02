@@ -133,6 +133,13 @@
 	function actionTransactions($unit_ids)
 	{
 		$bills = findAllTransaction($unit_ids);
+
+		for($i =0; $i < count($bills); $i++)
+		{		# code...
+				$bills[$i]['payments'] = json_decode($bills[$i]['payments']);
+				$bills[$i]['variables'] = json_decode($bills[$i]['variables']);
+		}
+
 		return $bills;
 	}
 
@@ -203,7 +210,7 @@
 		}
 
 		
-		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', 'มีนาคม 2556');
+		$variable = getBillVariable('AppointmentMonth', 'เดือนวันที่นัดโอน', '13-15 กันยายน 2556');
 		array_push($bill->variables, $variable);
 		$variable = getBillVariable('UnitNumber', 'UNIT NO.', getUnitNumberFromSaleData($data));
 

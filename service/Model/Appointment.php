@@ -90,11 +90,42 @@ function updateAppointmentLog($appointment_id)
 
 }
 
+function findAppointmentLogPromotion($appointment_log_id, $promotion_id, $type)
+{
+	$sql = "SELECT * FROM tranfer_appointment_promotion WHERE appointment_id = '$appointment_log_id' AND promotion_id = '$promotion_id' AND promotion_type = '$type' ";
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$row = DB_fetch_array($result);
+	if(isset($row['id']))
+		return $row;
+	else
+		return false;
+}
+
+function updateAppointmentLogPromotion($id, $appointment_log_id, $promotion_id, $type)
+{
+
+}
+
+function deleteAppointmentLogPromotion($appointment_log_id)
+{
+	$sql = "DELETE FROM tranfer_appointment_promotion WHERE appointment_id = '$appointment_log_id'";
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	if($result)
+		return true;
+	else
+		return false;
+}
+
 function createAppointmentLogPromotion($appointment_log_id, $promotion_id, $type)
 {
+	//need to change to insert or update
+	deleteAppointmentLogPromotion($appointment_log_id);
 	$sql = "INSERT INTO tranfer_appointment_promotion(appointment_id, promotion_id, promotion_type)  VALUES 
 	('$appointment_log_id', '$promotion_id', '$type'); SELECT SCOPE_IDENTITY()";
 	//echo $sql;
+	$search_row = findAppointmentLogPromotion($appointment_log_id, $promotion_id, $type);
+	if($search_row)
+		return $search_row['id'];
 	$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	if($result){
         sqlsrv_next_result($result); 

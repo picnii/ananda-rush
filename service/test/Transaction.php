@@ -1,6 +1,12 @@
 <?php
 
 	$transaction_ids = array(1352, 2302, 1307, 2174, 1835, 1854, 2169, 2157);
+	//$units = findAllUnits();
+	//$transaction_ids = array();
+	foreach ($units as $unit) {
+		# code...
+		array_push($transaction_ids, $unit->id);
+	}
 	$rows = fetchBillInformation($transaction_ids);
 
 	$bills = getVariableUnits($rows);
@@ -200,8 +206,25 @@
 		
 	}
 
-	//print_r($rows);
-	print_r($bills);
+//	print_r($bills);
+	$unit_ids = $transaction_ids;
+
+	$transactions = findAllLastTransactionsByUnitIds("id",$unit_ids);
+
+	$test_transaction_id = 2935;
+	$transaction_ids = array();
+	$transaction_ids[0] = $test_transaction_id;
+	$transactions  = findAllTransaction($transaction_ids);
+	//print_r(json_decode($transactions[0]['payments']));
+	//print_r(json_encode($transactions));
+	for($i =0; $i < count($transactions); $i++)
+	{		# code...
+			$transactions[$i]['payments'] = json_decode($transactions[$i]['payments']);
+			$transactions[$i]['variables'] = json_decode($transactions[$i]['variables']);
+	}
+//	print_r(json_encode($transactions));
+
+
 
 	/*$units = findAllUnits();
 	$unit_index = rand(0, count($units) - 1);

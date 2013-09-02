@@ -516,10 +516,15 @@ function TransactionCtrl($scope, $filter, $rootScope, $routeParams, $location, B
 	{
 		var transactions = $scope.selectedTransactions();
 		var transaction_ids = [];
+	//	console.log('saving');
 		for(var i=0; i < transactions.length; i++)
 		{
-			transaction_ids.push(transactions.id);
+	//		console.log(transactions[i])
+	//		console.log(transactions[i].id);
+			transaction_ids.push(transactions[i].id);
 		}
+		
+	//	console.log({transaction_ids:transaction_ids})
 		saveTempData({transaction_ids:transaction_ids});
 		$location.path('/transactions/print');
 	}
@@ -536,17 +541,24 @@ function TransactionPrintCtrl($scope, $rootScope, $routeParams, $location, Bill,
 		$scope.getPaymentBase();
 	})
 
-	
-
-	Bill.test(function(transactions){
+	var obj = loadTempData();
+	var transaction_ids = obj.transaction_ids;
+	console.log('load temp data');
+	console.log(obj);
+	console.log(transaction_ids);
+	Bill.test( {action:'transactions', transaction_ids:transaction_ids},function(transactions){
+		console.log('transactions');
 		console.log(transactions);
 		for(var i = 0 ; i < transactions.length ;i++)
 		{
 			transaction = transactions[i];
-			temp = JSON.parse(transaction.variables);
-			transaction.variables = temp.variables;
-			transaction.payments = temp.payments;
+			if(typeof(transaction.variables) == 'string')
+			{
+				temp = JSON.parse(transaction.variables);
 			
+				transaction.variables = temp.variables;
+				transaction.payments = temp.payments;
+			}
 			//transaction.payments = JSON.parse(transaction.payments);
 		}
 		$scope.bills = transactions;

@@ -36,6 +36,7 @@ angular.module('areaFilters', []).filter('up2area', function() {
   		return "-";
    	if(!isNaN(input))
     {
+      
       input = Number(input);
       return input.formatMoney(2,',','.'); 
     }

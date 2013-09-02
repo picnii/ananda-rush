@@ -61,6 +61,27 @@ function findAllPromotionsPreapproveById($id)
 
 }
 
+function findAllPromotionPreapproveFromAppoinmentId($appointment_id)
+{
+	$sql = "SELECT * FROM tranfer_appointment_promotion 
+		INNER JOIN PreapPromo ON PreapPromo.id_pro_pre
+		INNER JOIN Master_Promotion ON Master_Promotion.id_promotion = PreapPromo.id_promotion
+		INNER JOIN master_promotion_item ON master_promotion_item.id_promotion = Master_Promotion.id_promotion
+		INNER JOIN Item_Promotion ON Item_Promotion.id_item_promotion = master_promotion_item.id_item_promotion
+		WHERE
+			appointment_id = '$appointment_id'
+	";	
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$promotions = array();
+	while($row = DB_fetch_array($result))
+	{
+		$promotion = convertPromotionPreApproveRowToPromotion($row);
+		array_push($promotions, $promotion);
+	}
+	return $promotions;
+	
+}
+
 
 function convertPromotionRowAxToPromotion($row)
 {
@@ -96,6 +117,11 @@ function convertPromotionPreApproveRowToPromotion($row)
 		$promotion->is_discount_percent = true;
 	else
 		$promotion->is_discount_percent = false;
+
+	if(isset($promotion->Code_item))
+		$promotion->payment_id = $promotion->Code_item;
+	else
+		$promotion->payment_id = null;
 	return $promotion;
 }
 

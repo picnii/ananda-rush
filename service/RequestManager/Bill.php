@@ -27,8 +27,7 @@
 			$response = actionBill($_GET['unit_id'], $_GET['template_id']);
 		if($action == 'billPayment')
 			$response = actionGetPaymentIds();
-		if($action == 'transactions')
-			$response = actionTransactions(array(2168, 2169));
+		
 		if($action == 'listTransactions')
 		{
 			if(isset($_GET['q']))
@@ -58,6 +57,8 @@
 		}
 		if($reqBody->action == 'createTransaction')
 			$response = actionCreateTransactions( $reqBody->template_id, $reqBody->bills);
+		if($reqBody->action == 'transactions')
+			$response = actionTransactions($reqBody->transaction_ids);
 
 	}
 

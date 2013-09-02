@@ -49,7 +49,7 @@ angular.module('dataServices', ['ngResource']).
     create:{method:'POST', params:{action:'createBills'}},
     preview:{method:'POST', isArray:true},
     list:{method:'GET', params:{action:'listTransactions'}, isArray:true},
-    test:{method:'GET', params:{action:'transactions'}, isArray:true},
+    test:{method:'POST', isArray:true},
     view:{method:'GET', params:{action:'transaction',id:""}},
     createTransaction:{method:'POST', params:{action:'createTransaction'}}
   });

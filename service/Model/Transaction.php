@@ -67,7 +67,7 @@ function findPreID($tran_item){
 
 function findOldInformation($transaction_id)
 {
-    $sql = "SELECT *, m.projID as project_code FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
+    $sql = "SELECT *, m.projID as project_code, tranfer_appointment.id as main_appointment_log_id FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
     LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
     LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = m.transaction_id
     LEFT JOIN tranfer_appointment_log as tapl ON tapl.id = tap.log_id
@@ -75,6 +75,7 @@ function findOldInformation($transaction_id)
 
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
+    $row['promotions'] = findAllPromotionPreapproveFromAppoinmentId($row['main_appointment_log_id']);
      $row['q_type'] = 'oldInfo';
      if(isset($row['transaction_id']))
         return $row;
@@ -161,7 +162,8 @@ function findInformation($pre_id)
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,b.status_user_select,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank as priceApp_id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
 
-                     $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time ";
+                     $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time, tap.id as main_appointment_log_id ";
+                     //tap.id as main_appointment_log_id 
 
                      $SQL1.="from Sale_Transection s ";
                      $SQL1.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
@@ -179,6 +181,7 @@ function findInformation($pre_id)
                      $res = DB_query($GLOBALS['connect'],$SQL1);
                      $row = DB_num_rows($res);
                      $rt =  DB_fetch_array($res);
+                     $rt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($rt['main_appointment_log_id']);
                      $data = array();
                   //   echo $SQL1;
                      if($rt["id_preapprove_bank"] != ''){
@@ -210,7 +213,7 @@ function findInformation($pre_id)
                         $SQL.="t.BasePrice as master_BasePrice,t.SellPrice as master_SellPrice,t.Status as master_Status,t.IsMatrix as master_IsMatrix,t.ModifyBy as master_ModifyBy,t.ModifyDate as master_ModifyDate,";
                         $SQL.="t.MatrixColor as master_MatrixColor,t.building as master_building,t.bu_id as master_bu_id,t.HOUSESIZE as master_HOUSESIZE,t.LANDSIZE as master_LANDSIZE,mp.* ";
 
-                        $SQL.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time ";
+                        $SQL.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time, tap.id as main_appointment_log_id  ";
 
                          $SQL.="from Sale_Transection s ";
                          $SQL.="inner join preapprove p on p.itemid = s.itemID and p.InvoiceAccount = s.InvoiceAccount ";
@@ -225,6 +228,7 @@ function findInformation($pre_id)
                          //echo $SQL;
                          $rs = DB_query($GLOBALS['connect'],$SQL);
                          $dt =  DB_fetch_array($rs);
+                         $dt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($dt['main_appointment_log_id']);
                          return $dt;
                      }
             }
@@ -437,13 +441,13 @@ function findTransaction($q)
 /*
 *
 */
-function findAllTransaction($unit_ids=null)
+function findAllTransaction($transaction_ids=null)
 {
-    if($unit_ids == null)
+    if($transaction_ids == null)
         $SQL = "SELECT * FROM tranfer_transaction";
     else
-	   $SQL = "SELECT * FROM tranfer_transaction WHERE ".getIdClauseFromParams($unit_ids, 'unit_id');
-  //  echo $SQL;
+	   $SQL = "SELECT * FROM tranfer_transaction WHERE ".getIdClauseFromParams($transaction_ids, 'id');
+    
     $result = DB_query($GLOBALS['connect'],$SQL);
 
     $numrow = DB_num_rows($result);
