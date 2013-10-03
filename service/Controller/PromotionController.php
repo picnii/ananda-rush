@@ -66,5 +66,9 @@
 		return findAllPromotion();
 	}
 
+	function actionCreateCondition($promotion_id, $condition)
+	{
+		return createCondition($promotion_id, $condition);
+	}
 
 ?>

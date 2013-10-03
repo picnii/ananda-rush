@@ -619,11 +619,9 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 {
 	$scope.promotion = {};
 
-	$scope.promotions = Promotion.query(function(data){
-
-		console.log('test');
-		console.log(data);
-	});
+	$scope.promotions = Promotion.query();
+	$scope.promotion_payment_types = Promotion.getTypes();
+	$scope.phases = Promotion.getPhases();
 
 	$scope.promotion_types =[
 		{id:-1, name:"ALL"},
@@ -642,8 +640,9 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	$scope.projects = Type.getProjectsList();
 	$scope.units = []
 	$scope.status = {}
+	$scope.search = {};
 
-	$scope.search = function()
+	$scope.searchUnit = function()
 	{
 		var ss= $scope.search;
 		var query = "";
@@ -715,16 +714,46 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
     	return $filter('filter')($scope.promotions, {checked: true});
 	};	
 
+	$scope.selectedPromotionsById = function(id)
+	{
+		return $filter('filter')($scope.promotions, {id: id});
+	}
+
 	$scope.selectedUnits = function () {
     	return $filter('filter')($scope.units, {checked: true});
 	};	
 
+	$scope.findStuffIn = function(arrayOfStuff, attributeOfItem, value)
+	{
+		for(var i =0 ;i < arrayOfStuff.length; i++)
+			if(arrayOfStuff[i][attributeOfItem] == value)
+				return arrayOfStuff[i];
+		return null;
+	}
+
+	$scope.loadPromotion = function(id)
+	{
+		$scope.promotion = $scope.selectedPromotionsById(id)[0];
+		$scope.promotion.type = $scope.findStuffIn($scope.promotion_payment_types, 'id', $scope.promotion.reward_id);
+		var discount_type = $scope.findStuffIn($scope.promotion_payment_types, 'code', 'discount');
+		
+		if($scope.promotion.type.id == discount_type.id)
+		{
+			$scope.promotion.payment_id = $scope.promotion.option1;
+
+		}
+	}
 
 	$scope.updatePromotion = function()
 	{
 		console.log('update');
-		
-		if($scope.promotion.type.id  == $scope.PROMOTION_ALL.id || $scope.promotion.type.id  == $scope.PROMOTION_AX.id)
+		if( typeof($scope.search.promotion) != 'undefined')
+		{
+			$scope.loadPromotion($scope.search.promotion.selectedId);
+			
+		}
+			
+		/*if($scope.promotion.type.id  == $scope.PROMOTION_ALL.id || $scope.promotion.type.id  == $scope.PROMOTION_AX.id)
 			$scope.promotions =Promotion.listAx(function(data){
 				for(var i =0;i < data.length;i++)
 				{
@@ -749,11 +778,39 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 		else if($scope.promotion.type.id == $scope.PROMOTION_NOT_AX.id)
 			$scope.promotions = loadLocal();
 		else
-			$scope.promotions = [];
+			$scope.promotions = [];*/
+
 	}
 
-	$scope.updatePromotion();
-	$scope.search();
+	$scope.createCondition = function()
+	{
+		console.log($scope.promotion.id)
+		if(typeof($scope.search.to) != 'undefined')
+			$scope.search.date_to = $scope.search.to.convertToSqlDate();
+		if(typeof($scope.search.from) != 'undefined')
+			$scope.search.date_from = $scope.search.from.convertToSqlDate()
+		if(typeof($scope.search.project)  != 'undefined')
+			$scope.search.project_id  = $scope.search.project.id;
+		if(typeof($scope.search.phase)  != 'undefined')
+			$scope.search.phase_id =  $scope.search.phase.id
+		
+		console.log($scope.search);
+		Promotion.createCondition({action:'createCondition', condition:$scope.search, promotion_id:$scope.promotion.id}, function(data){
+			console.log('after create condition')
+			console.log(data);
+		})
+		
+	}
+
+	$scope.clear = function()
+	{
+		$scope.search = {};
+	}
+
+	//$scope.updatePromotion();
+	//$scope.searchUnit();
+
+
 }
 
 function PromotionCreateCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, Type, Payment, Promotion)
@@ -774,9 +831,9 @@ function PromotionCreateCtrl($scope, $rootScope, $location, $filter, Promotion, 
 
 	$scope.getClassPayment = function()
 	{
-		if(typeof($scope.promotion.promotion_payment_type) == "undefined")
+		if(typeof($scope.promotion.type) == "undefined")
 			return "hide";
-		if($scope.promotion.promotion_payment_type.id == PAY_TYPE_DISCOUNT)
+		if($scope.promotion.type.id == PAY_TYPE_DISCOUNT)
 			return "show"
 		else
 			return "hide"
@@ -784,9 +841,9 @@ function PromotionCreateCtrl($scope, $rootScope, $location, $filter, Promotion, 
 
 	$scope.getClassStuff = function()
 	{
-		if(typeof($scope.promotion.promotion_payment_type) == "undefined")
+		if(typeof($scope.promotion.type) == "undefined")
 			return "hide";
-		if($scope.promotion.promotion_payment_type.id == PAY_TYPE_STUFF)
+		if($scope.promotion.type.id == PAY_TYPE_STUFF)
 			return "show"
 		else
 			return "hide"
@@ -794,11 +851,7 @@ function PromotionCreateCtrl($scope, $rootScope, $location, $filter, Promotion, 
 
 	$scope.getClassAmount = function()
 	{
-		if(typeof($scope.promotion.promotion_payment_type) == "undefined")
-			return "show";
-		if($scope.promotion.promotion_payment_type.id == PAY_TYPE_STUFF)
-			return "hide"
-		else
+		
 			return "show"
 	}
 

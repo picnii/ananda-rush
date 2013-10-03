@@ -11,7 +11,7 @@
 			<h3>Preview</h3>
 			<div>
 				{{promotion.name}}<br/>
-				{{promotion.type}}<br/>
+				{{promotion.type.name}}<br/>
 				{{promotion.amount}}<br/>
 
 			</div>
@@ -63,7 +63,8 @@
 
 		</div>
 		<div class="span1">
-			<button class="btn">Create</button>
+			<button class="btn" ng-click="createCondition()">Save</button>
+			<button class="btn btn-inverse" ng-click="clear()">Clear</button>
 		</div>
 	</div>
 	<h1>Promotions Index</h1>

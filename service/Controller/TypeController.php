@@ -57,6 +57,7 @@
 		foreach ($projects_raw as $project_raw) {
 			# code...
 			$project = new stdClass;
+			$project->id = $project_raw['id'];
 			$project->name = $project_raw['name'];
 			$project->value = $project_raw['code'];
 			array_push($projects, $project);

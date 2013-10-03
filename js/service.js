@@ -69,6 +69,7 @@ angular.module('dataServices', ['ngResource']).
     getPaymentTypes:{method:'GET', params:{action:'promotionPaymentTypes'}, isArray:true},
     create:{method:'POST', params:{action:'createPromotion'}, isArray:true},
     query:{method:'GET', params:{action:'listPromotions'}, isArray:true},
+    createCondition:{method:'POST', params:{action:'createPromotionCondition'}},
   });
 })
     //, params:{unitId:'data'}, isArray:false
