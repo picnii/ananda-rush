@@ -323,7 +323,8 @@ function deleteConditionById($id)
 function findAllCondition()
 {
 	$conditions = array();
-	$sql = "SELECT * FROM promotion_condition";
+	$sql = "SELECT * FROM promotion_condition LEFT JOIN promotion_master ON promotion_id = promotion_master.id
+			LEFT JOIN master_project ON project_id = master_project.proj_id";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	while($row = DB_fetch_array($result))
 	{
