@@ -70,6 +70,9 @@ angular.module('dataServices', ['ngResource']).
     create:{method:'POST', params:{action:'createPromotion'}, isArray:true},
     query:{method:'GET', params:{action:'listPromotions'}, isArray:true},
     createCondition:{method:'POST', params:{action:'createPromotionCondition'}},
+    listConditions:{method:'POST', params:{action:'listConditions'}, isArray:true},
+    deleteCondition:{method:'POST', params:{action:'deleteCondition'}},
+    matchPromotion:{method:'POST', params:{action:'matchPromotion'}, isArray:true},
   });
 })
     //, params:{unitId:'data'}, isArray:false

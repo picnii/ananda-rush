@@ -25,7 +25,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
 		      otherwise({redirectTo: '/'});
 		}]);
 
-angular.module('areaFilters', []).filter('up2area', function() {
+angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
   return function(input) {
   	if(input == "?" || input == null)
   		return "*ขึ้นอยู่กับพื้นที่จริง";

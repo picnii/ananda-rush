@@ -1,7 +1,7 @@
 <?php
 	//
 	//actionPromotion($itemId, $invoiceAcount)
-    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition');
+    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion');
 
 	if(isset($_GET['action']))
 	{
@@ -18,6 +18,8 @@
 			$response = actionPromotionPaymentTypes();
 		if($action == 'listPromotions')
 			$response = actionPromotions();
+		if($action == 'listConditions')
+			$response = actionConditions();
 		
 	}
 	if(isset($_POST['action']))
@@ -41,6 +43,10 @@
 			$response = actionCreatePromotion($reqBody->promotion);
 		if($action == 'createCondition')
 			$response = actionCreateCondition($reqBody->promotion_id, $reqBody->condition);
+		if($action == 'deleteCondition')
+			$response = actionDeleteCondition($reqBody->condition->id);
+		if($action == 'matchPromotion')
+			$response = actionMatchPromotion($reqBody->condition_id, $reqBody->unit_ids);
 	}
 
 ?>

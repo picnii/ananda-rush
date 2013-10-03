@@ -642,7 +642,7 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	$scope.status = {}
 	$scope.search = {};
 
-	$scope.searchUnit = function()
+	$scope.searchUnit = function(callback)
 	{
 		var ss= $scope.search;
 		var query = "";
@@ -668,8 +668,10 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 			query = "*";
 		console.log(query);
 		$scope.loading = true;
-		$scope.units = Unit.query({'q':query},function(){
+		$scope.units = Unit.query({'q':query,'from':0,to:5000},function(){
 			$scope.loading = false;
+			if(typeof(callback) == 'function')
+				callback();
 		})
 	}
 
@@ -793,11 +795,24 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 			$scope.search.project_id  = $scope.search.project.id;
 		if(typeof($scope.search.phase)  != 'undefined')
 			$scope.search.phase_id =  $scope.search.phase.id
+		else
+			$scope.search.phase_id = -1;
 		
 		console.log($scope.search);
 		Promotion.createCondition({action:'createCondition', condition:$scope.search, promotion_id:$scope.promotion.id}, function(data){
 			console.log('after create condition')
 			console.log(data);
+			$scope.searchUnit(function(){
+				var unit_ids = [];
+				for(var i=0; i < $scope.units.length;i++)
+					unit_ids.push($scope.units[i].id);
+				Promotion.matchPromotion({action:'matchPromotion', condition_id:data.condition_id, unit_ids:unit_ids},function(data){
+
+					console.log(data);
+				})
+			});
+			$scope.loadMatchPromotions();
+
 		})
 		
 	}
@@ -806,6 +821,33 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	{
 		$scope.search = {};
 	}
+
+	$scope.deleteCondition = function(cond)
+	{
+		Promotion.deleteCondition({action:'deleteCondition', condition:cond},function(data){
+			$scope.loadMatchPromotions();	
+		})
+		
+	}
+
+	$scope.loadMatchPromotions = function()
+	{
+		$scope.match_promotions = Promotion.listConditions(function(data){
+			for(var i =0;i <data.length;i++)
+			{
+				data[i].type =  $scope.findStuffIn($scope.promotion_payment_types, 'id', data[i].reward_id);
+				data[i].from = new Date(data[i].date_from.date);
+				data[i].to = new Date(data[i].date_to.date);
+				data[i].phase =  $scope.findStuffIn($scope.phases, 'id', data[i].phase_id);
+
+			}
+			console.log(data);
+
+		});
+		
+	}
+
+	$scope.loadMatchPromotions();
 
 	//$scope.updatePromotion();
 	//$scope.searchUnit();

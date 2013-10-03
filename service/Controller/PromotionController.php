@@ -68,7 +68,24 @@
 
 	function actionCreateCondition($promotion_id, $condition)
 	{
-		return createCondition($promotion_id, $condition);
+		$answer = new stdClass;
+		$answer->condition_id = createCondition($promotion_id, $condition);
+		return $answer;
+	}
+
+	function actionDeleteCondition($condition_id)
+	{
+		return deleteConditionById($condition_id);
+	}
+
+	function actionConditions()
+	{
+		return findAllCondition();
+	}
+
+	function actionMatchPromotion($condition_id, $unit_ids)
+	{
+		return matchPromotion($condition_id, $unit_ids);
 	}
 
 ?>
