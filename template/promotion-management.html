@@ -3,8 +3,11 @@
 	<div class="row"	>
 		<div class="span4" style="background:#999">
 			<h2>Promotion</h2>
+			<div>
+				<a href="#/promotions/create" class="btn btn-info">Create</a>
+			</div>	
 			<input ng-model="search.promotion.name" type="text" placeholder="Promotion Name"><br/>
-			<select ng-model="search.promotion.type"  ng-options="p.name for p in promotionTypes"></select><br/>
+			<select ng-model="search.promotion.type" ng-change="chang"  ng-options="p.name for p in promotionTypes"></select><br/>
 			<div ng-repeat="promo in promotions" >
 				<input type="radio" name="promotion" ng-change="updatePromotion()" ng-model="search.promotion.selectedId" value="{{promo.id}}" />{{promo.name}}
 			</div>

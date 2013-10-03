@@ -75,7 +75,10 @@
 
 	function actionDeleteCondition($condition_id)
 	{
-		return deleteConditionById($condition_id);
+		$answer = new stdClass;
+		$answer->unmatch = unMatchPromotionByConditionId($condition_id);
+		$answer->delete = deleteConditionById($condition_id);
+		return $answer;
 	}
 
 	function actionConditions()
