@@ -339,7 +339,14 @@ function findMatchPromotion($condition)
 
 	}else
 	{
-
+		$conditions = array();
+		$sql = "SELECT * FROM promotion_condition_unit";
+		$result = DB_query($GLOBALS['connect'], converttis620($sql));
+		while($row = DB_fetch_array($result))
+		{
+			array_push($conditions, $row);
+		}
+		return $conditions;
 	}
 }
 
@@ -350,7 +357,7 @@ function matchPromotion($condition_id, $unit_ids)
 	{
 		$unit_id = $unit_ids[$i];
 		$sql = "INSERT INTO promotion_condition_unit(condition_id, unit_id) 
-			VALUES($condition_id, $unit_id);SELECT SCOPE_IDENTITY();";
+			VALUES({$condition_id}, {$unit_id});SELECT SCOPE_IDENTITY();";
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		if($result){
 	        sqlsrv_next_result($result); 
@@ -361,16 +368,19 @@ function matchPromotion($condition_id, $unit_ids)
 	return $result_ids;
 }
 
-function unMathPromotion($ids)
+function unMatchPromotion($ids)
 {
 	for($i =0; $i <count($ids); $i++)
 	{
 		$id = $ids[$i];
 		$sql = "DELETE FROM promotion_condition_unit WHERE id = {$id} ";
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
-		
+		if($result)
+			continue;
+		else
+			return false;
 	}
-	
+	return true;
 }
 
 function getPromotionRewardTypes($is_array = false)
