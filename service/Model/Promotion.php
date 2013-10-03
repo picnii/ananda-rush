@@ -397,11 +397,24 @@ function unMatchPromotionByConditionId($condition_id){
 }
 
 function getCountConditionUnit($condition_id){
-
+	$sql = "SELECT COUNT(*) AS rows FROM promotion_condition_unit WHERE condition_id = {$condition_id}";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$row = DB_fetch_array($result);
+	if($row)
+		return $row['rows'];
+	else
+		return 0;
 }
 
-function findAllConditionUnit($condition_id){
-	
+function findUnitByPromotionConditionId($condition_id){
+	$units = array();
+	$sql = "SELECT unit_id FROM promotion_condition_unit WHERE condition_id = {$condition_id}";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	while($row = DB_fetch_array($result))
+	{
+		array_push($units, $row['unit_id']);
+	}
+	return $units;
 }
 
 function getPromotionRewardTypes($is_array = false)
