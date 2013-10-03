@@ -387,6 +387,23 @@ function unMatchPromotion($ids)
 	return true;
 }
 
+function unMatchPromotionByConditionId($condition_id){
+	$sql = "DELETE FROM promotion_condition_unit WHERE condition_id = {$condition_id} ";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	if($result)
+		return true;
+	else
+		return false;
+}
+
+function getCountConditionUnit($condition_id){
+
+}
+
+function findAllConditionUnit($condition_id){
+	
+}
+
 function getPromotionRewardTypes($is_array = false)
 {
 
