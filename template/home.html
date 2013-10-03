@@ -30,16 +30,17 @@
             </span>
         </div>
         <div>
-            <span style="margin-right:10px;">Room Type :  </span>
+            <span style="margin-right:10px;">Customer :  </span>
              <span style="margin-right:10px;">
-                <select ng-model="search.type" >
+                <!--<select ng-model="search.type" >
                     <option  value="*">
                         ALL
                     </option>
                     <option ng-repeat="type in room_types" value="{{type.value}}">
                         {{type.name}}
                     </option>
-                </select>
+                </select>-->
+                <input type="text" ng-model="search.customer_name">
             </span>
             <span style="margin-right:37px;">Floor :  </span>
              <span style="margin-right:72px;">
@@ -56,33 +57,36 @@
 	<form>
    
 		<table class="table" style="font-size:13px !important;">
-			<tr>
-				<td>transaction_id</td>
-				<td>item id</td>
-				<td>item name</td>
-				<td>floor</td>
-				<td>unit number</td>
-				<td>unit status</td>
-				<td>house size</td>
-				<td>land size</td>
+			<tr style="font-weight:bold; text-align:center;">
+				<td style="text-align:center;">transaction_id</td>
+				<td style="text-align:center;">item id</td>
+				<td style="text-align:center;">item name</td>
+				<td style="text-align:center;">floor</td>
+				<td style="text-align:center;">unit number</td>
+				<td style="text-align:center;">unit status</td>
+				<td style="text-align:center;">house size</td>
+				<td style="text-align:center;">land size</td>
+                <td style="text-align:center;">นัดโอน</td>
+                
 			</tr>
 			<tr ng-repeat="unit in units">
 
-				<td><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
+				<td style="text-align:center;"><input name="unit_ids[]" type="checkbox" checked value="{{unit.id}}"/>{{unit.id}}
 					<input type="hidden" name=
 					"template_ids[]" value="{{unit.template_id}}"/>
 				</td>
-				<td>{{unit.item_id}}</td>
-				<td>{{unit.item_name}}</td>
-				<td>{{unit.floor}}</td>
-				<td>{{unit.unit_no}}</td>
-				<td>{{unit.status}}</td>
-				<td>{{unit.house_size}}</td>
-				<td>{{unit.land_size}}</td>
+				<td style="text-align:center;">{{unit.item_id}}</td>
+				<td style="text-align:center;">{{unit.item_name}}</td>
+				<td style="text-align:center;">{{unit.floor}}</td>
+				<td style="text-align:center;">{{unit.unit_no}}</td>
+				<td style="text-align:center;">{{unit.status}}</td>
+				<td style="text-align:center;">{{unit.house_size}}</td>
+				<td style="text-align:center;">{{unit.land_size}}</td>
+                 <td style="text-align:center;"><a href="#/appoint/{{unit.item_id}}">นัดโอน</a></td>
 				<td><!--<a href="#/bills/{{unit.billId}}/edit">edit</a>--></td>
 			</tr>
 		</table>
-        <div ng-show="loading" class="loading" style="margin-left: 334px;"><img src="images/loading.gif">LOADING...</div> 
+        <div ng-show="loading" class="loading" style="margin-left: 334px;"><img src="images/loading.gif"></div> 
 		<button ng-click="match()" class="btn btn-info">Match With Template</button>
 
 	</form>

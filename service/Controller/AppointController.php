@@ -37,7 +37,12 @@
 	function actionAppointTest($unit_id)
 	{
 		$appoint = findAppointmentByUnitId($unit_id);
-		return $appoint;
+		$promotions =findAllPromotionPreapproveFromAppoinmentId($appoint->main_id);
+		$transaction = 
+		return array(
+			'appoint' => $appoint,
+			'promotions' => $promotions
+		);
 	}
 
 	function actionCreateAppoint($unit_id, $reqBody)
@@ -47,15 +52,20 @@
 //		$result = $reqBody;
 		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration, $reqBody->authorize);
 		$result_promotion  = array();
+		$appointment = findAppointmentByUnitId($unit_id);
+		$appointment_id = $appointment->main_id;
+		deleteAppointmentLogPromotion($appointment_id);
 		foreach ($reqBody->promotions as $promotion) {
 			# code...
-			array_push($result_promotion, createAppointmentLogPromotion($result, $promotion->id, $promotion->type)) ;
+			array_push($result_promotion, createAppointmentLogPromotion($appointment_id, $promotion->id, $promotion->type)) ;
 		}
 		
 		return array(
 			'result'=>$result,
+			'appoint_id'=>$appointment_id,
 			'result_promotion' => $result_promotion,
-			'reqBody'=>$reqBody
+			'reqBody'=>$reqBody,
+			'appoint'=>$appointment
 		);
 	}
 

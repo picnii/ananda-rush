@@ -51,6 +51,7 @@ angular.module('dataServices', ['ngResource']).
     list:{method:'GET', params:{action:'listTransactions'}, isArray:true},
     test:{method:'POST', isArray:true},
     view:{method:'GET', params:{action:'transaction',id:""}},
+    viewTransaction:{method:'GET', params:{action:'viewTransaction', unit_id:'*'}},
     createTransaction:{method:'POST', params:{action:'createTransaction'}}
   });
 }).factory('Appoint', function($resource){
@@ -61,7 +62,13 @@ angular.module('dataServices', ['ngResource']).
 }).factory('Promotion', function($resource){
   return $resource('service/index.php', {}, {
     forUser:{method:'GET', params:{action:'promotions'}, isArray:true},
-  
+    list:{method:'GET', params:{action:'promotions'}, isArray:true},
+    listAx:{method:'GET', params:{action:'findPromotionsAx'}, isArray:true},
+    getTypes:{method:'GET', params:{action:'promotionTypes'}, isArray:true},
+    getPhases:{method:'GET', params:{action:'promotionPhases'}, isArray:true},
+    getPaymentTypes:{method:'GET', params:{action:'promotionPaymentTypes'}, isArray:true},
+    create:{method:'POST', params:{action:'createPromotion'}, isArray:true},
+    query:{method:'GET', params:{action:'listPromotions'}, isArray:true},
   });
 })
     //, params:{unitId:'data'}, isArray:false

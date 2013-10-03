@@ -133,16 +133,19 @@
 		return $row;
 	}
 
-	function findAllUnitsByQuery($q, $isDebugMode = false)
+	function findAllUnitsByQuery($q, $operators =null, $isDebugMode = false)
 	{
-		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID ".getWhereClauseFromParams($q);
-//echo $sql;	
-		$result = DB_query($GLOBALS['connect'], convertutf8($sql));
+		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID ".getWhereClauseFromParams($q, $operators);
+		//echo $sql;
+		$result = DB_query($GLOBALS['connect'], converttis620($sql) );
+
 	    $units =  array();
 	    if($isDebugMode)
 	    	echo $sql;
 	    while($row = DB_fetch_array($result))
 	    {
+	    	//print_r($row);
+	    	
 	    	if($isDebugMode)
 	    		print_r($row);
 	    	if(!isset($row['transaction_id']))

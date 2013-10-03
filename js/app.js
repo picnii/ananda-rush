@@ -2,6 +2,9 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
 		  config(['$routeProvider', function($routeProvider) {
 		  $routeProvider.
 		  	  when('/', {templateUrl: 'template/home.html',   controller: HomeCtrl}).
+          when('/promotions', {templateUrl: 'template/promotion-management.html',   controller: PromotionCtrl}).
+          when('/promotions/create', {templateUrl: 'template/promotion-create.html',   controller: PromotionCreateCtrl}).
+          when('/promotions/update/:pid', {templateUrl: 'template/promotion-create.html',   controller: PromotionUpdateCtrl}).
           when('/units', {templateUrl: 'template/units.html',   controller: UnitListCtrl}).
 		  	  when('/bills/print/:tid', {templateUrl: 'template/print.html',   controller: BillPrintCtrl}).
 		      when('/bills/preview/:tid/:uid', {templateUrl: 'template/bill.html',   controller: BillCtrl}).
@@ -38,6 +41,7 @@ angular.module('areaFilters', []).filter('up2area', function() {
     {
       
       input = Number(input);
+      input = Math.round(input / 10 ) *10
       return input.formatMoney(2,',','.'); 
     }
     

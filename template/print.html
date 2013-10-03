@@ -1,5 +1,5 @@
 <section ng-controller="BillPrintCtrl" class="container">
-	<header>
+	<header class="noPrint">
 		<button ng-click="save()">Save</button>
 	</header>
 	<section ng-repeat="bill in bills">
@@ -14,19 +14,19 @@
 			</div>
 		</div>
 		<div style="border-bottom: groove"></div>
-		</div><br><br>
+		<br><br>
 		
 		<div class="row">
 		<font size="2">
-		<div class="offset6 span1">UNIT NO.</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.UnitNumber}}</div>
-		<div class="span1">บ้านเลขที่</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseNumber}}</div>
-		
-		<div class="offset6 span1">แบบบ้าน</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseType}}</div>
-		<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
-		<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}}</div>
+			<div class="offset6 span1">UNIT NO.</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.UnitNumber}}</div>
+			<div class="span1">บ้านเลขที่</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseNumber}}</div>
+			
+			<div class="offset6 span1">แบบบ้าน</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseType}}</div>
+			<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}}</div>
 		</font>
 		</div>
 		
@@ -48,7 +48,7 @@
 					<div class="span1"><b>โทร. :</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.CustomerTel}}</div><br><br>
 					<div class="span12" style="border-bottom-style:groove;"></div>
-					
+				</font>
 				</div>
 			<div><h4>1.ราคาและวิธีโอนกรรมสิทธิ์</h4></div>
 				<div class="container" >
@@ -204,7 +204,7 @@
 
 			
 			</div>
-
+		<div class="page-break"></div>	
 	</section>
 
 </section>

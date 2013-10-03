@@ -6,7 +6,7 @@ function testCon()
 	echo "testCon";
 }
 
-function getParamsFromSearchQuery($q, $prefix='')
+function getParamsFromSearchQuery($q, $prefix='', $exceptions = null)
 {
 	$arr = explode(".", $q);
 	$answer = array();
@@ -14,21 +14,44 @@ function getParamsFromSearchQuery($q, $prefix='')
 	{
 		$split_str = explode("=", $arr[$i]);
 		$key = $split_str[0];
-		if($prefix !='')
+		$except = _checkParamsInException($key, $exceptions);
+		if($except)
+			$key = $except.'.'.$key;
+		else if($prefix !='')
 			$key = $prefix.'.'.$key;
+
 		$value = $split_str[1];
 		$answer[$key] = $value;
 	}
 	return $answer;
 }
 
+function _checkParamsInException($key, $exceptions)
+{
+	/*$exceptions = array(
+		'SalesName' => 'Sale_Tra'
+	
+	)
+
+
+	*/
+	foreach ($exceptions as $except_key => $value) {
+		# code...
+		if($except_key == $key)
+		{
+			return $value;
+		} 
+	}
+	return false;
+}
+
 function getWhereClauseFromQuery($q)
 {
 	if($q == "*")
 		return "";
-	echo $q;
+	//echo $q;
 	$params = getParamsFromSearchQuery($q);
-	print_r($params);
+	//print_r($params);
 	$sql = "WHERE ";
 	$isFirst = true;
 	foreach ($params as $key => $value)
@@ -42,7 +65,7 @@ function getWhereClauseFromQuery($q)
 	return $sql;
 }
 
-function getWhereClauseFromParams($params)
+function getWhereClauseFromParams($params, $oparators = null)
 {
 	$sql = "WHERE ";
 	$isFirst = true;
@@ -56,6 +79,13 @@ function getWhereClauseFromParams($params)
     	//if(is_numeric($value))
     	//	$sql = $sql." {$key} = {$value}";
     	//else
+    	if(isset($oparators) && isset($oparators[$key]))
+    	{
+    		if($oparators[$key] == 'LIKE')
+    			$sql = $sql." {$key} {$oparators[$key]} '%{$value}%'";
+    		else
+    			$sql = $sql." {$key} {$oparators[$key]} '{$value}'";
+    	}else
     		$sql = $sql." {$key} = '{$value}'"; 
     }
 	return $sql;

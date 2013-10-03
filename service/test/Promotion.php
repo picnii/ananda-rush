@@ -1,15 +1,28 @@
 <?php
 
-	$units = findAllUnits();
-	$unit_test = $units[3];
-	//print_r($unit_test->item_id);
-	//print_r($unit_test);invoiceAccount:C0009893
-	$promotions_raw = findAllPromotionsPreapprove('TH01C106001', 'C0009893');
-	$promotions = array();
-	foreach ($promotions_raw as $key => $value) {
-		# code...
-		$promotion =convertPromotionPreApproveRowToPromotion($value);
-		array_push($promotions, $promotion);
-	}
-	print_r($promotions);
+	//print_r(getPromotionRewardTypes());
+
+	$types = getPromotionRewardTypes();
+
+	$type = $types['cashback'];
+	
+
+	$promotion_id = createPromotion('ส่วนลดนะจ๊ะ', $type, 5000, null, null);
+	
+	assertEquals(is_numeric($promotion_id), true);
+
+	$promotion = findPromotionById($promotion_id);
+	assertEquals('ส่วนลดนะจ๊ะ', $promotion['name']);
+
+	deletePromotionById($promotion_id);
+
+	$type = $types['discount'];
+
+	$promotion_id = createPromotion('ลดค่าโอน', $type, 5000, 21, 1);
+	$promotion = findPromotionById($promotion_id);
+
+	deletePromotionById($promotion_id);
+	print_r($promotion);
+
+
 ?>

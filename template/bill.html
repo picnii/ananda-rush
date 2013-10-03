@@ -1,4 +1,7 @@
 <section class="container" id="BillCtrl" ng-controller="BillCtrl" >
+		<div class="nav noPrint">
+			<button ng-click="save()">Save</button>
+		</div>
 		<div class="row" >
 			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน {{getVar("AppointmentMonth")}} เท่านั้น</h4></div>
 			<div class="span12" align="center"> <h4>{{getVar("ProjectName")}} </h4>
@@ -167,10 +170,10 @@
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{getVar("CompanyName")}}"</b> </div>
 						<div class="span3" align="right">{{getShowCompanyPayment() | zeroDash}}</div>
 						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
-						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("ProjectName")}}"</b></div>
+						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("WorkName")}}"</b></div>
 						<div class="span1" align="right">{{getPaymentBase().share_payment | zeroDash}}</div>
 						<div class="span3">3.3 ชำระเงินสมทบกองทุนส่วนกลาง</div>
-						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("ProjectName")}}"</b></div>
+						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{getVar("WorkName")}}"</b></div>
 						<div class="span1" align="right">{{getPaymentBase().share_fund_payment | zeroDash}}</div>
 						<div class="span7">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ค่าจำนองอีก 1% เป็นแคชเชียร์เช็คสั่งจ่าย </div>
 						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
@@ -199,7 +202,6 @@
 
 			
 			</div>
-			<button ng-click="testing()">Test</button>
 		</section> 
 		<style type="text/css">
 	#main-menu

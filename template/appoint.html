@@ -13,6 +13,7 @@
 
     <h2>Create Appointment</h2>
     <button ng-click="togglePromotion()" class="btn btn-inverse">Promotions</button>
+    <a href="#/bills/preview/{{transaction.template_id}}/{{transaction.unit_id}}" target="_blank" class="btn btn-primary">ดูตัวอย่างใบค่าใช้จ่าย</a>
     <div >
         <ul>
             <li ng-repeat="promotion in promotions">

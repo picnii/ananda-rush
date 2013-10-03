@@ -75,8 +75,10 @@
 			<td><input type="checkbox" name="transactions[]" ng-model="transaction.checked" ng-checked="transaction.checked" id="transaction-{{transaction.id}}"/></td>
 			<td>{{transaction.itemId}}</td>
 			<td><a href="#/transactions/{{transaction.id}}/edit">{{transaction.unit_number}}</a></td>
-			<td><a class="btn btn-inverse" href="#/transactions/{{transaction.id}}/edit">แก้ไข</a>
-				<button ng-click="tranfer()">โอน</button>
+			<td>
+                <a class="btn btn-inverse" href="#/transactions/{{transaction.id}}/edit">แก้ไข</a>
+                <a class="btn" href="#/bills/preview/{{transaction.template_id}}/{{transaction.unit_id}}">อัพเดต</a>
+				<button ng-click="tranfer()" class="btn">โอน</button>
 			</td>
 		</tr>
 	</table>

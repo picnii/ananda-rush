@@ -1,5 +1,5 @@
 <?php
-	$appointActions = array('appoint', 'createAppoint','deleteAppointLog', 'updateAppointLog');
+	$appointActions = array('appoint', 'createAppoint','deleteAppointLog', 'updateAppointLog', 'appointTest');
 
 	if(isset($_GET['action']))
 	{
@@ -8,6 +8,8 @@
 			require_once 'Controller/AppointController.php';
 		if($action == 'appoint')
 			$response = actionAppoint($_GET['itemId']);
+		if($action == 'appointTest')
+			$response = actionAppointTest($_GET['unit_id']);
 	}
 
 	if(isset($_POST['action']))

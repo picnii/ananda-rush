@@ -66,14 +66,33 @@
         {
             text-align: center;
         }
+        
+        @media screen
+        {
+            .noPrint{}
+            .noScreen{display:none;}
+        }
+
+        @media print
+        {
+            .noPrint{display:none;}
+            .noScreen{}
+        }
+        @media all {
+            .page-break { display: none; }
+        }
+
+        @media print {
+            .page-break { display: block; page-break-before: always; }
+        }
     </style>
 </head>
 <body>
-    <div id="main-menu" class="navbar">
+    <div id="main-menu" class="navbar noPrint">
       <div class="navbar-inner">
         <a class="brand" href="#">Tranfer System</a>
         <ul class="nav">
-          <li class="active dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 สร้างใบค่าใช้จ่าย</a>
                 <ul class="dropdown-menu">
                     <li><a href="#/templates">จัดการ Template</a></li>

@@ -119,7 +119,6 @@ function deleteAppointmentLogPromotion($appointment_log_id)
 function createAppointmentLogPromotion($appointment_log_id, $promotion_id, $type)
 {
 	//need to change to insert or update
-	deleteAppointmentLogPromotion($appointment_log_id);
 	$sql = "INSERT INTO tranfer_appointment_promotion(appointment_id, promotion_id, promotion_type)  VALUES 
 	('$appointment_log_id', '$promotion_id', '$type'); SELECT SCOPE_IDENTITY()";
 	//echo $sql;

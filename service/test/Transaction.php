@@ -1,8 +1,8 @@
 <?php
-
-	$transaction_ids = array(1352, 2302, 1307, 2174, 1835, 1854, 2169, 2157);
-	//$units = findAllUnits();
-	//$transaction_ids = array();
+//rawee@ananda.co.th
+	//$transaction_ids = array(1352, 2302, 1307, 2174, 1835, 1854, 2169, 2157, 1302, 2177);
+	$units = findAllUnits();
+	$transaction_ids = array();
 	foreach ($units as $unit) {
 		# code...
 		array_push($transaction_ids, $unit->id);
@@ -206,7 +206,13 @@
 		
 	}
 
-//	print_r($bills);
+	//print_r($bills);
+	foreach ($bills as $bill) {
+		# code...
+		$bill_data = convertSaleDataToBill($bill, 20);
+		print_r($bill_data);
+		echo "------";
+	}
 	$unit_ids = $transaction_ids;
 
 	$transactions = findAllLastTransactionsByUnitIds("id",$unit_ids);

@@ -1,0 +1,95 @@
+<section id="promotion-section" class="container">
+	<h1>Match Promotion</h1>
+	<div class="row"	>
+		<div class="span4" style="background:#999">
+			<h2>Promotion</h2>
+			<input ng-model="search.promotion.name" type="text" placeholder="Promotion Name"><br/>
+			<select ng-model="search.promotion.type"  ng-options="p.name for p in promotionTypes"></select><br/>
+			<div ng-repeat="promo in promotions" >
+				<input type="radio" name="promotion" ng-change="updatePromotion()" ng-model="search.promotion.selectedId" value="{{promo.id}}" />{{promo.name}}
+			</div>
+			<h3>Preview</h3>
+			<div>
+				{{promotion.name}}<br/>
+				{{promotion.type}}<br/>
+				{{promotion.amount}}<br/>
+
+			</div>
+		</div>
+		<div class="span7">
+			<div style="text-align:center;">
+				<h2>Condition</h2>
+			</div>
+			<div class="row">
+				<div class="span1">
+					Project
+				</div>
+				<div class="span1">
+					Phase
+				</div>
+				<div class="span2">
+					Period
+				</div>
+				<div class="span3">
+					Unit
+				</div>
+			</div>
+			<div class="row">
+				<div class="span1">
+					<select class="span1" ng-model="search.project"  ng-options="p.name for p in projects"></select><br/>
+				</div>
+					<div class="span1">
+					<select class="span1" ng-model="search.phase"  ng-options="p.name for p in phases"></select><br/>
+				</div>
+				<div class="span1">
+					<input type="text" placeholder="From" ng-model="search.from" data-date-format="dd/mm/yyyy" class="datepicker span1" bs-datepicker>
+				</div>
+				<div class="span1">
+					<input type="text"  placeholder="To" ng-model="search.to" data-date-format="dd/mm/yyyy" class="datepicker span1" bs-datepicker>
+				</div>
+			
+				<div class="span3">
+					 <input class="span3" type="text" ng-model="search.unit" placeholder="itemId" /><br/>
+					 <input class="span3"  type="text" ng-model="search.customer_name"  placeholder="customer name" ><br/>
+					 <input class="span3"  type="text" ng-model="search.customer_code"  placeholder="Invoice Account" ><br/>
+					 <h5>Area</h5>
+					 <input class="span1" type="number" ng-model="search.area.from" placeholder="From" />
+					 <input class="span1" type="number" ng-model="search.area.To" placeholder="To" />
+					 <br/>
+
+				</div>
+				
+			</div>
+
+		</div>
+		<div class="span1">
+			<button class="btn">Create</button>
+		</div>
+	</div>
+	<h1>Promotions Index</h1>
+	<table class="table" >
+		<tr ng-repeat="promos in match_promotions">
+			<td class="span4">
+				{{promos.promotion.name}}<br/>
+				{{promos.promotion.type}}<br/>
+				{{promos.promotion.amount}}<br/>
+			</td>
+			<td class="span1">
+				{{promos.project.name}}
+			</td>	
+			<td class="span1">
+				{{promos.phase.name}}
+			</td>	
+			<td class="span2">
+				{{promos.from}} => {{promos.to}}
+			</td>	
+			<td class="span3">
+				{{promos.unit.name}}
+			</td>
+			<td class="span1">
+				<button class="btn btn-danger">Delete</button>
+			</td>
+
+		</tr>
+	</table>
+	</section>

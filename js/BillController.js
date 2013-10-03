@@ -1,4 +1,4 @@
-function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type)
+function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type, Bill)
 {
 	//$scope.datas = Npop.query();
 
@@ -236,12 +236,31 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 		var share_fund_payment = $scope.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id);	
 		if(share_fund_payment !=null)
 			share_fund_payment = share_fund_payment[CUSTOMER_INDEX];
-	
+		//loan_payment
+		
+
 		var sum_bank_loan = $scope.getVar('BankLoanRoom');
+		var sum_bank_loan_payment =  $scope.getPaymentByPaymentId($scope.billPayment.loan_payment_id);
+		var customer_sum_bank_loan = 0;
+		if(!isNaN(sum_bank_loan_payment[CUSTOMER_INDEX]))
+			customer_sum_bank_loan += Number(sum_bank_loan_payment[CUSTOMER_INDEX]);
+
 		if(typeof(sum_bank_loan) == 'undefined' || sum_bank_loan == null || sum_bank_loan == '-')
 			sum_bank_loan = 0;
 		//console.log('sum_bank_loan:'+sum_bank_loan)
 
+		var tax_payment = $scope.getPaymentByPaymentId($scope.billPayment.tax_payment_id);
+	
+		if(isNaN(tax_payment[CUSTOMER_INDEX]))
+			tax_payment = 0
+		else
+			tax_payment = Number(tax_payment[CUSTOMER_INDEX]);
+		var tax_loan_payment = $scope.getPaymentByPaymentId($scope.billPayment.tax_loan_payment_id);
+		
+		if(isNaN(tax_loan_payment[CUSTOMER_INDEX]))
+			tax_loan_payment = 0;
+		else
+			tax_loan_payment = Number(tax_loan_payment[CUSTOMER_INDEX]);
 		 
 		var payment_base = {
 			meter_payment:Number(meter_payment),
@@ -251,19 +270,23 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 			share_fund_payment:Number(share_fund_payment),
 			sum_bank_loan:Number(sum_bank_loan),
 			customer_room_payment:Number(customer_room_payment),
-			customer_meter_payment:Number(customer_meter_payment)
+			customer_meter_payment:Number(customer_meter_payment),
+			customer_sum_bank_loan:Number(customer_sum_bank_loan),
+			tax_loan_payment:tax_loan_payment,
+			tax_payment:tax_payment
 		};
-		//console.log('log');
-		//console.log(payment_base)
+		console.log('log');
+		console.log(payment_base)
 		return payment_base;
 	}
 
 	$scope.getMinistryPayment = function()
 	{
 		var estimate = $scope.getVar("EstimatePrice");
-		var estimate_payment = 0.01 * estimate;
+
 		var payment_base = $scope.getPaymentBase();
-		var answer = estimate_payment + (payment_base.sum_bank_loan * 0.01);
+		var estimate_payment = 0.01 * payment_base.tranfer_payment;
+		var answer = estimate_payment + (payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment;
 		return answer - $scope.getCashPayment();
 	}
 
@@ -280,6 +303,17 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 		console.log($scope.getRealBankPayment());
 		console.log('$scope.getShowCompanyPayment');
 		console.log($scope.getShowCompanyPayment());
+	}
+
+	$scope.save = function()
+	{
+		var bill = $scope.datas;
+		bill.unit_id = $scope.getVar('UnitId');
+		var bills = [];
+		bills[0] = bill;
+		Bill.createTransaction({action:'createTransaction', template_id:$routeParams.tid, bills:bills}, function(data){
+    				console.log(data);
+    	});
 	}
 
 }
@@ -765,6 +799,7 @@ function convertBillPrint($scope, data)
 	        var repayment = bill.Repayment;
 	        if(isNaN(repayment))
 				repayment = 0;
+			//case roompayment > repayment
 	        return repayment - payment_base.sum_bank_loan
 	    }
 
@@ -804,6 +839,8 @@ function convertBillPrint($scope, data)
 				}
 				
 			}
+
+
 			var room_payment_def = bill.getPaymentByPaymentId($scope.billPayment.room_payment, variables, payments);
 			customer_room_payment = 0;
 			if(isNaN(room_payment_def[CUSTOMER_INDEX]))
@@ -826,10 +863,10 @@ function convertBillPrint($scope, data)
 				share_payment = Number(share_payment[CUSTOMER_INDEX]);
 
 			var tranfer_payment = bill.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id, variables, payments);
-			if(isNaN(tranfer_payment[BANK_INDEX]))
+			if(isNaN(tranfer_payment[CUSTOMER_INDEX]))
 				tranfer_payment = 0;
 			else
-				tranfer_payment = Number(tranfer_payment[BANK_INDEX]);
+				tranfer_payment = Number(tranfer_payment[CUSTOMER_INDEX]);
 
 			var share_fund_payment = bill.getPaymentByPaymentId($scope.billPayment.share_fund_payment_id, variables, payments);	
 			if(isNaN(share_fund_payment[CUSTOMER_INDEX]))
@@ -839,8 +876,31 @@ function convertBillPrint($scope, data)
 		
 			var sum_bank_loan = bill.getVar('BankLoanRoom', variables);
 			//console.log(bill);
+			var sum_bank_loan_payment =  bill.getPaymentByPaymentId($scope.billPayment.loan_payment_id, variables, payments);
+			var customer_sum_bank_loan = 0;
+			if(!isNaN(sum_bank_loan_payment[CUSTOMER_INDEX]))
+				customer_sum_bank_loan += Number(sum_bank_loan_payment[CUSTOMER_INDEX]);
+
+			var tax_payment = bill.getPaymentByPaymentId($scope.billPayment.tax_payment_id, variables, payments);
+	
+			if(isNaN(tax_payment[CUSTOMER_INDEX]))
+				tax_payment = 0
+			else
+				tax_payment = Number(tax_payment[CUSTOMER_INDEX]);
+			var tax_loan_payment = bill.getPaymentByPaymentId($scope.billPayment.tax_loan_payment_id, variables, payments);
+			
+			if(isNaN(tax_loan_payment[CUSTOMER_INDEX]))
+				tax_loan_payment = 0;
+			else
+				tax_loan_payment = Number(tax_loan_payment[CUSTOMER_INDEX]);
+			 
+
+
 			if(typeof(sum_bank_loan) == 'undefined' || sum_bank_loan == null || sum_bank_loan == '-')
 				sum_bank_loan = 0;
+
+
+
 
 			//ค่าห้อง
 			var payment_base = {
@@ -851,9 +911,19 @@ function convertBillPrint($scope, data)
 				share_fund_payment:share_fund_payment,
 				sum_bank_loan:sum_bank_loan,
 				customer_room_payment:customer_room_payment,
-				customer_meter_payment:customer_meter_payment
+				customer_meter_payment:customer_meter_payment,
+				customer_sum_bank_loan:Number(customer_sum_bank_loan),
+				tax_loan_payment:tax_loan_payment,
+				tax_payment:tax_payment
 			};
-			//console.log(payment_base)
+			if(sum_bank_loan >= 4093716.09)
+			{
+				console.log('payment base')
+				console.log(payment_base)
+				console.log('trander')
+				console.log(bill.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id, variables, payments));
+			}
+			
 			return payment_base;
 		}
 
@@ -861,10 +931,21 @@ function convertBillPrint($scope, data)
 		{
 			var estimate = bill.getVar("EstimatePrice", variables);
 			//var estimate = bill.EstimatePrice;
-			var estimate_payment = 0.01 * estimate;
 			var payment_base = bill.getPaymentBase(variables, payments);
-			var answer = estimate_payment + (payment_base.sum_bank_loan * 0.01);
+			var estimate_payment = payment_base.tranfer_payment;
+			
+			var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment;
+			if(payment_base.sum_bank_loan >= 4093716.09)
+			{
+				console.log('ministry');
+				console.log(estimate_payment);
+				console.log(payment_base.customer_sum_bank_loan);
+				console.log(payment_base.tax_payment);
+				console.log(payment_base.tax_loan_payment);
+				console.log(answer);
+			}
 			return answer - bill.getCashPayment(variables, payments);
+			
 		}
 
 		bill.getCashPayment = function(variables, payments)
@@ -971,6 +1052,20 @@ function updateNewPayment(payments, sum_bank_loan)
 	for(var i =0; i < payments.length;i++)
 	{
 		var payment = payments[i];
+
+		//promotion zone
+		if(typeof(payment.promotion) != 'undefined')
+		{
+			var promotion_discount = payment.promotion.spacial_discount;
+			if(payment.promotion.is_discount_percent)
+			{
+				promotion_discount = promotion_discount / 100 * payment.formulas[CUSTOMER_INDEX];
+			}
+			payment.formulas[CUSTOMER_INDEX] -= promotion_discount;
+			payment.formulas[COMPANY_INDEX] += promotion_discount
+		}
+
+
 		if(payment.is_compare_with_repayment)
 		{
 			//var discount = sum_bank - payment.formulas[CUSTOMER_INDEX] ;
@@ -993,9 +1088,14 @@ function updateNewPayment(payments, sum_bank_loan)
 				payment.formulas[BANK_INDEX] += sum_bank;
 				sum_bank = 0;;
 			}
+
 			console.log('after '+ sum_bank);
 
 		}
+
+
+
+		
 	}
 	return payments;
 }

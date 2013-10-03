@@ -117,6 +117,7 @@ function getPaymentsByTemplateId($template_id)
     $SQL  = "select *,* from tranfer_payment INNER JOIN ";
     $SQL .="tranfer_template_payment on tranfer_template_payment.payment_id = tranfer_payment.id where tranfer_template_payment.template_id = $template_id";
 	$result = DB_query($GLOBALS['connect'],$SQL);
+    
     $payments =  array();
 	while($row = DB_fetch_array($result) )
     {

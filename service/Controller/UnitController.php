@@ -17,8 +17,13 @@
 		else
 		{
 		//	echo "q = {$q}";
-			$params = getParamsFromSearchQuery($q, 'master_transaction');
-			$units = findAllUnitsByQuery($params);
+			$params = getParamsFromSearchQuery($q, 'master_transaction', array(
+				'SalesName' => 'Sale_Transection'
+			));
+			$operators = array(
+				'Sale_Transection.SalesName' => 'LIKE'
+			);
+			$units = findAllUnitsByQuery($params, $operators);
 		}
 		/*$units = findAllUnitsByQuery($q);
 		if($q=="*")
