@@ -291,7 +291,7 @@ function createCondition($promotion_id, $condition)
 
 function updateCondition($id, $promotion_id, $condition)
 {
-	$sql = "UPDATE promotion_condition SET promotion_id = {$promotion_id}, phase_id = {$condition->phase_id}, date_from = '{$condition->from}', date_to = '{$condition->to}' WHERE id = $id";
+	$sql = "UPDATE promotion_condition SET promotion_id = {$promotion_id}, project_id = {$condition->project_id}, phase_id = {$condition->phase_id}, date_from = '{$condition->from}', date_to = '{$condition->to}' WHERE id = $id";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	if($result)
 		return true;
@@ -301,7 +301,7 @@ function updateCondition($id, $promotion_id, $condition)
 
 function findConditionById($id)
 {
-	$sql = "SELECT promotion_condition WHERE id = {$id}";
+	$sql = "SELECT * FROM promotion_condition WHERE id = {$id}";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$row = DB_fetch_array($result);
 	if($row)
@@ -313,6 +313,7 @@ function findConditionById($id)
 function deleteConditionById($id)
 {
 	$sql = "DELETE FROM promotion_condition WHERE id = {$id}";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	if($result)
 		return true;
 	else
