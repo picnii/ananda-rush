@@ -83,6 +83,17 @@ function getWhereClauseFromParams($params, $oparators = null)
     	{
     		if($oparators[$key] == 'LIKE')
     			$sql = $sql." {$key} {$oparators[$key]} '%{$value}%'";
+    		else if($oparators[$key] == 'BETWEEN') {
+    			$values = explode("|", $value);
+    			$from = 0;
+    			$to = 10000;
+    			if($values[0])
+    				$from = $values[0];
+    			if($values[1])
+    				$to = $values[1];
+				$sql = $sql." {$key} {$oparators[$key]} {$from} AND {$to}";
+				print_r($sql);
+    		}
     		else
     			$sql = $sql." {$key} {$oparators[$key]} '{$value}'";
     	}else

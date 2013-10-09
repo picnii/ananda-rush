@@ -18,10 +18,12 @@
 		{
 		//	echo "q = {$q}";
 			$params = getParamsFromSearchQuery($q, 'master_transaction', array(
-				'SalesName' => 'Sale_Transection'
+				'SalesName' => 'Sale_Transection',
+				'SQM' => 'Sale_Transection'
 			));
 			$operators = array(
-				'Sale_Transection.SalesName' => 'LIKE'
+				'Sale_Transection.SalesName' => 'LIKE',
+				'Sale_Transection.SQM' => 'BETWEEN',
 			);
 			$units = findAllUnitsByQuery($params, $operators);
 		}
