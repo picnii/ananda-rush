@@ -1,24 +1,30 @@
-<section id="promotion-section">
-	<form ng-submit="save()">
-		Name <input type="text" ng-model="promotion.name"><br/>
+<section id="promotion-section" class="container">
+	<div style="padding:5px;background:#eee;border-radius:10px;">
+		<a href='#/promotions' class="btn btn-inverse">Back</a><br/><br/>
+		<form ng-submit="save()">
+			Name <input type="text" ng-model="promotion.name">
+			
 		
-	
-		<div class="condition">
-			Type <select ng-model="promotion.type"  ng-options="t.name for t in promotion_payment_types">	</select>
-			<div class="{{getClassPayment()}}">
+			<div class="condition">
+				Type <select ng-model="promotion.type"  ng-options="t.name for t in promotion_payment_types">	</select>
+				<div class="{{getClassPayment()}}">
 
-				<select ng-model="promotion.payment"  ng-options="t.name for t in payments">	</select><br/>
-				Type <select ng-model="promotion.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
+					<select ng-model="promotion.payment"  ng-options="t.name for t in payments">	</select><br/>
+					Type <select ng-model="promotion.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
+				</div>
+				<div class="{{getClassStuff()}}">
+					Item <input type="text" ng-model="promotion.item" />
+				</div>
+				<div  class="{{getClassAmount()}}">
+					Amount <input type="text" ng-model="promotion.amount" ><br/>
+				</div>
 			</div>
-			<div class="{{getClassStuff()}}">
-				Item <input type="text" ng-model="promotion.item" />
-			</div>
-			<div  class="{{getClassAmount()}}">
-				Amount <input type="text" ng-model="promotion.amount" ><br/>
-			</div>
-		</div>
-		
+			
 
-		<input type="submit" class="btn" value="save"/>
-	</form>
+			<input type="submit" class="btn" value="save"/>
+			<button ng-click="delete()" class="btn btn-danger">
+						Delete
+					</button>
+		</form>
+	</div>
 </section>

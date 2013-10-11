@@ -2,6 +2,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
 		  config(['$routeProvider', function($routeProvider) {
 		  $routeProvider.
 		  	  when('/', {templateUrl: 'template/home.html',   controller: HomeCtrl}).
+          when('/promotions/ax', {templateUrl: 'template/promotion-ax.html',   controller: PromotionAxCtrl}).
           when('/promotions', {templateUrl: 'template/promotion-management.html',   controller: PromotionCtrl}).
           when('/promotions/create', {templateUrl: 'template/promotion-create.html',   controller: PromotionCreateCtrl}).
           when('/promotions/update/:pid', {templateUrl: 'template/promotion-create.html',   controller: PromotionUpdateCtrl}).
@@ -20,6 +21,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
           when('/testcheque', {templateUrl:'template/check.html', controller: ChequeTestCtrl}).
           when('/appoint/:itemId', {templateUrl:'template/appoint.html', controller: AppointCtrl}).
           when('/transactions', {templateUrl:'template/transactions.html', controller: TransactionCtrl}).
+          when('/cheque', {templateUrl:'template/check-many.html', controller: TransactionPrintCtrl}).
           when('/transactions/print',{templateUrl:'template/print-transactions.html', controller:TransactionPrintCtrl} ).
           when('/transactions/:transaction_id/edit', {templateUrl:'template/transaction-edit.html', controller:TransactionEditCtrl}).
 		      otherwise({redirectTo: '/'});

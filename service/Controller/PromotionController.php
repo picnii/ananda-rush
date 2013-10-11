@@ -66,6 +66,54 @@
 		return findAllPromotion();
 	}
 
+	function actionFindPromotion($id)
+	{
+		//$answer = new stdClass;
+		return findPromotionById($id);
+		//return $answer;
+	}
+
+	function actionUpdatePromotion($id, $promotion)
+	{
+		$answer = new stdClass;
+		$types = getPromotionRewardTypes();
+		if($types['discount']->id == $promotion->type->id)
+			$answer->promotion_id = updatePromotion(
+				$id,
+				$promotion->name,
+				$promotion->type,
+				$promotion->amount,
+				$promotion->payment->id,
+				$promotion->paymentType->id
+			);
+		else if($types['stuff']->id == $promotion->type->id)
+			$answer->promotion_id = updatePromotion(
+				$id,
+				$promotion->name,
+				$promotion->type,
+				$promotion->amount,
+				$promotion->item,
+				null
+			);
+		else
+			$answer->promotion_id = updatePromotion(
+				$id,
+				$promotion->name,
+				$promotion->type,
+				$promotion->amount,
+				null,
+				null
+			);
+		return $answer;
+	}
+
+	function actionDeletePromotion($promotion_id)
+	{
+		$answer = new stdClass;
+		$answer->delete = deletePromotionById($promotion_id);
+		return $answer;
+	}
+
 	function actionCreateCondition($promotion_id, $condition)
 	{
 		$answer = new stdClass;
@@ -89,6 +137,51 @@
 	function actionMatchPromotion($condition_id, $unit_ids)
 	{
 		return matchPromotion($condition_id, $unit_ids);
+	}
+
+	function actionFindAllUnitPromotion($condition_id)
+	{
+		$answer = new stdClass;
+		$answer->units = findUnitByPromotionConditionId($condition_id);
+		return $answer;
+	}
+
+	function actionCountAllUnitPromotion($condition_id)
+	{
+
+		$answer = new stdClass;
+		$answer->count = getCountConditionUnit($condition_id);
+		return $answer;
+	}
+
+	function actionFindAllPromotionAx()
+	{
+		return findAllPromotionAx();
+	}
+
+	function actionCreatePromotionAx($reqBody)
+	{
+		$answer = new stdClass;
+		$answer->reqBody = $reqBody;
+		$answer->result =  createPromotionAxType($reqBody);
+		return $answer;
+	}
+
+	function actionDeletePromotionAx($reqBody)
+	{
+		return deletePromotionAxType($reqBody);
+	}
+
+	function actionFindAllPromotionFromCondition($condition)
+	{
+		return findMatchPromotion($condition);
+	}
+
+	function actionTestPromotion()
+	{
+		$condition = new stdClass;
+		$condition->unit_id = 1302;
+		return findMatchPromotion($condition);
 	}
 
 ?>

@@ -234,6 +234,7 @@ function findPromotionById($id)
 	//echo $sql;
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$row = DB_fetch_array($result);
+	$row['name'] = convertutf8($row['name'] );
 	if($row)
 		return $row;
 	else
@@ -251,6 +252,58 @@ function findAllPromotion()
 		array_push($promotions, $row);
 	}
 	return $promotions;
+}
+
+function findAllPromotionAx()
+{
+	$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID";
+
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$answer = array();
+	while($row = DB_fetch_array($result))
+	{
+		array_push($answer, $row);
+	}
+	return $answer;
+}
+
+function findPromotionAxTypeById($id)
+{
+	$sql = "SELECT * FROM promotion_ax_type WHERE id = '{$id}'";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$row = DB_fetch_array($result);
+	if(isset($row['id']))
+		return $row;
+	else
+		return false;
+}
+
+function createPromotionAxType($reqBody)
+{
+	$answer = array();
+	foreach ($reqBody->promotions as $key => $promotion) {
+		# code...
+		if(!findPromotionAxTypeById($promotion->RECID))
+			$sql = "INSERT INTO promotion_ax_type (id, type_id) VALUES('{$promotion->RECID}', {$promotion->type_id})";
+		else
+			$sql = "UPDATE promotion_ax_type SET type_id = {$promotion->type_id} WHERE id = '{$promotion->RECID}' ";
+		$result = DB_query($GLOBALS['connect'], converttis620($sql));
+		array_push($answer, $result);
+	}
+	return $answer;
+	
+}
+
+function deletePromotionAxType($reqBody)
+{
+	$answer = array();
+	foreach ($reqBody->promotions as $key => $promotion) {
+		# code...
+		$sql = "DELETE FROM promotion_ax_type WHERE id = '{promotion->RECID}'";
+		$result = DB_query($GLOBALS['connect'], converttis620($sql));
+		array_push($answer, $result);
+	}
+	return $answer;
 }
 
 function updatePromotion($id, $name, $type,  $amount, $option1, $option2)
@@ -301,7 +354,7 @@ function updateCondition($id, $promotion_id, $condition)
 
 function findConditionById($id)
 {
-	$sql = "SELECT * FROM promotion_condition WHERE id = {$id}";
+	$sql = "SELECT * FROM promotion_condition LEFT JOIN promotion_master ON promotion_master.id = promotion_id WHERE promotion_condition.id = {$id}";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$row = DB_fetch_array($result);
 	if($row)
@@ -338,30 +391,46 @@ function findAllCondition()
 
 function findMatchPromotion($condition)
 {
+	$answers = array();
 	if(isset($condition->id))
 	{
-
-	}else
+		return $answers;
+	}else if(isset($condition->unit_id))
 	{
-		$conditions = array();
-		$sql = "SELECT * FROM promotion_condition_unit";
+		$where_sql = "WHERE unit_id = {$condition->unit_id}";
+		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2 FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id {$where_sql}";
+		
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		while($row = DB_fetch_array($result))
 		{
-			array_push($conditions, $row);
+			array_push($answers, $row);
 		}
-		return $conditions;
+		return $answers;
+	}else
+	{
+		$conditions = array();
+		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2 FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id";
+		$result = DB_query($GLOBALS['connect'], converttis620($sql));
+		while($row = DB_fetch_array($result))
+		{
+			array_push($answers, $row);
+		}
+		return $answers;
 	}
 }
 
 function matchPromotion($condition_id, $unit_ids)
 {
 	$result_ids = array();
+	$condition = findConditionById($condition_id);
+	
 	for($i =0; $i < count($unit_ids); $i++)
 	{
 		$unit_id = $unit_ids[$i];
-		$sql = "INSERT INTO promotion_condition_unit(condition_id, unit_id) 
-			VALUES({$condition_id}, {$unit_id});SELECT SCOPE_IDENTITY();";
+		
+		$amount = $condition['amount'];
+		$sql = "INSERT INTO promotion_condition_unit(condition_id, unit_id, amount) 
+			VALUES({$condition_id}, {$unit_id}, {$amount});SELECT SCOPE_IDENTITY();";
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		if($result){
 	        sqlsrv_next_result($result); 
@@ -398,6 +467,7 @@ function unMatchPromotionByConditionId($condition_id){
 
 function getCountConditionUnit($condition_id){
 	$sql = "SELECT COUNT(*) AS rows FROM promotion_condition_unit WHERE condition_id = {$condition_id}";
+	
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$row = DB_fetch_array($result);
 	if($row)
@@ -415,6 +485,23 @@ function findUnitByPromotionConditionId($condition_id){
 		array_push($units, $row['unit_id']);
 	}
 	return $units;
+}
+
+function findAllPromotionFromUnitId($id)
+{
+	
+	//convertPromotionData
+	$condition = new stdClass;
+	$condition->unit_id = $id;
+
+	$promotions = findMatchPromotion($condition);
+	$answer = array();
+	foreach ($promotions as $key => $promotion) {
+		# code...
+		array_push($answer, convertPromotionData($promotion));
+	}
+	
+	return objectToArray($answer);
 }
 
 function getPromotionRewardTypes($is_array = false)
@@ -506,6 +593,45 @@ function getDiscountTypes($is_array = false)
 
 	return $types;
 
+}
+
+function convertPromotionData($row)
+{
+	$promotion = new stdClass;
+	$types = getPromotionRewardTypes();
+	$payment_types = getDiscountTypes();
+	$promotion->type = $types[$row['type_id']];//getPromotionType('Preapprove');
+	
+	$promotion->type_name =  $promotion->type->name;
+
+
+	foreach($row as $key => $value)
+	{
+		
+		if(is_string($value))
+		{
+			$promotion->$key = convertutf8($value);
+		}else
+			$promotion->$key = $value;
+	}
+	//$promotion->row = $row;
+	$promotion->id = $row['id'];
+	if($promotion->type->id == $types['spacial']->id || $promotion->type->id == $types['discount']->id )
+		$promotion->spacial_discount = $row['amount'];
+	else
+		$promotion->spacial_discount = 0;
+
+	if($promotion->type->id == $types['discount']->id && $payment_types['percent']->id == $row['option2'])
+		$promotion->is_discount_percent = true;
+	else
+		$promotion->is_discount_percent = false;
+
+	if($promotion->type->id == $types['discount']->id)
+		$promotion->payment_id = $row['option1'];
+	else
+		$promotion->payment_id = null;
+
+	return $promotion;
 }
 
 ?>

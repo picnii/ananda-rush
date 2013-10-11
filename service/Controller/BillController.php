@@ -120,7 +120,7 @@
 		$unit_ids = array();
 		$unit_ids[0] = $unit_id;
 		$sale_datas = getSaleDatas($unit_ids);
-		//print_r($sale_datas);
+		
 		//echo "<br/><br/>";
 		$sale_data = $sale_datas[0];
 		$bill =array();

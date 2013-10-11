@@ -69,10 +69,19 @@ angular.module('dataServices', ['ngResource']).
     getPaymentTypes:{method:'GET', params:{action:'promotionPaymentTypes'}, isArray:true},
     create:{method:'POST', params:{action:'createPromotion'}, isArray:true},
     query:{method:'GET', params:{action:'listPromotions'}, isArray:true},
+    get:{method:'GET', params:{action:'promotion'}},
+    update:{method:'POST', params:{action:'updatePromotion'}},
+    delete:{method:'POST', params:{action:'deletePromotion'}},
     createCondition:{method:'POST', params:{action:'createPromotionCondition'}},
     listConditions:{method:'POST', params:{action:'listConditions'}, isArray:true},
     deleteCondition:{method:'POST', params:{action:'deleteCondition'}},
     matchPromotion:{method:'POST', params:{action:'matchPromotion'}, isArray:true},
+    countUnit:{method:'GET', params:{action:'countAllUnitPromotion'}},
+    findUnit:{method:'GET', params:{action:'findAllUnitPromotion'}, isArray:true},
+    listAx:{method:'GET', params:{action:'listAx'}, isArray:true},
+    createAx:{method:'POST', params:{action:'createPromotionAx'}},
+    deleteAx:{method:'POST', params:{action:'deletePromotionAx'}, isArray:true},
+    find:{method:'GET', params:{action:'findAllPromotionFromCondition'}, isArray:true},
   });
 })
     //, params:{unitId:'data'}, isArray:false

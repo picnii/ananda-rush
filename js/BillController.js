@@ -1123,3 +1123,53 @@ function sortPaymentByOrder(payments)
      console.log(payments);
 	return payments;
 }
+
+function ChequeCtrl($scope, $rootScope, $routeParams, $location, Bill, Print, Type)
+{
+	$scope.billPayment = Type.getBillPayment(function(data){
+		$scope.meter_ids = [];
+		$.each(data.meters, function(index, value) {
+		    console.log(value);
+		    $scope.meter_ids.push(value);
+		}); 
+		$scope.getPaymentBase();
+	})
+
+	var obj = loadTempData();
+	var transaction_ids = obj.transaction_ids;
+	console.log('load temp data');
+	console.log(obj);
+	console.log(transaction_ids);
+	Bill.test( {action:'transactions', transaction_ids:transaction_ids},function(transactions){
+		console.log('transactions');
+		console.log(transactions);
+		for(var i = 0 ; i < transactions.length ;i++)
+		{
+			transaction = transactions[i];
+			if(typeof(transaction.variables) == 'string')
+			{
+				temp = JSON.parse(transaction.variables);
+			
+				transaction.variables = temp.variables;
+				transaction.payments = temp.payments;
+			}
+			//transaction.payments = JSON.parse(transaction.payments);
+		}
+		$scope.bills = transactions;
+		$scope.bills = convertBillPrint($scope, transactions)
+		for(var i=0; i < transactions.length;i++)
+		{
+			for(var j=0; j < transactions[i].payments.length;j++)
+			{
+				var payment = transactions[i].payments[j];
+				//payment.test_formulas = []
+				payment.formulas[0] =  $scope.getFormulaValue(transactions[i].variables,payment.formulas[0]);
+				payment.formulas[1] =  $scope.getFormulaValue(transactions[i].variables, payment.formulas[1]);
+				payment.formulas[2] =  $scope.getFormulaValue(transactions[i].variables, payment.formulas[2]);
+			}	
+		}
+		console.log('check payment')
+		console.log(transactions[0].payments)
+	});
+
+}

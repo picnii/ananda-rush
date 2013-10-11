@@ -542,6 +542,9 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		$scope.data = Appoint.get({itemId:$routeParams.itemId}, function(data){
 			$scope.unit = data.unit;
 			$scope.logs = data.logs;
+			$scope.people = data.unit.customer_name;
+			$scope.calldate = new Date();
+			$scope.calltime = '';
 			console.log('fetch transaction');
 			console.log({unit_id:$scope.unit.id});
 			$scope.transaction = Bill.viewTransaction({unit_id:$scope.unit.id}, function(data){
@@ -577,7 +580,12 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		$scope.appointdate = convertDateToSqlDate($scope.appointdate);
 		$scope.appointtime = convertDateToSqlTime($scope.appointtime);
 		$scope.calldate = convertDateToSqlDate($scope.calldate);
-		$scope.calltime = convertDateToSqlTime($scope.calltime);
+		if($scope.calltime != '')
+			$scope.calltime = convertDateToSqlTime($scope.calltime);
+		else
+			$scope.calltime = '00:00:00';
+		$scope.paymentdate = convertDateToSqlDate($scope.paymentdate);
+		$scope.contractdate = convertDateToSqlDate($scope.contractdate);
 
 
 		console.log("type:"+ $scope.type);
@@ -594,7 +602,7 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		console.log("authorize"+ $scope.authorize);
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
-			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, promotions:$scope.selectedPromotions()
+			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, promotions:$scope.selectedPromotions()
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
@@ -806,6 +814,8 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 				var unit_ids = [];
 				for(var i=0; i < $scope.units.length;i++)
 					unit_ids.push($scope.units[i].id);
+				console.log('units');
+				console.log(unit_ids)
 				Promotion.matchPromotion({action:'matchPromotion', condition_id:data.condition_id, unit_ids:unit_ids},function(data){
 
 					console.log(data);
@@ -839,7 +849,7 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 				data[i].from = new Date(data[i].date_from.date);
 				data[i].to = new Date(data[i].date_to.date);
 				data[i].phase =  $scope.findStuffIn($scope.phases, 'id', data[i].phase_id);
-
+				data[i].unitCount = Promotion.countUnit({condition_id:data[i].id});
 			}
 			console.log(data);
 
@@ -913,53 +923,48 @@ function PromotionCreateCtrl($scope, $rootScope, $location, $filter, Promotion, 
 
 function PromotionUpdateCtrl($scope, $rootScope, $location, $routeParams, $filter, Promotion, Unit, Type, Payment)
 {
-	$scope.localPromotions = loadLocal();
+	
 	$scope.question = {};
-	var PREAPPROVE_TYPE_ID = 0, TRANSACTION_TYPE_ID = 1, NORMAL_TYPE_ID = 2;
-	var PAYMENT_FIX_ID = 0, PAYMENT_PERCENT_ID = 1;
-	var CONDITION_NORMAL_ID =1, CONDITION_TRANFER_ID=2, CONDITION_BANK_ID = 3;
-	var PAY_TYPE_DISCOUNT =0, PAY_TYPE_CASHBACK =1, PAY_TYPE_SPACIAL_DISCOUNT =2, PAY_TYPE_STUFF =3;
-	$scope.promotion = {};
+
 	$scope.projects =Type.getProjectsList();
-	$scope.types = [
-		{name:'Pre Approve', id:PREAPPROVE_TYPE_ID},
-		{name:'Before Transaction', id:TRANSACTION_TYPE_ID},
-		{name:'Normal', id:NORMAL_TYPE_ID}
-	]
-	$scope.condition_types =[
-		{name:'Normal', id:CONDITION_NORMAL_ID},
-		{name:'Before Tranfer', id:CONDITION_TRANFER_ID},
-		{name:'Bank Approve', id:CONDITION_BANK_ID}
-	]
-	$scope.promotion_payment_types = [
-		{name:'ส่วนลด', id:PAY_TYPE_DISCOUNT},
-		{name:'Cash Back', id:PAY_TYPE_CASHBACK},
-		{name:'ส่วนลดพิเศษ', id:PAY_TYPE_SPACIAL_DISCOUNT},
-		{name:'สิ่งของ', id:PAY_TYPE_STUFF}
-	]
+	var PAYMENT_FIX_ID = 0, PAYMENT_PERCENT_ID = 1;
+	var PAY_TYPE_DISCOUNT =2, PAY_TYPE_CASHBACK =1, PAY_TYPE_SPACIAL_DISCOUNT =4, PAY_TYPE_STUFF =0;
+	$scope.types =  Promotion.getTypes();
+
+	$scope.promotion_payment_types = Promotion.getTypes();
 
 	$scope.payments = Payment.query();
 
-	$scope.payment_types = [
-		{name:'Fix Amount', id:PAYMENT_FIX_ID},
-		{name:'Percent', id:PAYMENT_PERCENT_ID},
-	];
+	$scope.payment_types =  Promotion.getPaymentTypes();
+
+	$scope.payments = Payment.query();
+
+	$scope.promotion = Promotion.get({action:'promotion',id:$routeParams.pid},function(data){
+		
+		data.type = $scope.promotion_payment_types.findById(data.reward_id);
+		var discount_type = $scope.promotion_payment_types.find({code:'discount'});
+		console.log('---');
+		console.log(discount_type)
+		console.log(data.type)
+		console.log('---');
+		var stuff_type = $scope.promotion_payment_types.find({code:'stuff'});
+		if(data.type.id == discount_type.id)
+		{
+			console.log($scope.payments);
+			data.payment = $scope.payments.findById(Number(data.option1));
+			data.paymentType = $scope.payment_types.findById(Number(data.option2));
+		}else if(data.type.id == stuff_type.id)
+		{
+			data.item = data.option1;
+		}
+		console.log(data);
+	});
 
 	$scope.getClassPayment = function()
 	{
-		if(typeof($scope.promotion.promotion_payment_type) == "undefined")
+		if(isVar($scope.promotion).defined && typeof($scope.promotion.type) == "undefined")
 			return "hide";
-		if($scope.promotion.promotion_payment_type.id == PAY_TYPE_DISCOUNT)
-			return "show"
-		else
-			return "hide"
-	}
-
-	$scope.getClassTranfer = function()
-	{
-		if(typeof($scope.promotion.condition_type) == "undefined")
-			return "hide";
-		if($scope.promotion.condition_type.id == CONDITION_TRANFER_ID)
+		if($scope.promotion.type.id == PAY_TYPE_DISCOUNT)
 			return "show"
 		else
 			return "hide"
@@ -967,9 +972,9 @@ function PromotionUpdateCtrl($scope, $rootScope, $location, $routeParams, $filte
 
 	$scope.getClassStuff = function()
 	{
-		if(typeof($scope.promotion.promotion_payment_type) == "undefined")
+		if(isVar($scope.promotion).defined && typeof($scope.promotion.type) == "undefined")
 			return "hide";
-		if($scope.promotion.promotion_payment_type.id == PAY_TYPE_STUFF)
+		if( $scope.promotion.type.id == PAY_TYPE_STUFF)
 			return "show"
 		else
 			return "hide"
@@ -977,65 +982,120 @@ function PromotionUpdateCtrl($scope, $rootScope, $location, $routeParams, $filte
 
 	$scope.getClassAmount = function()
 	{
-		if(typeof($scope.promotion.promotion_payment_type) == "undefined")
-			return "show";
-		if($scope.promotion.promotion_payment_type.id == PAY_TYPE_STUFF)
-			return "hide"
-		else
+		
 			return "show"
 	}
 
-	$scope.localPromotions = loadLocal();
-
-
-
-	$scope.findById = function(id)
-	{
-		for(var i=0; i < $scope.localPromotions.length; i++)
-		{
-			if($scope.localPromotions[i].id == id)
-			{
-				setTimeout(function(){
-
-					$scope.$apply(function(){
-						console.log($scope.promotion)
-						
-						$scope.promotion.type = $scope.findThingById($scope.promotion_types, $scope.promotion.type.id);
-						$scope.promotion.condition_type = $scope.findThingById($scope.condition_types, $scope.promotion.condition_type.id);
-						$scope.promotion.project = $scope.findThingById($scope.projects, $scope.promotion.project.id);
-						$scope.promotion.payment = $scope.findThingById($scope.payments, $scope.promotion.payment.id);
-						$scope.promotion.promotion_payment_type = $scope.findThingById($scope.promotion_payment_types, $scope.promotion.promotion_payment_type.id);
-						$scope.promotion.paymentType = $scope.findThingById($scope.payment_types, $scope.promotion.paymentType.id);
-						 
-
-					})
-
-				}, 200);
-
-				return $scope.localPromotions[i]
-			}
-		}
-		return null;
-	}
-
-	$scope.findThingById = function(things, id)
-	{
-		if(typeof(things) == 'undefined')
-			return null;
-		for(var i=0; i < things.length; i++)
-		{
-			if(things[i].id == id)
-				return things[i]
-		}
-		return null;
-	}
-
-	$scope.promotion = $scope.findById($routeParams.pid);
+	
 	$scope.save = function()
 	{
 		console.log($scope.promotion);
-		$location.path('/promotions');
+		Promotion.update({action:'updatePromotion', promotion:$scope.promotion}, function(data){
+			console.log(data);
+		});
+		//$location.path('/promotions');
 	}
+
+	$scope.delete = function()
+	{
+		Promotion.delete({action:'deletePromotion',promotion:$scope.promotion}, function(data){
+			$location.path('/promotions');
+		})
+	}
+}
+
+function PromotionAxCtrl($scope, $rootScope, $location, $routeParams, $filter, Promotion, Unit, Type, Payment)
+{
+	$scope.promotion_payment_types = Promotion.getTypes();
+	$scope.refresh = function()
+	{
+		$scope.promotions = Promotion.listAx(function(data){
+			$scope.promotion_groups = [];
+			$scope.unset_promotion_groups = [];
+			$scope.key_groups =[];
+			$scope.unset_key_groups = [];
+			for(var i=0; i < data.length;i++)
+			{
+				var promo = data[i];
+				if(typeof($scope.key_groups[promo.ITEMNAME]) == 'undefined' && promo.type_id !=null)
+				{
+					$scope.key_groups[promo.ITEMNAME] = $scope.promotion_groups.length;
+
+					var group = {}
+					group.name = promo.ITEMNAME;
+					group.ids = [];
+					group.is_set = true;
+					group.type = $scope.promotion_payment_types.find({id:promo.type_id})
+					group.ids.push(promo.RECID);
+					$scope.promotion_groups[$scope.key_groups[promo.ITEMNAME]] = group;
+				}else if(promo.type_id !=null)
+				{
+					$scope.promotion_groups[$scope.key_groups[promo.ITEMNAME]].ids.push(promo.RECID)
+					//$scope.key_groups[promo.ITEMNAME].index
+					//$scope.promotion_groups[promo.ITEMNAME].ids.push(promo.RECID)
+				}else if(typeof($scope.unset_key_groups[promo.ITEMNAME]) == 'undefined' )
+				{
+					$scope.unset_key_groups[promo.ITEMNAME] = $scope.unset_promotion_groups.length;
+
+					var group = {}
+					group.name = promo.ITEMNAME;
+					group.is_set = false
+					group.ids = [];
+					group.ids.push(promo.RECID);
+					$scope.unset_promotion_groups[$scope.unset_key_groups[promo.ITEMNAME]] = group;
+				}else
+				{
+					$scope.unset_promotion_groups[$scope.unset_key_groups[promo.ITEMNAME]].ids.push(promo.RECID)
+				}
+				//console.log($scope.promotion_groups);
+			}
+		})
+
+	}
+	
+	$scope.create = function(group)
+	{
+		console.log(group);
+	}
+
+	$scope.convertToPromotions = function(group)
+	{
+		var promotions = [];
+		for(var i = 0; i <  group.ids.length ;i++)
+		{
+			var promotion = {};
+			promotion.RECID = group.ids[i];
+			promotion.type_id = group.type.id;
+			promotions.push(promotion)
+		}
+		return promotions;
+	}
+
+	$scope.update = function(group)
+	{
+		var promotions = $scope.convertToPromotions(group);
+		console.log(promotions);
+		Promotion.createAx({action:'createPromotionAx', promotions:promotions},function(data){
+
+			console.log('after create');
+			console.log(data);
+			$scope.refresh();
+		})
+
+	}
+
+	$scope.delete = function(group)
+	{
+		var promotions = $scope.convertToPromotions(group);
+		Promotion.deleteAx({action:'deletePromotionAx', promotions:promotions}, function(data){
+			console.log('after delete');
+			console.log(data)
+			$scope.refresh();
+		})
+	}
+
+	$scope.refresh();
+
 }
 
 

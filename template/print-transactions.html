@@ -1,4 +1,4 @@
-<section ng-controller="TransactionPrintCtrl" class="container">
+<section  class="container">
 	<section ng-repeat="bill in bills">
 	<!--- Start Loop Print-->	
 		<div class="row" >
@@ -201,7 +201,261 @@
 
 			
 			</div>
-		
-	</section>
 		<div class="page-break"></div>
+		<div class="container"  style="margin-top:50px;" >
+		<font size="2">
+			<div class="row" >
+				<div class="span1" align="right">To.</div>
+				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | zeroDash}}</div>
+				<div class="span1" align="right">Tel :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanTel}}</div>
+				<div class="span1" align="right">Fax :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanFax}}</div><br><br>
+				
+				
+				<div class="span1" align="right">From :</div>
+				<div class="span5" style=" border-bottom-style:groove;">{{bill.SaleName}}</div>
+				<div class="span1" align="right">Tel :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.CustomerTel}}</div>
+				<div class="span1" align="right">Fax :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.CustomerTel}}</div><br><br>
+			<div class="span12" style="border-bottom-style:groove;"></div>
+			</div><br>
+		
+		<div class="row">
+		<div class="offset8 span4"><h5>{{bill.ProjectName}}</h5></div>
+		
+		
+		</div>
+		<div class="row">
+			<div align="center">{{bill.DocumentDate}}</div><br><br>
+			<div class="span1">เรื่อง</div>
+			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
+			<div class="span1">เรียน</div>
+			<div class="span11">ผู้จัดการ</div>
+			<div class="offset1 span11">{{bill.BankLoanName}}</div><br><br><br><br>
+			
+			<div class="offset1 span1" align="right" >ตามที่</div>
+			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{bill.BankLoanName}}</b></div>
+			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดใน{{bill.ProjectName}}</div><br><br>
+			<div class="span2" align="right">ห้องชุด เลขที่ </div>
+			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.HouseNumber}}</b></div>
+			<div class="span2" align="center">ให้กับลูกค้าราย</div>
+			<div class="span4" align="center" style="border-bottom-style:groove"><b>{{bill.CustomerName}}</b></div>
+			<div class="span2">ดังต่อไปนี้</div>
+			</div><br><br>
+			
+			<div class="row">
+				<div class="offset1 span5">วงเงินกู้อนุมัติห้องชุด</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{bill.SumBankLoan}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">วงเงินกู้ (&CO)</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{getVar("BankLoanCustomerAndCO")}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">ประกัน และ/หรือ ตกแต่ง</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{getVar("BankLoanDecorate")}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">ซึ่งลูกค้าได้นัดโอนกรรมสิทธิ์ห้องชุดในวันที่</div>
+				<div class="span3" align="center" style="border-bottom-style:groove">{{getVar("PayDate")}}</div>
+				<div class="span2">เวลา {{getVar("PayTime")}}</div>
+				
+				</div><br><br>
+				
+			<div class="row">
+				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
+				<div class="span2" align="center"><b>{{getVar("SumBankLoan")}}</b> </div>
+				<div class="span1">บาท</div>
+				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
+				
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b>{{getVar("BankLoanName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckBank")}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckAnanda")}} </div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
+				<div class="span2" align="center">{{getVar("PayCommonFeeCharge")}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
+				<div class="span2" align="center">{{getVar("PayCommonFeeFund")}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>{{getVar("CustomerName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckCustomer")}}</div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b>{{getVar("CustomerName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckCustomerAndCO")}}</div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
+				<div class="span2" align="center">{{getVar("PayFeeForMinistryOfFinance")}}</div>
+				<div class="span1">บาท</div>
+			
+				
+			</div><br><br>
+			
+			<div class="row">
+				<div class="offset1 span11"> จึงเรียบมาเพื่อทราบและโปรดดำเนินการ</div>
+				<br><br>
+				<div class="offset6 span4" align="center">ขอแสดงความนับถือ</div>
+				<br><br><br><br>
+				<div class="offset6 span4" align="center" style="border-bottom-style:groove">-</div>
+				<div class="offset6 span4" align="center">Manager/Directer</div>
+				
+			</div>
+			
+			<div class="row">
+				<div class="span12">Sukanya  Phonpattana</div>
+				<div class="span12">Ananda Devlopment Two co.,ltd</div>
+				<div class="span12">Tel : (66) 02-317-1155 ext 114</div>
+				<div class="span12">Fax : (66) 02-316-0180-81</div>
+				<div class="span12">Mobile : (66) 087-592-8658</div>
+				<div class="span12">Email : Sukanyap@ananda.co.th</div>
+			<div>
+			</font>
+			
+			
+			<br><br>
+		</div> 
+		<div class="page-break"></div>
+
+
+		<div class="container"  style="margin-top:50px;" >
+		<font size="2">
+			<div class="row" >
+				<div class="span1" align="right">To.</div>
+				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | zeroDash}}</div>
+				<div class="span1" align="right">Tel :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanTel}}</div>
+				<div class="span1" align="right">Fax :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanFax}}</div><br><br>
+				
+				
+				<div class="span1" align="right">From :</div>
+				<div class="span5" style=" border-bottom-style:groove;">{{bill.SaleName}}</div>
+				<div class="span1" align="right">Tel :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.CustomerTel}}</div>
+				<div class="span1" align="right">Fax :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.CustomerTel}}</div><br><br>
+			<div class="span12" style="border-bottom-style:groove;"></div>
+			</div><br>
+		
+		<div class="row">
+		<div class="offset8 span4"><h5>{{bill.ProjectName}}</h5></div>
+		
+		
+		</div>
+		<div class="row">
+			<div align="center">{{bill.DocumentDate}}</div><br><br>
+			<div class="span1">เรื่อง</div>
+			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
+			<div class="span1">เรียน</div>
+			<div class="span11">ผู้จัดการ</div>
+			<div class="offset1 span11">{{bill.BankLoanName}}</div><br><br><br><br>
+			
+			<div class="offset1 span1" align="right" >ตามที่</div>
+			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{bill.BankLoanName}}</b></div>
+			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดใน{{bill.ProjectName}}</div><br><br>
+			<div class="span2" align="right">ห้องชุด เลขที่ </div>
+			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.HouseNumber}}</b></div>
+			<div class="span2" align="center">ให้กับลูกค้าราย</div>
+			<div class="span4" align="center" style="border-bottom-style:groove"><b>{{bill.CustomerName}}</b></div>
+			<div class="span2">ดังต่อไปนี้</div>
+			</div><br><br>
+			
+			<div class="row">
+				<div class="offset1 span5">วงเงินกู้อนุมัติห้องชุด</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{bill.SumBankLoan}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">วงเงินกู้ (&CO)</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{getVar("BankLoanCustomerAndCO")}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">ประกัน และ/หรือ ตกแต่ง</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{getVar("BankLoanDecorate")}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">ซึ่งลูกค้าได้นัดโอนกรรมสิทธิ์ห้องชุดในวันที่</div>
+				<div class="span3" align="center" style="border-bottom-style:groove">{{getVar("PayDate")}}</div>
+				<div class="span2">เวลา {{getVar("PayTime")}}</div>
+				
+				</div><br><br>
+				
+			<div class="row">
+				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
+				<div class="span2" align="center"><b>{{getVar("SumBankLoan")}}</b> </div>
+				<div class="span1">บาท</div>
+				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
+				
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b>{{getVar("BankLoanName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckBank")}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckAnanda")}} </div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
+				<div class="span2" align="center">{{getVar("PayCommonFeeCharge")}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคลอาคารชุด ไอดีโอ มอร์ฟ 38 คอนโดมิเนียม อาคาร B"</b></div>
+				<div class="span2" align="center">{{getVar("PayCommonFeeFund")}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>{{getVar("CustomerName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckCustomer")}}</div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b>{{getVar("CustomerName")}}</b></div>
+				<div class="span2" align="center">{{getVar("PayCheckCustomerAndCO")}}</div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
+				<div class="span2" align="center">{{getVar("PayFeeForMinistryOfFinance")}}</div>
+				<div class="span1">บาท</div>
+			
+				
+			</div><br><br>
+			
+			<div class="row">
+				<div class="offset1 span11"> จึงเรียบมาเพื่อทราบและโปรดดำเนินการ</div>
+				<br><br>
+				<div class="offset6 span4" align="center">ขอแสดงความนับถือ</div>
+				<br><br><br><br>
+				<div class="offset6 span4" align="center" style="border-bottom-style:groove">-</div>
+				<div class="offset6 span4" align="center">Manager/Directer</div>
+				
+			</div>
+			
+			<div class="row">
+				<div class="span12">Sukanya  Phonpattana</div>
+				<div class="span12">Ananda Devlopment Two co.,ltd</div>
+				<div class="span12">Tel : (66) 02-317-1155 ext 114</div>
+				<div class="span12">Fax : (66) 02-316-0180-81</div>
+				<div class="span12">Mobile : (66) 087-592-8658</div>
+				<div class="span12">Email : Sukanyap@ananda.co.th</div>
+			<div>
+			</font>
+			
+			
+			<br><br>
+		</div> 
+		<div class="page-break"></div>
+	</section>
+		
 </section>

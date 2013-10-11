@@ -1,9 +1,9 @@
 <?php
 
-function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0)
+function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_date, $contract_date)
 {
-	$sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize)  VALUES 
-	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}); SELECT SCOPE_IDENTITY()";
+	$sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_date, contract_date)  VALUES 
+	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, {$payment_date}, {$contract_date}); SELECT SCOPE_IDENTITY()";
 	//echo $sql;
 	$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	if($result){

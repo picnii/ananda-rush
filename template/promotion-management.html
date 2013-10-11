@@ -1,23 +1,26 @@
 <section id="promotion-section" class="container">
 	<h1>Match Promotion</h1>
 	<div class="row"	>
-		<div class="span4" style="background:#999">
-			<h2>Promotion</h2>
-			<div>
-				<a href="#/promotions/create" class="btn btn-info">Create</a>
-			</div>	
-			<input ng-model="search.promotion.name" type="text" placeholder="Promotion Name"><br/>
-			<select ng-model="search.promotion.type" ng-change="chang"  ng-options="p.name for p in promotionTypes"></select><br/>
-			<div ng-repeat="promo in promotions" >
-				<input type="radio" name="promotion" ng-change="updatePromotion()" ng-model="search.promotion.selectedId" value="{{promo.id}}" />{{promo.name}}
-			</div>
-			<h3>Preview</h3>
-			<div>
-				{{promotion.name}}<br/>
-				{{promotion.type.name}}<br/>
-				{{promotion.amount}}<br/>
+		<div class="span4">
+			<section style="background:#00face;padding:10px;border-radius:10px">
+				<h2>Promotion</h2>
+				<div>
+					<a href="#/promotions/create" class="btn btn-info">Create</a>
 
-			</div>
+				</div>	
+				<input ng-model="search.promotion.name" type="text" placeholder="Promotion Name"><br/>
+				<!--<select ng-model="search.promotion.type" ng-change="changeFilter()"  ng-options="p.name for p in promotionTypes"></select><br/>-->
+				<div ng-repeat="promo in promotions | filter:search.promotion.name" >
+					<input type="radio" name="promotion" ng-change="updatePromotion()" ng-model="search.promotion.selectedId" value="{{promo.id}}" /><a href="#/promotions/update/{{promo.id}}">{{promo.name}}</a>
+				</div>
+				<h3>Preview</h3>
+				<div>
+					{{promotion.name}}<br/>
+					{{promotion.type.name}}<br/>
+					{{promotion.amount}}<br/>
+
+				</div>
+			</section>
 		</div>
 		<div class="span7">
 			<div style="text-align:center;">
@@ -66,9 +69,9 @@
 
 		</div>
 		<div class="span1">
-			<button class="btn" ng-click="createCondition()">Save</button>
+			<button class="btn btn-primary" ng-click="createCondition()">Save</button>
 			<button class="btn btn-inverse" ng-click="clear()">Clear</button>
-			<button class="btn btn-inverse" ng-click="searchUnit()">Test</button>
+			<!--<button class="btn btn-inverse" ng-click="searchUnit()">Test</button>-->
 		</div>
 	</div>
 	<h1>Promotions Index</h1>
@@ -89,7 +92,7 @@
 				{{promos.from | date:'shortDate' }} => {{promos.to | date:'shortDate' }}
 			</td>	
 			<td class="span3">
-				{{promos.unit.name}}
+				Affect {{promos.unitCount.count}} units
 			</td>
 			<td class="span1">
 				<button ng-click="deleteCondition(promos)" class="btn btn-danger">Delete</button>

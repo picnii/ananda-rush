@@ -42,17 +42,17 @@
                   <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
                 </div>
             </span>
-            <span style="margin-right:73px;">เวลา : </span>
+            <span style="margin-right:73px;" ng-show="authorize">เวลา : </span>
             <span style="margin-right:10px;">
 
             	<!--<input type="text" required placeholder="Call Time" ng-model="calltime">-->
-                <div class="control-group input-append">
+                <div class="control-group input-append" ng-show="authorize">
                   <input type="text" ng-model="calltime" bs-timepicker>
                   <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
                 </div>
             </span>            
-            <span style="margin-right:11px;">ระยะเวลาที่โทร : </span>
-            <span style="margin-right:10px;"><input type="text" required placeholder="ระยะเวลาที่โทร" ng-model="callduration"></span>
+            <span style="margin-right:11px;display:none;">ระยะเวลาที่โทร : </span>
+            <span style="margin-right:10px;display:none;"><input type="text" style="display:none;" required placeholder="ระยะเวลาที่โทร" ng-model="callduration" value="0"></span>
             
         </div>
         <div class="appoint_text">
@@ -108,6 +108,19 @@
             
         </div>
         <div class="appoint_text">
+             <span style="margin-right:10px;">วันเซ็นสัญญา : </span>
+            <div class="control-group input-append">
+               
+                  <input type="text" ng-model="contractdate" data-date-format="dd/mm/yyyy" class="datepicker" bs-datepicker>
+                  <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+            </div>
+            <span style="margin-right:10px;">วันชำระเงิน : </span>
+            <div class="control-group input-append">
+                
+                  <input type="text" ng-model="paymentdate" data-date-format="dd/mm/yyyy" class="datepicker" bs-datepicker>
+                  <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+            </div>
+            
             <span style="margin-right:67px;">อื่นๆ : </span>
             <span style="margin-right:166px;"><input type="text"  ng-model="remark"></span>
             <span><button ng-click="createAppoint()" class="btn btn-danger">Create</button></span>

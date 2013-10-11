@@ -34,8 +34,12 @@ function fetchBillInformation($transaction_ids)
         //    echo "old-data no.. {$data['transaction_id']} code:{$data['CompanyCode']} ..";
         }
 
-        if(isset($data['main_appointment_log_id']))
-            $data['promotions'] = findAllPromotionPreapproveFromAppoinmentId($data['main_appointment_log_id']);
+        /*
+        * Promotion
+        */
+        //if(isset($data['main_appointment_log_id']))
+        $data['promotions'] = findAllPromotionFromUnitId($transaction_id);
+            //$data['promotions'] = findAllPromotionPreapproveFromAppoinmentId($data['main_appointment_log_id']);
 
         //get company info
         if(isset($data['master_CompanyCode']))
@@ -79,7 +83,8 @@ function findOldInformation($transaction_id)
 
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
-    $row['promotions'] = findAllPromotionPreapproveFromAppoinmentId($row['main_appointment_log_id']);
+    //$row['promotions'] = findAllPromotionPreapproveFromAppoinmentId($row['main_appointment_log_id']);
+   // $row['promotions'] = findAllPromotionFromUnitId($transaction_id);
      $row['q_type'] = 'oldInfo';
      if(isset($row['transaction_id']))
         return $row;
@@ -185,7 +190,12 @@ function findInformation($pre_id)
                      $res = DB_query($GLOBALS['connect'],$SQL1);
                      $row = DB_num_rows($res);
                      $rt =  DB_fetch_array($res);
-                     $rt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($rt['main_appointment_log_id']);
+
+                     /**
+                     * Old Promotion
+                     */
+                     //$rt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($rt['main_appointment_log_id']);
+                    // $rt['promotions'] = findAllPromotionFromUnitId($rt['transaction_id']);
                      $data = array();
                   //   echo $SQL1;
                      if($rt["id_preapprove_bank"] != ''){
@@ -232,7 +242,11 @@ function findInformation($pre_id)
                          //echo $SQL;
                          $rs = DB_query($GLOBALS['connect'],$SQL);
                          $dt =  DB_fetch_array($rs);
-                         $dt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($dt['main_appointment_log_id']);
+                         /*
+                         * Old Promotion
+                         */
+                         //$dt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($dt['main_appointment_log_id']);
+                         $dt['promotions'] = findAllPromotionFromUnitId($dt['transaction_id']);
                          return $dt;
                      }
             }
@@ -309,6 +323,7 @@ function getVariableUnits($sale_datas)
             $bill->variables[$varname]->value = $var['value'];
              
         }
+       // $bill->promotions = $sale_data['promotions'];
         array_push($bill_variables, $bill);
     }
     return $bill_variables;
@@ -710,13 +725,22 @@ function findAllBill($q)
 
     function getDiscountSaleData($bill)
     {
-        $sum = 0;
+        /*$sum = 0;
         foreach ($bill->promotions as $promotion) {
             # code...
             if(!isset($promotion->payment_id))
             {
                 $sum += $promotion->spacial_discount;
             }
+        }
+        return $sum;*/
+        $sum = 0;
+        $types = getPromotionRewardTypes();
+        //print_r($bill->promotions);
+        foreach ($bill->promotions as $promotion)
+        {
+            if($promotion['type_id'] == $types['spacial']->id)
+                $sum += $promotion['amount'];
         }
         return $sum;
     }
@@ -1173,11 +1197,22 @@ function findAllBill($q)
         $variable = getBillVariable('WorkName', '-',  $data->work);
         array_push($bill->variables, $variable);
 
+        //$variable = getBillVariable('Promotions', '-',  $data->promotions);
+        $bill->promotions = array();
+        array_push($bill->promotions, $data->promotions);
+
+        $promotions = array();
+        foreach ($data->promotions as $promotion) {
+             
+            array_push($promotions, convertPromotionData($promotion));
+        }
+        
+       
         foreach ($data->promotions as $promotion) {
             # code...
             foreach($bill->payments as $payment)
             {
-                if($promotion->payment_id == $payment->id)
+                if($promotion['payment_id'] == $payment->id)
                 {
                     
                     $payment->promotion = $promotion;

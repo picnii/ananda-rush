@@ -1,0 +1,21 @@
+<section class="container">
+	Set
+	<table>
+		<tr ng-repeat="group in promotion_groups">
+			<td>{{group.name}}</td>
+			<td>{{group.status}}</td>
+			<td><select ng-model="group.type"  ng-options="t.name for t in promotion_payment_types">	</select></td>
+			<td><button ng-click="update(group)" class="btn">update</button></td>
+		</tr>
+	</table>
+	Unset
+	<table>
+		<tr ng-repeat="group in unset_promotion_groups">
+			<td>{{group.name}}</td>
+			<td>{{group.status}}</td>
+			<td><select ng-model="group.type"  ng-options="t.name for t in promotion_payment_types">	</select></td>
+			<td></td>
+			<td><button ng-click="update(group)" class="btn">update</button></td>
+		</tr>
+	</table>
+</section>

@@ -1,7 +1,7 @@
 <?php
 	//
 	//actionPromotion($itemId, $invoiceAcount)
-    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion');
+    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion');
 
 	if(isset($_GET['action']))
 	{
@@ -20,6 +20,18 @@
 			$response = actionPromotions();
 		if($action == 'listConditions')
 			$response = actionConditions();
+		if($action == 'findAllUnitPromotion')
+			$response = actionFindAllUnitPromotion($_GET['condition_id']);
+		if($action == 'countAllUnitPromotion')
+			$response = actionCountAllUnitPromotion($_GET['condition_id']);
+		if($action == 'promotion')
+			$response = actionFindPromotion($_GET['id']);
+		if($action == 'listAx')
+			$response = actionFindAllPromotionAx();
+		if($action == 'findAllPromotionFromCondition')
+			$response = actionFindAllPromotionFromCondition($_GET['condition']);
+		if($action == 'doTestPromotion')
+			$response = actionTestPromotion();
 		
 	}
 	if(isset($_POST['action']))
@@ -47,6 +59,17 @@
 			$response = actionDeleteCondition($reqBody->condition->id);
 		if($action == 'matchPromotion')
 			$response = actionMatchPromotion($reqBody->condition_id, $reqBody->unit_ids);
+		if($action == 'updatePromotion')
+			$response = actionUpdatePromotion($reqBody->promotion->id, $reqBody->promotion);
+		if($action == 'deletePromotion')
+			$response = actionDeletePromotion($reqBody->promotion->id);
+		if($action == 'createPromotionAx')
+			$response = actionCreatePromotionAx($reqBody);
+		if($action == 'deletePromotionAx')
+			$response = actionDeletePromotionAx($reqBody);
+		if($action == 'findAllPromotionFromCondition')
+			$response = actionFindAllPromotionFromCondition($reqBody->condition);
+		
 	}
 
 ?>
