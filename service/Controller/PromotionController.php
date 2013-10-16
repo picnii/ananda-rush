@@ -159,6 +159,13 @@
 		return findAllPromotionAx();
 	}
 
+	function actionFindAllPromotionAxByItemId($itemId)
+	{
+		return findAllPromotionAxByItemId($itemId);
+	}
+
+
+
 	function actionCreatePromotionAx($reqBody)
 	{
 		$answer = new stdClass;
@@ -172,9 +179,12 @@
 		return deletePromotionAxType($reqBody);
 	}
 
-	function actionFindAllPromotionFromCondition($condition)
+	function actionFindAllPromotionFromCondition($getParams)
 	{
-		return findMatchPromotion($condition);
+		$condition = new stdClass;
+		if(isset($getParams['unit_id']))
+			$condition->unit_id = $getParams['unit_id'];
+		return findMatchPromotion($condition, true);
 	}
 
 	function actionTestPromotion()
@@ -182,6 +192,11 @@
 		$condition = new stdClass;
 		$condition->unit_id = 1302;
 		return findMatchPromotion($condition);
+	}
+
+	function actionFindAllPrePromotionFromItemId($itemId)
+	{
+		return findAllPromotionPreapproveFromItemId($itemId);
 	}
 
 ?>

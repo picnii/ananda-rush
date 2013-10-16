@@ -1,7 +1,7 @@
 <?php
 	//
 	//actionPromotion($itemId, $invoiceAcount)
-    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion');
+    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId');
 
 	if(isset($_GET['action']))
 	{
@@ -29,9 +29,14 @@
 		if($action == 'listAx')
 			$response = actionFindAllPromotionAx();
 		if($action == 'findAllPromotionFromCondition')
-			$response = actionFindAllPromotionFromCondition($_GET['condition']);
+			$response = actionFindAllPromotionFromCondition($_GET);
 		if($action == 'doTestPromotion')
 			$response = actionTestPromotion();
+		if($action == 'findAllPrePromotionFromItemId')
+			$response = actionFindAllPrePromotionFromItemId($_GET['item_id']);
+		if($action == 'findAllPromotionAxByItemId')
+			$response = actionFindAllPromotionAxByItemId($_GET['item_id']);
+
 		
 	}
 	if(isset($_POST['action']))

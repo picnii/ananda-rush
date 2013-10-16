@@ -35,7 +35,8 @@ angular.module('dataServices', ['ngResource']).
   });
 }).factory('Unit', function($resource){
   return $resource('service/index.php', {}, {
-    query: {method:'GET', params:{action:'units', q:'*'}, isArray:true }
+    query: {method:'GET', params:{action:'units', q:'*'}, isArray:true },
+    find:{method:'GET', params:{action:'unit'}}
   });
 }).factory('Variable', function($resource){
   return $resource('service/index.php', {}, {
@@ -57,7 +58,8 @@ angular.module('dataServices', ['ngResource']).
 }).factory('Appoint', function($resource){
   return $resource('service/index.php', {}, {
     get:{method:'GET', params:{action:'appoint', itemId:'*'}},
-    create:{method:'POST', params:{action:'createAppoint'} }
+    create:{method:'POST', params:{action:'createAppoint'} },
+    getPaymentTypes:{method:'GET', params:{action:'getAppointmentPaymentTypes'}, isArray:true}
   });
 }).factory('Promotion', function($resource){
   return $resource('service/index.php', {}, {
@@ -82,6 +84,7 @@ angular.module('dataServices', ['ngResource']).
     createAx:{method:'POST', params:{action:'createPromotionAx'}},
     deleteAx:{method:'POST', params:{action:'deletePromotionAx'}, isArray:true},
     find:{method:'GET', params:{action:'findAllPromotionFromCondition'}, isArray:true},
+    findPre:{method:'GET', params:{action:'findAllPrePromotionFromItemId'}, isArray:true},
   });
 })
     //, params:{unitId:'data'}, isArray:false

@@ -1,6 +1,6 @@
 <?php
 
-    $unitActions = array('units', 'unitTest');
+    $unitActions = array('units', 'unitTest', 'unit');
 
 	if(isset($_GET['action']))
 	{
@@ -14,6 +14,8 @@
 				$response = actionSearch($_GET['q'], $_GET['from'], $_GET['to']);
 		if($action == 'unitTest' && isset($_GET['q']))
 			$response = actionTestSearch($_GET['q']);	
+		if($action == 'unit')
+			$response = actionUnit($_GET['unit_id']);
 	
 	}
 

@@ -44,6 +44,14 @@
 		return $units;
 	}
 
+	function actionUnit($unit_id)
+	{
+		$unit_ids = array();
+		$unit_ids[0] = $unit_id;
+		$units = getUnits($unit_ids);
+		return $units[0];
+	}
+
 	function actionTestSearch($q)
 	{
 		return array(

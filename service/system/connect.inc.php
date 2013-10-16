@@ -2,22 +2,40 @@
 
 $connectType = connectType();
 
+
+
+$hostname = '58.97.74.26';
+$username = 'ASFOLDER_TMS';
+$password = 'zaq1XSW@cde3VFR$';
+$database = 'TMSUAT';
+
+
+/*
+086 - 382 - 1894
+$hostname = '58.97.74.26';
+$username = 'ASFOLDER_TMS';
+$password = 'zaq1XSW@cde3VFR$';
+$database = 'TMSUAT';
+
+$hostname = '203.150.224.118';
+$username = 'ASFOLDER_TMS';
+$password = 'qaz789wsx';
+$database = 'TMS';
+
 $hostname = '203.150.224.118';
 $username = 'ASFOLDER_TMS';
 $password = 'qaz789wsx';
 $database = 'TMSUAT';
-
+*/
 /*
 $hostname = 'idev.asfolder.co.th';
 $username = 'sa';
 $password = '@sf0lder';
 $database = 'TMS_ananda';
 */
- $connect = DB_connect($hostname,$username,$password,$database);
-
 
 $connect = DB_connect($hostname,$username,$password,$database);
-$GLOBALS['connect'] = $connect;
+
 if(!$connect)
 {
 	
@@ -28,9 +46,9 @@ if(!$connect)
 function connectType()
 {
 	
-	return 'sqlsrv';
+	//return 'sqlsrv';
 	//return 'mysql';
-	//return 'mssql';
+	return 'mssql';
 
 }
 
@@ -59,9 +77,7 @@ function DB_connect($hostname_l,$username_l,$password_l,$database_l)
 		mysql_query("SET character_set_connection=utf8");
 		
 	}
-
-	$GLOBAL['connect'] = $conn;
-
+	
 	return $conn;
 }
 
@@ -71,7 +87,18 @@ function DB_query($connect,$sql){
 	
 	if($connectType == 'mssql'){
 		
-		$result = mssql_query($sql);
+ 		try
+		{
+			$result = mssql_query($sql);
+			
+		}
+		catch (Exception $e)
+		{
+			//echo $e->getMessage(); // if you wanna know the error message
+			return $e->getMessage();
+		} 
+		return $result;
+		
 		
 	} elseif($connectType == 'sqlsrv'){
 		
@@ -174,10 +201,8 @@ function DB_close($connect)
 		
 		$close = sqlsrv_close($connect);
 		
-	} elseif($connectType == 'mysql') {
-		
+	} elseif($connectType == 'mysql') {		
 		$close = mysql_close($connect);
-		
 	}
 	
 	return $close;

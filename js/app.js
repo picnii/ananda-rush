@@ -3,6 +3,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
 		  $routeProvider.
 		  	  when('/', {templateUrl: 'template/home.html',   controller: HomeCtrl}).
           when('/promotions/ax', {templateUrl: 'template/promotion-ax.html',   controller: PromotionAxCtrl}).
+          when('/promotions/match/:unit_id', {templateUrl: 'template/promotion-match.html',   controller: PromotionMatchCtrl}).
           when('/promotions', {templateUrl: 'template/promotion-management.html',   controller: PromotionCtrl}).
           when('/promotions/create', {templateUrl: 'template/promotion-create.html',   controller: PromotionCreateCtrl}).
           when('/promotions/update/:pid', {templateUrl: 'template/promotion-create.html',   controller: PromotionUpdateCtrl}).

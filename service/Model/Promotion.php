@@ -214,17 +214,23 @@ function createPromotion($name, $type, $amount, $option1, $option2)
 {
 	$sql = "INSERT INTO promotion_master (name, reward_id, amount, option1, option2)
 			VALUES ('$name', {$type->id}, $amount, '$option1', '$option2');
-			SELECT SCOPE_IDENTITY();
+			SELECT SCOPE_IDENTITY() as ins_id;
 	";
-	//echo $sql;
+	echo $sql;
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
-	if($result){
+	$row = DB_fetch_array($result);
+	if($result)
+	{
+		return $row['ins_id'];
+	}else
+		return false;
+	/*if($result){
         sqlsrv_next_result($result); 
         sqlsrv_fetch($result); 
         $promotion_id = sqlsrv_get_field($result, 0);
         return $promotion_id; 
     }else
-     	return false;
+     	return false;*/
 
 }
 
@@ -265,6 +271,25 @@ function findAllPromotionAx()
 		array_push($answer, $row);
 	}
 	return $answer;
+}
+
+function findAllPromotionAxByItemId($itemId)
+{
+	$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE ITEMID = '{$itemId}'";
+	//echo $sql;	
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$answer = array();
+	while($row = DB_fetch_array($result))
+	{
+		$promotion = new stdClass;
+		$promotion->name = $row['ITEMNAME'];
+		$promotion->amount = $row['Promotion Amount (Total)'];
+		$promotion->select = $row['SELECT PROMOTION'];
+		$promotion->quantity = $row['QTY'];
+		$promotion->issue = $row['SELECT PROMOTION'];
+		array_push($answer, $promotion);
+	}
+	return $answer;	
 }
 
 function findPromotionAxTypeById($id)
@@ -330,14 +355,16 @@ function createCondition($promotion_id, $condition)
 {
 	$sql = "INSERT INTO promotion_condition (promotion_id, project_id, phase_id, date_from, date_to)
 			VALUES ({$promotion_id}, {$condition->project_id}, {$condition->phase_id}, '{$condition->from}', '{$condition->to}');
-			SELECT SCOPE_IDENTITY();
+			SELECT SCOPE_IDENTITY() as ins_id;
 	";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	if($result){
-        sqlsrv_next_result($result); 
+      /*  sqlsrv_next_result($result); 
         sqlsrv_fetch($result); 
         $promotion_id = sqlsrv_get_field($result, 0);
-        return $promotion_id; 
+        return $promotion_id; */
+        $row = DB_fetch_array($result);
+        return $row['ins_id'];
     }else
      	return false;
 }
@@ -389,7 +416,7 @@ function findAllCondition()
 	return $conditions;
 }
 
-function findMatchPromotion($condition)
+function findMatchPromotion($condition, $join = false)
 {
 	$answers = array();
 	if(isset($condition->id))
@@ -398,21 +425,26 @@ function findMatchPromotion($condition)
 	}else if(isset($condition->unit_id))
 	{
 		$where_sql = "WHERE unit_id = {$condition->unit_id}";
-		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2 FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id {$where_sql}";
+		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id {$where_sql}";
 		
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		while($row = DB_fetch_array($result))
 		{
+			$row['name'] = convertutf8($row['name']);
+		
 			array_push($answers, $row);
 		}
 		return $answers;
 	}else
 	{
 		$conditions = array();
-		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2 FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id";
+		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id";
+
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		while($row = DB_fetch_array($result))
 		{
+			$row['name'] = convertutf8($row['name']);
+			//print_r($row);
 			array_push($answers, $row);
 		}
 		return $answers;
@@ -430,12 +462,14 @@ function matchPromotion($condition_id, $unit_ids)
 		
 		$amount = $condition['amount'];
 		$sql = "INSERT INTO promotion_condition_unit(condition_id, unit_id, amount) 
-			VALUES({$condition_id}, {$unit_id}, {$amount});SELECT SCOPE_IDENTITY();";
+			VALUES({$condition_id}, {$unit_id}, {$amount});SELECT SCOPE_IDENTITY() as ins_id;";
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		if($result){
-	        sqlsrv_next_result($result); 
-	        sqlsrv_fetch($result); 
-	        array_push($result_ids,  sqlsrv_get_field($result, 0));
+	        //sqlsrv_next_result($result); 
+	        //sqlsrv_fetch($result); 
+	        $row = DB_fetch_array($result);
+	        $create_id = $row['ins_id'];
+	        array_push($result_ids,  $create_id);
 	    }
 	}
 	return $result_ids;
@@ -502,6 +536,25 @@ function findAllPromotionFromUnitId($id)
 	}
 	
 	return objectToArray($answer);
+}
+
+function findAllPromotionPreapproveFromItemId($itemId)
+{
+	$sql = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}'";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$promotions = array();
+	while($row = DB_fetch_array($result))
+	{
+		$promotion = findPromotionById($row['id_promotion']);
+		$answer = new stdClass;
+		$answer->item_id = $row['itemID'];
+		$answer->name = $promotion['name'];
+		$answer->preapprove_id = $row['id_preapprove'];
+		$answer->amount = $row['amount'];
+		array_push($promotions, $answer);
+	}
+
+	return $promotions;
 }
 
 function getPromotionRewardTypes($is_array = false)

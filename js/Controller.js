@@ -512,6 +512,7 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 {
 	$scope.authorize = "0";
 	var now = new Date();
+	$scope.payment_types = Appoint.getPaymentTypes();
 	$scope.showPromotion = function()
 	{
 		console.log({itemId:$routeParams.itemId, invoiceAccount:$scope.unit.invoice_account});
@@ -612,6 +613,13 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 			$scope.calltime = $scope.def_calltime ;
 		});
 
+	}
+
+	$scope.updatePaymentType = function()
+	{
+		$scope.payment_type = $scope.payment_type_obj.id;
+		console.log( $scope.payment_type_obj);
+		console.log($scope.payment_type);
 	}
 	$scope.refresh();
 	
@@ -1095,6 +1103,24 @@ function PromotionAxCtrl($scope, $rootScope, $location, $routeParams, $filter, P
 	}
 
 	$scope.refresh();
+
+}
+
+function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter, Promotion, Unit, Type, Payment)
+{	
+	$scope.unit = Unit.find({unit_id:$routeParams.unit_id},function(data){
+		console.log(data);
+		$scope.tranfer_promotions = Promotion.find({unit_id:$routeParams.unit_id}, function(data){
+
+			console.log(data)
+		});
+
+		$scope.pre_promotions = Promotion.findPre({item_id:$scope.unit.item_id}, function(data){
+			console.log(data);
+		})
+	})
+
+	
 
 }
 

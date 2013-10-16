@@ -2,10 +2,11 @@
 
 function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_date, $contract_date)
 {
-	$sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_date, contract_date)  VALUES 
-	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, {$payment_date}, {$contract_date}); SELECT SCOPE_IDENTITY()";
+	/*$sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_date, contract_date)  VALUES 
+	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, {$payment_date}, {$contract_date}); SELECT SCOPE_IDENTITY()";*/
+	//SELECT SCOPE_IDENTITY() AS ins_id
 	//echo $sql;
-	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	/*$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	if($result){
         sqlsrv_next_result($result); 
         sqlsrv_fetch($result); 
@@ -13,13 +14,23 @@ function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time,
         return $created_id;
     }else{
         return false;
-    }
+    }*/
+    $sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_time, contract_time)  VALUES 
+	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, '{$payment_date}', '{$contract_date}'); SELECT SCOPE_IDENTITY() AS ins_id";
+	//echo $sql;
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$row = DB_fetch_array($result);
+	if($result){
+		return $row['ins_id'];
+	}else
+		return false;
 }
 
-function createAppointment($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0)
+function createAppointment($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_time, $contract_time)
 {
 	
-	$create_log_id = createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration , $authorize );
+	$create_log_id = createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration , $authorize , $payment_time, $contract_time);
 	$sql = "IF EXISTS (SELECT * FROM tranfer_appointment WHERE transaction_id='$transaction_id')
 	    UPDATE tranfer_appointment SET log_id = '$create_log_id' WHERE transaction_id='$transaction_id'
 	ELSE
@@ -156,13 +167,26 @@ function getAppointmentStatus()
 	);
 }
 
-function getAppointmentPaymentTypes()
+function getAppointmentPaymentTypes($isArray = false)
 {
-	return array(
-		0 => 'โอนสด',
-		1 => 'สินเชื่อ',
-		2 => 'ยังไม่ตัดสินใจ'
-	);
+	$sql = "SELECT * FROM status_preapprove";
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$answer = array();
+	while($row = DB_fetch_array($result))
+	{
+		$obj  = new stdClass;
+		$obj->name = convertutf8( $row['name_status_preapprove'] );
+		$obj->id = $row['id_status_preapprove'];
+		if($isArray)
+			array_push($answer, $obj);
+		else
+			$answer[$obj->id] = $obj;
+
+	}
+
+
+	// ดึงจาก Pre Approve
+	return $answer;
 }
 
 function getAppointmentComingStatus()
@@ -201,6 +225,14 @@ function getAuthorizes()
 		0 => "ไม่มอบฉันทะ",
 		1 => "มอบฉันทะ"
 	);
+}
+
+function findPreApproveStatusByItemId($itemId)
+{
+	$sql = "SELECT name_status_preapprove FROM  preapprove INNER JOIN status_preapprove on status_preapprove.id_status_preapprove = preapprove.status_preapprove WHERE itemid = {$itemId}";
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$row = DB_fetch_array($result);
+	return $row['name_status_preapprove'];
 }
 
 

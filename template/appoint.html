@@ -12,7 +12,7 @@
 
 
     <h2>Create Appointment</h2>
-    <button ng-click="togglePromotion()" class="btn btn-inverse">Promotions</button>
+   <!-- <button ng-click="togglePromotion()" class="btn btn-inverse">Promotions</button>-->
     <a href="#/bills/preview/{{transaction.template_id}}/{{transaction.unit_id}}" target="_blank" class="btn btn-primary">ดูตัวอย่างใบค่าใช้จ่าย</a>
     <div >
         <ul>
@@ -89,11 +89,8 @@
 			</span>
             <span style="margin-right:10px;">ประเภทการโอน : </span>
             <span style="margin-right:50px;">
-                <select id="select_status"  ng-model="payment_type">
-						<!-- <option value="0">----กรุณาเลือกการโอน----</option> -->
-						<option value="0">โอนสด</option>
-						<option value="1">สินเชื่อ</option>
-						<option value="2">ยังไม่ตัดสินใจ</option>
+                <select id="select_status"  ng-model="payment_type_obj" ng-change="updatePaymentType()"  ng-options="t.name for t in payment_types">
+						
 				</select>
             </span>
             <span style="margin-right:21px;">สถานะการนัด : </span>
@@ -137,7 +134,7 @@
  <h2>Appoint Log</h2>
 <table class="table">
 	<tr style="font-weight:bold;">
-		<td>ID</td>
+		<!--<td>ID</td>
 		<td>วันที่แจ้ง</td>
 		<td>เวลาที่แจ้ง</td>
 		<td>ระยะเวลาที่โทร</td>
@@ -148,20 +145,30 @@
 		<td>สถานะการนัด</td>
 		<td>วันนัดโอน</td>
 		<td>เวลานัดโอน</td>
-		<td>มอบฉันทะ</td>
+		<td>มอบฉันทะ</td>-->
+        <td>ID</td>
+        <td>เวลานัด</td>
+        <td>เวลาโทร</td>
+        <td>กรรมสิทธิ์</td>
+        <td>log.type</td>
+        <td>log.status</td>
+        <td>log.payment_type</td>
+        <td>สถานะการมา</td>
+        <td>เวลาตามสัญญา</td>
+        <td>เวลาชำระเงิน</td>
+        <td>มอบฉันทะ</td>
 	</tr>
 	<tr ng-repeat="log in logs | orderBy:'-id':reverse">
 		<td>{{log.id}}</td>
-		<td>{{log.display_call_date}}</td>
-		<td>{{log.display_call_time}}</td>
-		<td>{{log.call_duration}}</td>
+		<td>{{log.appoint_time}}</td>
+		<td>{{log.call_time}}</td>
 		<td>{{log.people}}</td>
 		<td>{{log.type}}</td>
 		<td>{{log.status}}</td>
 		<td>{{log.payment_type}}</td>
 		<td>{{log.coming_status}}</td>
-		<td>{{log.display_appoint_date}}</td>
-		<td>{{log.display_appoint_time}}</td>
+		<td>{{log.contract_time}}</td>
+		<td>{{log.payment_time}}</td>
 		<td>{{log.authorize}}</td>
 	</tr>
 <table>

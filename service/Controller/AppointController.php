@@ -18,7 +18,7 @@
 			$log->status = $status[$log->status];
 
 			$payment_types = getAppointmentPaymentTypes();
-			$log->payment_type = $payment_types[$log->payment_type];
+			$log->payment_type = $payment_types[$log->payment_type]->name;
 
 			$coming_status = getAppointmentComingStatus();
 			$log->coming_status = $coming_status[$log->coming_status];
@@ -38,7 +38,7 @@
 	{
 		$appoint = findAppointmentByUnitId($unit_id);
 		$promotions =findAllPromotionPreapproveFromAppoinmentId($appoint->main_id);
-		$transaction = 
+		//$transaction = 
 		return array(
 			'appoint' => $appoint,
 			'promotions' => $promotions
@@ -56,11 +56,12 @@
 		$result_promotion  = array();
 		$appointment = findAppointmentByUnitId($unit_id);
 		$appointment_id = $appointment->main_id;
-		deleteAppointmentLogPromotion($appointment_id);
-		foreach ($reqBody->promotions as $promotion) {
+		//deleteAppointmentLogPromotion($appointment_id);
+		//w8 for tranfer a new code
+		/*foreach ($reqBody->promotions as $promotion) {
 			# code...
 			array_push($result_promotion, createAppointmentLogPromotion($appointment_id, $promotion->id, $promotion->type)) ;
-		}
+		}*/
 		
 		return array(
 			'result'=>$result,
@@ -71,6 +72,10 @@
 		);
 	}
 
+	function actionGetAppointPaymentTypes()
+	{
+		return getAppointmentPaymentTypes(true);	
+	}
 
 
 ?>

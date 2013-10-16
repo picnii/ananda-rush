@@ -88,7 +88,7 @@
     </style>
 </head>
 <body>
-    <div id="main-menu" class="navbar noPrint">
+    <div id="main-menu" class="navbar noPrint" style="display:none;">
       <div class="navbar-inner">
         <a class="brand" href="#">Tranfer System</a>
         <ul class="nav">

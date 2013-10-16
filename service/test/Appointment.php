@@ -19,10 +19,13 @@ $payment_type = 1;
 $coming_status = 1;
 $remark = "I dont know that should i type";
 $people = "sompop";
+$contract_time = "2013-08-20 01:09:54.0";
+$payment_time = "2013-08-20 01:09:54.0";
+$authorize = 0;
 
 $create_log_id = createAppointmentLog($transaction_id, $type, $call_time, 
 	$appoint_time, $status, $payment_type, 
-	$coming_status, $remark, $people, $call_duration);
+	$coming_status, $remark, $people, $call_duration, $authorize, $payment_time, $contract_time);
 
 assertEquals(true, is_numeric($create_log_id));
 
@@ -41,7 +44,7 @@ assertEquals($people, $appoint_log->people);
 $delete_result = deleteAppointmentLog($create_log_id);
 assertEquals(true, $delete_result);
 
-$result = createAppointment($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration);
+$result = createAppointment($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, 0, $payment_time, $contract_time);
 assertEquals(true, $result );
 
 $appoint = findAppointmentByUnitId($transaction_id);

@@ -1,5 +1,5 @@
 <?php
-	$appointActions = array('appoint', 'createAppoint','deleteAppointLog', 'updateAppointLog', 'appointTest');
+	$appointActions = array('appoint', 'createAppoint','deleteAppointLog', 'updateAppointLog', 'appointTest', 'getAppointmentPaymentTypes');
 
 	if(isset($_GET['action']))
 	{
@@ -10,6 +10,9 @@
 			$response = actionAppoint($_GET['itemId']);
 		if($action == 'appointTest')
 			$response = actionAppointTest($_GET['unit_id']);
+		
+		if($action == 'getAppointmentPaymentTypes')
+			$response = actionGetAppointPaymentTypes();
 	}
 
 	if(isset($_POST['action']))

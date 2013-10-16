@@ -51,7 +51,8 @@
 
 	function findUnitById($id)
 	{
-		$sql = "SELECT * FROM master_transaction WHERE transaction_id = {$id} INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID";
+		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID WHERE transaction_id = {$id} ";
+		//echo $sql;
 		$result = DB_query($GLOBALS['connect'],$sql);
 		$row = DB_fetch_array($result);
 		if(!isset($row['transaction_id']))

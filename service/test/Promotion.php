@@ -8,7 +8,7 @@
 	
 
 	$promotion_id = createPromotion('ส่วนลดนะจ๊ะ', $type, 5000, null, null);
-	
+	echo "proid => $promotion_id";
 	assertEquals(is_numeric($promotion_id), true);
 
 	$promotion = findPromotionById($promotion_id);

@@ -6,8 +6,9 @@
 	assertEquals(true, count($units) > 1 );
 	//got ItemId
 	$pick_index = rand(1, count($units) - 1);
-	$pick_unit =  $units[$pick_unit];
-
+	$pick_unit =  $units[$pick_index];
+	//print_r($units);
+	//print_r($units[35]);
 	$unit = findUnitById($pick_unit->id);
 
 	assertEquals($pick_unit->item_id, $unit->item_id);
@@ -29,7 +30,7 @@
 	assertEquals($pick_unit->land_size, $unit->land_size);
 
 	$search_units = findAllUnitsByQuery(array(
-		"Floor" => "12A"
+		"master_transaction.Floor" => "12A"
 	));
 	//print_r($search_units);
 	
@@ -39,7 +40,7 @@
 	}
 
 	$search_units = findAllUnitsByQuery(array(
-		"Floor" => "12A",
+		"master_transaction.Floor" => "12A",
 		"Status" => "Available"
 	));
 	for($i =0; $i < count($search_units); $i++){
