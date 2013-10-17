@@ -199,4 +199,39 @@
 		return findAllPromotionPreapproveFromItemId($itemId);
 	}
 
+	function actionUpdatePrePromotion($promotion)
+	{
+		return updatePromotionPreapprove($promotion->id, $promotion->is_select, $promotion->issue);
+	}
+
+	function actionUpdateTranferPromotion($promotion)
+	{
+		return updatePromotionTranfer($promotion->id, $promotion->is_select, $promotion->issue);
+	}
+
+	function actionCreateConfirmPromotion($promotion)
+	{
+		$log_id =  createPromotionConfirmLog($promotion->name, $promotion->amount, $promotion->unit_id, $promotion->type, $promotion->ref_type, $promotion->ref_id, $promotion->option1, $promotion->option2);
+		$create_id = createPromotionConfirm($log_id, $promotion->unit_id, $promotion->type, $promotion->ref_id, $promotion->ref_id);
+		//update issue
+		return $create_id;		
+	}
+
+	function actionDeleteConfirmPromotion($promotion)
+	{
+		deletePromotionConfirm( $promotion->unit_id, $promotion->ref_id, $promotion->ref_type);
+		//update issue
+	}
+
+	function actionIsConfirmPromotion($promotion)
+	{
+		$proConfirm = findPromotionConfirm($promotion->unit_id, $promotion->ref_id, $promotion->ref_type);
+		$answer = new stdClass;
+		$answer->promotion = $proConfirm;
+		$answer->result = false;
+		if(isset($proConfirm['unit_id']))
+			$answer->result = true;
+		
+		return $answer;
+	}
 ?>

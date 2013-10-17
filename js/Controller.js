@@ -1111,16 +1111,72 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 	$scope.unit = Unit.find({unit_id:$routeParams.unit_id},function(data){
 		console.log(data);
 		$scope.tranfer_promotions = Promotion.find({unit_id:$routeParams.unit_id}, function(data){
-
+			for(var i = 0; i < data.length;i++)
+			{
+				promotion = data[i];
+				promotion.promotion_type = 'tranfer';
+			}
+			
 			console.log(data)
 		});
 
 		$scope.pre_promotions = Promotion.findPre({item_id:$scope.unit.item_id}, function(data){
+			for(var i = 0; i < data.length;i++)
+			{
+				promotion = data[i];
+				promotion.promotion_type = 'preapprove';
+			}
+			console.log(data);
+		})
+
+		$scope.ax_promotions = Promotion.findAx({item_id:$scope.unit.item_id}, function(data){
+			for(var i = 0; i < data.length;i++)
+			{
+				promotion = data[i];
+				promotion.promotion_type = 'ax';
+			}
 			console.log(data);
 		})
 	})
 
-	
+	$scope.setPromotion = function(promotion)
+	{
+		console.log('before');
+		console.log(promotion);
+		promotion.is_select = !promotion.is_select;
+		promotion.is_select = Number(promotion.is_select)
+		$scope.updatePromotionServer(promotion);
+		console.log('after');
+		console.log(promotion);
+	}
+
+	$scope.setIssue = function(promotion)
+	{
+		console.log('before');
+		console.log(promotion);
+
+		if(typeof(promotion.issue) == 'number')
+			promotion.issue = !promotion.issue;
+		else
+			promotion.issue = 1;
+		promotion.issue = Number(promotion.issue)
+		$scope.updatePromotionServer(promotion);
+		console.log('after');
+		console.log(promotion);
+	}
+
+
+	$scope.updatePromotionServer = function(promotion)
+	{
+		if(promotion.promotion_type == 'preapprove')
+			Promotion.updatePrePromotion({action:'updatePrePromotion', promotion:promotion}, function(data){
+				console.log(data);
+			});
+		else if(promotion.promotion_type == 'tranfer')
+			Promotion.updateTranferPromotion({action:'updateTranferPromotion', promotion:promotion}, function(data){
+				console.log(data);
+			});
+	}
 
 }
 

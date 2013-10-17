@@ -1,7 +1,7 @@
 <?php
 	//
 	//actionPromotion($itemId, $invoiceAcount)
-    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId');
+    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId', 'updatePrePromotion', 'updateTranferPromotion', 'createConfirmPromotion', 'deleteConfirmPromotion', 'isConfirmPromotion');
 
 	if(isset($_GET['action']))
 	{
@@ -36,6 +36,7 @@
 			$response = actionFindAllPrePromotionFromItemId($_GET['item_id']);
 		if($action == 'findAllPromotionAxByItemId')
 			$response = actionFindAllPromotionAxByItemId($_GET['item_id']);
+
 
 		
 	}
@@ -74,7 +75,18 @@
 			$response = actionDeletePromotionAx($reqBody);
 		if($action == 'findAllPromotionFromCondition')
 			$response = actionFindAllPromotionFromCondition($reqBody->condition);
+		if($action == 'updatePrePromotion')
+			$response = actionUpdatePrePromotion($reqBody->promotion);
+		if($action == 'updateTranferPromotion')
+			$response = actionUpdateTranferPromotion($reqBody->promotion);
 		
+		if($action == 'createConfirmPromotion')
+			$response = actionCreateConfirmPromotion($reqBody->promotion);
+		if($action == 'deleteConfirmPromotion')
+			$response = actionDeleteConfirmPromotion($reqBody->promotion);
+		if($action == 'isConfirmPromotion')
+			$response = actionIsConfirmPromotion($reqBody->promotion);
+		//'createConfirmPromotion', 'deleteConfirmPromotion', 'findConfirmPromotion'
 	}
 
 ?>

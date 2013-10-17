@@ -216,7 +216,7 @@ function createPromotion($name, $type, $amount, $option1, $option2)
 			VALUES ('$name', {$type->id}, $amount, '$option1', '$option2');
 			SELECT SCOPE_IDENTITY() as ins_id;
 	";
-	echo $sql;
+	//echo $sql;
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$row = DB_fetch_array($result);
 	if($result)
@@ -282,9 +282,10 @@ function findAllPromotionAxByItemId($itemId)
 	while($row = DB_fetch_array($result))
 	{
 		$promotion = new stdClass;
+		$promotion->id = $row['RECID'];
 		$promotion->name = $row['ITEMNAME'];
 		$promotion->amount = $row['Promotion Amount (Total)'];
-		$promotion->select = $row['SELECT PROMOTION'];
+		$promotion->is_select = $row['SELECT PROMOTION'];
 		$promotion->quantity = $row['QTY'];
 		$promotion->issue = $row['SELECT PROMOTION'];
 		array_push($answer, $promotion);
@@ -547,14 +548,73 @@ function findAllPromotionPreapproveFromItemId($itemId)
 	{
 		$promotion = findPromotionById($row['id_promotion']);
 		$answer = new stdClass;
+		$answer->id = $row['id_pro_pre'];
 		$answer->item_id = $row['itemID'];
 		$answer->name = $promotion['name'];
 		$answer->preapprove_id = $row['id_preapprove'];
 		$answer->amount = $row['amount'];
+		$answer->issue = $row['issue'];
+		$answer->is_select = $row['is_select'];
 		array_push($promotions, $answer);
 	}
 
 	return $promotions;
+}
+
+function updatePromotionPreapprove($promotion_id, $is_select, $issue)
+{
+	$sql = "UPDATE PreapPromo SET PreapPromo.is_select = {$is_select}, issue = {$issue} WHERE id_pro_pre = $promotion_id";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	return $sql;
+}
+
+
+function updatePromotionTranfer($promotion_id, $is_select, $issue)
+{
+	$sql = "UPDATE promotion_condition_unit SET is_select = {$is_select}, issue = {$issue} WHERE id = $promotion_id";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	return $sql;
+}
+
+function createPromotionConfirmLog($name, $amount, $unit_id, $type, $promotion_ref_type, $promotion_ref_id, $option1='', $option2='')
+{
+	$sql = "INSERT INTO promotion_confirm_log (name, amount, unit_id, create_time, type, promotion_ref_type, promotion_ref_id, option1, option2)
+			VALUES ( '{$name}', {$amount}, {$unit_id}, GETDATE(), $type, $promotion_ref_type, $promotion_ref_id, '{$option1}', '$option2')
+			;SELECT SCOPE_IDENTITY() AS ins_id;
+	";
+	//echo $sql;
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$row = DB_fetch_array($result);
+	return $row['ins_id'];
+}
+
+function createPromotionConfirm($log_id, $unit_id, $type, $promotion_ref_id, $promotion_ref_type)
+{
+	
+	$sql ="IF EXISTS (SELECT * FROM promotion_confirm WHERE unit_id='$unit_id' AND promotion_ref_id = $promotion_ref_id AND promotion_ref_type = $promotion_ref_type)
+	    UPDATE promotion_confirm SET promotion_confirm_log_id = $log_id WHERE unit_id='$unit_id' AND promotion_ref_id = $promotion_ref_id AND promotion_ref_type = $promotion_ref_type
+	ELSE
+	    INSERT INTO promotion_confirm (promotion_confirm_log_id, unit_id, type, promotion_ref_id, promotion_ref_type)
+			VALUES ($log_id, $unit_id, $type, $promotion_ref_id, $promotion_ref_type);";
+	
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+
+	return $result;
+}
+
+function deletePromotionConfirm( $unit_id, $promotion_ref_id, $promotion_ref_type)
+{
+	$sql = "DELETE FROM promotion_confirm WHERE unit_id='$unit_id' AND promotion_ref_id = $promotion_ref_id AND promotion_ref_type = $promotion_ref_type";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	return $result;
+}
+
+function findPromotionConfirm( $unit_id, $promotion_ref_id, $promotion_ref_type)
+{
+	$sql = "SELECT * FROM promotion_confirm WHERE unit_id='$unit_id' AND promotion_ref_id = $promotion_ref_id AND promotion_ref_type = $promotion_ref_type";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$row = DB_fetch_array($result);
+	return $row;
 }
 
 function getPromotionRewardTypes($is_array = false)

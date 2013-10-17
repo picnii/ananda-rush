@@ -85,6 +85,12 @@ angular.module('dataServices', ['ngResource']).
     deleteAx:{method:'POST', params:{action:'deletePromotionAx'}, isArray:true},
     find:{method:'GET', params:{action:'findAllPromotionFromCondition'}, isArray:true},
     findPre:{method:'GET', params:{action:'findAllPrePromotionFromItemId'}, isArray:true},
+    findAx:{method:'GET', params:{action:'findAllPromotionAxByItemId'}, isArray:true},
+    confirmPromotion:{method:'POST', params:{action:'createConfirmPromotion'}},
+    unConfirmPromotion:{method:'POST', params:{action:'deleteConfirmPromotion'}},
+    checkConfirmPromotion:{method:'POST', params:{action:'isConfirmPromotion'}},
+    updatePrePromotion:{method:'POST', params:{action:'updatePrePromotion'}},
+    updateTranferPromotion:{method:'POST', params:{action:'updateTranferPromotion'}},
   });
 })
     //, params:{unitId:'data'}, isArray:false
