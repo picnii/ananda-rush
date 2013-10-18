@@ -5,7 +5,12 @@
 			<td>{{group.name}}</td>
 			<td>{{group.status}}</td>
 			<td><select ng-model="group.type"  ng-options="t.name for t in promotion_payment_types">	</select></td>
+			<td class="{{getClassPayment()}}">
+				<select ng-model="group.payment"  ng-options="t.name for t in payments">	</select><br/>
+				Type <select ng-model="group.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
+			</td>
 			<td><button ng-click="update(group)" class="btn">update</button></td>
+
 		</tr>
 	</table>
 	Unset

@@ -9,11 +9,12 @@
 <div><b>Room Number :</b> {{unit.room_no}} </div>
 <div><b>Unit Number :</b> {{unit.unit_no}} </div>
 <div><b>Floor :</b> {{unit.floor}}</div>
-
+<div><b>สถานะการโอนกรรมสิทธ์ : {{authorize_status.name}}</b></div>
+<div><b>วัตถุประสงค์ของการซื้อ :{{payment_type_obj.name}}</b></div>
 
     <h2>Create Appointment</h2>
    <!-- <button ng-click="togglePromotion()" class="btn btn-inverse">Promotions</button>-->
-    <a href="#/bills/preview/{{transaction.template_id}}/{{transaction.unit_id}}" target="_blank" class="btn btn-primary">ดูตัวอย่างใบค่าใช้จ่าย</a>
+   <!-- <a href="#/bills/preview/{{transaction.template_id}}/{{transaction.unit_id}}" target="_blank" class="btn btn-primary">ดูตัวอย่างใบค่าใช้จ่าย</a>-->
     <div >
         <ul>
             <li ng-repeat="promotion in promotions">
@@ -31,7 +32,7 @@
                 <span><input type="radio" value="2"  ng-model="type"/> ส่งอีเมล์</span>
             </span>
             <span style="margin-right:10px;">มอบฉันทะ : </span>
-            <span><input type="checkbox"  ng-model="authorize"  ng-false-value="0" ng-true-value="1"></span>
+            <span><input type="checkbox"  ng-model="authorize"  ng-false-value="0" ng-true-value="1" ng-change="updateIsAuthorize()"></span>
         </div>
         <div class="appoint_text">
             <span style="margin-right:41px;">วันที่แจ้ง : </span>
@@ -42,11 +43,11 @@
                   <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
                 </div>
             </span>
-            <span style="margin-right:73px;" ng-show="authorize">เวลา : </span>
+            <span style="margin-right:73px;">เวลา : </span>
             <span style="margin-right:10px;">
 
             	<!--<input type="text" required placeholder="Call Time" ng-model="calltime">-->
-                <div class="control-group input-append" ng-show="authorize">
+                <div class="control-group input-append">
                   <input type="text" ng-model="calltime" bs-timepicker>
                   <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
                 </div>
@@ -65,9 +66,9 @@
                   <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
                 </div>
             	<!--<input type="text" required placeholder="Appoint Date" ng-model="appointdate" width="70px">--></span>
-            <span style="margin-right:28px;">เวลานัดโอน : </span>
-            <span style="margin-right:10px;">
-                <div class="control-group input-append">
+            <span style="margin-right:28px;" ng-show="!is_authorize">เวลานัดโอน : </span>
+            <span style="margin-right:10px;"  ng-show="!is_authorize">
+                <div class="control-group input-append"  ng-show="!is_authorize">
                   <input type="text" ng-model="appointtime" bs-timepicker>
                   <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button>
                 </div>

@@ -275,7 +275,8 @@ function findAllPromotionAx()
 
 function findAllPromotionAxByItemId($itemId)
 {
-	$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE ITEMID = '{$itemId}'";
+	//$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE ITEMID = '{$itemId}'";
+	$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX INNER JOIN Sale_Transection ON Sale_Transection.SO = Promotion_AX.SO  LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE Sale_Transection.ITEMID = '{$itemId}'";
 	//echo $sql;	
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$answer = array();
@@ -417,6 +418,7 @@ function findAllCondition()
 	return $conditions;
 }
 
+
 function findMatchPromotion($condition, $join = false)
 {
 	$answers = array();
@@ -521,7 +523,7 @@ function findUnitByPromotionConditionId($condition_id){
 	}
 	return $units;
 }
-
+//for bill
 function findAllPromotionFromUnitId($id)
 {
 	
@@ -529,11 +531,14 @@ function findAllPromotionFromUnitId($id)
 	$condition = new stdClass;
 	$condition->unit_id = $id;
 
-	$promotions = findMatchPromotion($condition);
+
 	$answer = array();
+	$promotions = findMatchPromotion($condition);
+	
 	foreach ($promotions as $key => $promotion) {
 		# code...
-		array_push($answer, convertPromotionData($promotion));
+		if($promotion['is_select'])
+			array_push($answer, convertPromotionData($promotion));
 	}
 	
 	return objectToArray($answer);
@@ -568,6 +573,10 @@ function updatePromotionPreapprove($promotion_id, $is_select, $issue)
 	return $sql;
 }
 
+function updatePromotionAx($rec_id,$is_select,$issue)
+{
+	return "rec id $rec_id";
+}
 
 function updatePromotionTranfer($promotion_id, $is_select, $issue)
 {

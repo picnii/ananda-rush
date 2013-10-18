@@ -8,5 +8,4 @@
 	else
 		$jsonPostData = json_encode(array());
 
-	
 ?>

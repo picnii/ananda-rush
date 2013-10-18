@@ -59,7 +59,9 @@ angular.module('dataServices', ['ngResource']).
   return $resource('service/index.php', {}, {
     get:{method:'GET', params:{action:'appoint', itemId:'*'}},
     create:{method:'POST', params:{action:'createAppoint'} },
-    getPaymentTypes:{method:'GET', params:{action:'getAppointmentPaymentTypes'}, isArray:true}
+    getPaymentTypes:{method:'GET', params:{action:'getAppointmentPaymentTypes'}, isArray:true},
+    getAppointAuthorizeStatus:{method:'GET', params:{action:'getAppointAuthorizeStatus'},isArray:true},
+
   });
 }).factory('Promotion', function($resource){
   return $resource('service/index.php', {}, {

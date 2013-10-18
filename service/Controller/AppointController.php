@@ -47,7 +47,10 @@
 
 	function actionCreateAppoint($unit_id, $reqBody)
 	{
-		$reqBody->appoint_datetime_str = $reqBody->appoint_date.' '.$reqBody->appoint_time.'.0';
+		if(isset($reqBody->appoint_time))
+			$reqBody->appoint_datetime_str = $reqBody->appoint_date.' '.$reqBody->appoint_time.'.0';
+		else
+			$reqBody->appoint_datetime_str = $reqBody->appoint_date.' 00:00:00.0';
 		$reqBody->call_datetime_str = $reqBody->call_date.' '.$reqBody->call_time.'.0';
 		$reqBody->payment_date_str = $reqBody->payment_date.' 00:00:00.0';
 		$reqBody->contract_date_str = $reqBody->contract_date.' 00:00:00.0';
@@ -75,6 +78,11 @@
 	function actionGetAppointPaymentTypes()
 	{
 		return getAppointmentPaymentTypes(true);	
+	}
+
+	function actionGetAppointAuthorizeStatus()
+	{
+		return getAuthorizeStatus();
 	}
 
 

@@ -99,6 +99,32 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
 
     return input ;
   };
+}).filter('isSelect', function() {
+  return function(input) {
+    switch(input)
+    {
+      case null: return "Not Select";
+        break;
+      case 0: return "Not Select";
+        break;
+      case 1: return "Select";
+        break;
+    } 
+    return input ;
+  };
+}).filter('isIssue', function() {
+  return function(input) {
+    switch(input)
+    {
+      case null: return "Not Issue";
+        break;
+      case 0: return "Not Issue";
+        break;
+      case 1: return "Issue";
+        break;
+    } 
+    return input ;
+  };
 })
 
 app.value('$strapConfig', {

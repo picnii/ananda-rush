@@ -1,5 +1,5 @@
 <?php
-	$appointActions = array('appoint', 'createAppoint','deleteAppointLog', 'updateAppointLog', 'appointTest', 'getAppointmentPaymentTypes');
+	$appointActions = array('appoint', 'createAppoint','deleteAppointLog', 'updateAppointLog', 'appointTest', 'getAppointmentPaymentTypes', 'getAppointAuthorizeStatus');
 
 	if(isset($_GET['action']))
 	{
@@ -13,6 +13,8 @@
 		
 		if($action == 'getAppointmentPaymentTypes')
 			$response = actionGetAppointPaymentTypes();
+		if($action == 'getAppointAuthorizeStatus')
+			$response = actionGetAppointAuthorizeStatus();
 	}
 
 	if(isset($_POST['action']))

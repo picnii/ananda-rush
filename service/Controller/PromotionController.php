@@ -209,6 +209,11 @@
 		return updatePromotionTranfer($promotion->id, $promotion->is_select, $promotion->issue);
 	}
 
+	function actionUpdateAxPromotion($promotion)
+	{
+		return updatePromotionAx($promotion->id,$promotion->is_select,$promotion->issue);
+	}
+
 	function actionCreateConfirmPromotion($promotion)
 	{
 		$log_id =  createPromotionConfirmLog($promotion->name, $promotion->amount, $promotion->unit_id, $promotion->type, $promotion->ref_type, $promotion->ref_id, $promotion->option1, $promotion->option2);

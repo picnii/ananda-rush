@@ -1,6 +1,6 @@
 <?php
 
-function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_date, $contract_date)
+function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_date, $contract_date, $tranfer_status)
 {
 	/*$sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_date, contract_date)  VALUES 
 	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, {$payment_date}, {$contract_date}); SELECT SCOPE_IDENTITY()";*/
@@ -15,10 +15,9 @@ function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time,
     }else{
         return false;
     }*/
-    $sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_time, contract_time)  VALUES 
-	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, '{$payment_date}', '{$contract_date}'); SELECT SCOPE_IDENTITY() AS ins_id";
+    $sql ="INSERT INTO tranfer_appointment_log(transaction_id, type, call_time, appoint_time, status, payment_type, coming_status, remark, people, call_duration, create_time, authorize, payment_time, contract_time, tranfer_status)  VALUES 
+	('$transaction_id', '$type', '$call_time', '{$appoint_time}' ,'{$status}', '{$payment_type}', '{$coming_status}', '{$remark}', '{$people}', '{$call_duration}', GETDATE(), {$authorize}, '{$payment_date}', '{$contract_date}' , {$tranfer_status}); SELECT SCOPE_IDENTITY() AS ins_id";
 	//echo $sql;
-	$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	$result = DB_query($GLOBALS['connect'],converttis620($sql));
 	$row = DB_fetch_array($result);
 	if($result){
@@ -27,10 +26,10 @@ function createAppointmentLog($transaction_id, $type, $call_time, $appoint_time,
 		return false;
 }
 
-function createAppointment($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_time, $contract_time)
+function createAppointment($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration, $authorize = 0, $payment_time, $contract_time, $tranfer_status)
 {
 	
-	$create_log_id = createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration , $authorize , $payment_time, $contract_time);
+	$create_log_id = createAppointmentLog($transaction_id, $type, $call_time, $appoint_time, $status, $payment_type, $coming_status, $remark, $people, $call_duration , $authorize , $payment_time, $contract_time, $tranfer_status);
 	$sql = "IF EXISTS (SELECT * FROM tranfer_appointment WHERE transaction_id='$transaction_id')
 	    UPDATE tranfer_appointment SET log_id = '$create_log_id' WHERE transaction_id='$transaction_id'
 	ELSE
@@ -236,4 +235,20 @@ function findPreApproveStatusByItemId($itemId)
 }
 
 
+function getAuthorizeStatus()
+{
+	$sql ="SELECT * FROM appointment_reason1";
+	$result = DB_query($GLOBALS['connect'],converttis620($sql));
+	$answers = array();
+	while($row = DB_fetch_array($result))
+	{
+	//	print_r($row);
+		$answer = new stdClass;
+		$answer->name = convertutf8($row['appoint_reason1_name']);
+		$answer->id = $row['appoint_reason1_id'];
+		array_push($answers, $answer);
+	}
+	return $answers;
+}
+	
 ?>
