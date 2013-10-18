@@ -94,6 +94,11 @@ function getWhereClauseFromParams($params, $oparators = null)
 				$sql = $sql." {$key} {$oparators[$key]} {$from} AND {$to}";
 				print_r($sql);
     		}
+    		else if (strpos($oparators[$key], 'ALIAS') === 0) {
+    			$alias = explode(" ", $oparators[$key]);
+    			$alias = $alias[1];
+    			$sql = $sql." {$alias} = '{$value}'"; 
+    		}
     		else
     			$sql = $sql." {$key} {$oparators[$key]} '{$value}'";
     	}else
