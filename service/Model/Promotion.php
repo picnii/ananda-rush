@@ -268,6 +268,7 @@ function findAllPromotionAx()
 	$answer = array();
 	while($row = DB_fetch_array($result))
 	{
+		$row['ITEMNAME'] = convertutf8($row['ITEMNAME']);
 		array_push($answer, $row);
 	}
 	return $answer;
@@ -284,16 +285,17 @@ function findAllPromotionAxByItemId($itemId)
 	{
 		$promotion = new stdClass;
 		$promotion->id = $row['RECID'];
-		$promotion->name = $row['ITEMNAME'];
-		$promotion->amount = $row['Promotion Amount (Total)'];
+		$promotion->name = convertutf8( $row['ITEMNAME'] );
+		$promotion->amount = $row['Cash Promotion'];
 		$promotion->is_select = $row['SELECT PROMOTION'];
 		$promotion->quantity = $row['QTY'];
 		$promotion->issue = $row['SELECT PROMOTION'];
+		$promotion->type_id = $row['type_id'];
 		array_push($answer, $promotion);
 	}
 	return $answer;	
 }
-
+	
 function findPromotionAxTypeById($id)
 {
 	$sql = "SELECT * FROM promotion_ax_type WHERE id = '{$id}'";
@@ -311,9 +313,13 @@ function createPromotionAxType($reqBody)
 	foreach ($reqBody->promotions as $key => $promotion) {
 		# code...
 		if(!findPromotionAxTypeById($promotion->RECID))
-			$sql = "INSERT INTO promotion_ax_type (id, type_id) VALUES('{$promotion->RECID}', {$promotion->type_id})";
+			$sql = "INSERT INTO promotion_ax_type (id, type_id, option1, option2) VALUES('{$promotion->RECID}', {$promotion->type_id}, '{$promotion->option1}', '{$promotion->option2}')";
 		else
-			$sql = "UPDATE promotion_ax_type SET type_id = {$promotion->type_id} WHERE id = '{$promotion->RECID}' ";
+			$sql = "UPDATE promotion_ax_type SET type_id = {$promotion->type_id}, option1 = '{$promotion->option1}', option2 = '{$promotion->option2}' WHERE id = '{$promotion->RECID}' ";
+
+
+
+
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		array_push($answer, $result);
 	}
@@ -551,6 +557,7 @@ function findAllPromotionPreapproveFromItemId($itemId)
 	$promotions = array();
 	while($row = DB_fetch_array($result))
 	{
+
 		$promotion = findPromotionById($row['id_promotion']);
 		$answer = new stdClass;
 		$answer->id = $row['id_pro_pre'];

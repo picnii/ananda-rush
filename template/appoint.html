@@ -88,8 +88,8 @@
 						<option value="2">สายไม่ว่าง</option>
 				</select>
 			</span>
-            <span style="margin-right:10px;">ประเภทการโอน : </span>
-            <span style="margin-right:50px;">
+            <span style="margin-right:10px;display:none;" >ประเภทการโอน : </span>
+            <span style="margin-right:50px;display:none;">
                 <select id="select_status"  ng-model="payment_type_obj" ng-change="updatePaymentType()"  ng-options="t.name for t in payment_types">
 						
 				</select>

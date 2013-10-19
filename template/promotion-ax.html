@@ -1,25 +1,28 @@
 <section class="container">
-	Set
+	<h2>Set</h2>
 	<table>
 		<tr ng-repeat="group in promotion_groups">
 			<td>{{group.name}}</td>
 			<td>{{group.status}}</td>
 			<td><select ng-model="group.type"  ng-options="t.name for t in promotion_payment_types">	</select></td>
-			<td class="{{getClassPayment()}}">
-				<select ng-model="group.payment"  ng-options="t.name for t in payments">	</select><br/>
-				Type <select ng-model="group.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
+			<td class="{{getClassPayment(group)}}">
+				Payment:<select ng-model="group.payment"  ng-options="t.name for t in payments">	</select><br/>
+				Type:<select ng-model="group.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
 			</td>
 			<td><button ng-click="update(group)" class="btn">update</button></td>
 
 		</tr>
 	</table>
-	Unset
+	<h2>Unset</h2>
 	<table>
 		<tr ng-repeat="group in unset_promotion_groups">
 			<td>{{group.name}}</td>
 			<td>{{group.status}}</td>
 			<td><select ng-model="group.type"  ng-options="t.name for t in promotion_payment_types">	</select></td>
-			<td></td>
+			<td class="{{getClassPayment(group)}}">
+				Payment:<select ng-model="group.payment"  ng-options="t.name for t in payments">	</select><br/>
+				Type:<select ng-model="group.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
+			</td>
 			<td><button ng-click="update(group)" class="btn">update</button></td>
 		</tr>
 	</table>

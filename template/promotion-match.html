@@ -1,3 +1,4 @@
+<h2>Ax</h2>
 <table class="table">
 <tr>
 	<td>รายการที่</td>
@@ -6,21 +7,21 @@
 	<td>ประเภทโปรโมชั่น</td>
 	<td>Select</td>
 	<td>issue On</td>
-	<td>Quanitty</td>
+	<td>Quantity</td>
 	<td>Amount</td>
 	<td>issued</td>
 <tr>
 
 <tr ng-repeat="promotion in ax_promotions">
-	
+	<td>{{promotion.order}}</td>
 	<td>{{promotion.id}}</td>
 	<td>{{promotion.name}}</td>
-	<td>Ax</td>
+	<td ng-bind-html-unsafe="promotion_payment_types.find({id:promotion.type_id}).name | promotionType"></td>
 	<td>{{promotion.is_select | isSelect}}</td>
 	<td>Sale</td>
 	<td>{{promotion.quantity}}</td>
 	<td>{{promotion.amount}}</td>
-	<td>{{promotion.issue | isIssue}}</td>
+	<td><button ng-click="setIssue(promotion)">{{promotion.issue | isIssue}}</button></td>
 </tr>
 <!-- 
 [{"item_id":"TH01C106009","promotion_name":"TV","promotion_amount":1},{"item_id":"TH01C106009","promotion_name":"BUFFET","promotion_amount":1},{"item_id":"TH01C106009","promotion_name":"KOREA","promotion_amount":1}]
@@ -35,13 +36,13 @@
 	<td>ประเภทโปรโมชั่น</td>
 	<td>Select</td>
 	<td>issue On</td>
-	<td>Quanitty</td>
+	<td>Quantity</td>
 	<td>Amount</td>
 	<td>issued</td>
 <tr>
 <tr ng-repeat="promotion in pre_promotions">
-	<td>{{promotion.item_id}}</td>
-	<td>{{promotion.preapprove_id}}</td>
+	<td>{{promotion.order}}</td>
+	<td>{{promotion.id}}</td>
 	<td>{{promotion.name}}</td>
 	<td>{{ promotion_payment_types.find({id:0}).name }}</td>
 	<td><button ng-click="setPromotion(promotion)">{{promotion.is_select | isSelect}}</button></td>
@@ -60,13 +61,13 @@
 	<td>ประเภทโปรโมชั่น</td>
 	<td>Select</td>
 	<td>issue On</td>
-	<td>Quanitty</td>
+	<td>Quantity</td>
 	<td>Amount</td>
 	<td>issued</td>
 <tr>
 <tr ng-repeat="promotion in tranfer_promotions">
+	<td>{{promotion.order}}</td>
 	<td>{{promotion.id}}</td>
-	<td>{{promotion.condition_id}}</td>
 	<td>{{promotion.name}}</td>
 	<td>{{promotion_payment_types.find({id:promotion.type_id}).name }}</td>
 	<td><button ng-click="setPromotion(promotion)">{{promotion.is_select | isSelect}}</button></td>

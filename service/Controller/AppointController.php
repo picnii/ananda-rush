@@ -26,10 +26,18 @@
 			$authorizes = getAuthorizes();
 			$log->authorize = $authorizes[$log->authorize];
 		}
+		$appointUser = array('name'=>  $unit->customer_name );
+		 $lastIndex = count($logs) - 1;
+		if($lastIndex  >= 0)
+		{
+			$appointUser = array('name' => $logs[$lastIndex.""]->people );
+		}
+
 		$data = array(
 			'unit'=>$unit,
 			'appoint'=>$appoint,
-			'logs'=> $logs
+			'logs'=> $logs,
+			'appointUser'=> $appointUser
 		);
 		return $data;
 	}
@@ -55,7 +63,7 @@
 		$reqBody->payment_date_str = $reqBody->payment_date.' 00:00:00.0';
 		$reqBody->contract_date_str = $reqBody->contract_date.' 00:00:00.0';
 //		$result = $reqBody;
-		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration, $reqBody->authorize, $reqBody->payment_date_str, $reqBody->contract_date_str);
+		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration, $reqBody->authorize, $reqBody->payment_date_str, $reqBody->contract_date_str, $reqBody->tranfer_status);
 		$result_promotion  = array();
 		$appointment = findAppointmentByUnitId($unit_id);
 		$appointment_id = $appointment->main_id;

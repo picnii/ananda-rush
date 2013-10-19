@@ -552,7 +552,7 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		$scope.data = Appoint.get({itemId:$routeParams.itemId}, function(data){
 			$scope.unit = data.unit;
 			$scope.logs = data.logs;
-			$scope.people = data.unit.customer_name;
+			$scope.people = data.appointUser.name;
 			$scope.calldate = new Date();
 			$scope.calltime = '';
 			console.log('fetch transaction');
@@ -613,9 +613,10 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		console.log("coming_status:"+ $scope.coming_status);
 		console.log("remark:" + $scope.remark);
 		console.log("authorize"+ $scope.authorize);
+		console.log($scope.authorize_status)
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
-			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, promotions:$scope.selectedPromotions()
+			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions()
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
@@ -1038,7 +1039,9 @@ function PromotionUpdateCtrl($scope, $rootScope, $location, $routeParams, $filte
 function PromotionAxCtrl($scope, $rootScope, $location, $routeParams, $filter, Promotion, Unit, Type, Payment)
 {
 	$scope.promotion_payment_types = Promotion.getTypes();
+	$scope.payments = Payment.query();
 
+	$scope.payment_types =  Promotion.getPaymentTypes();
 	$scope.refresh = function()
 	{
 		$scope.promotions = Promotion.listAx(function(data){
@@ -1063,6 +1066,15 @@ function PromotionAxCtrl($scope, $rootScope, $location, $routeParams, $filter, P
 				}else if(promo.type_id !=null)
 				{
 					$scope.promotion_groups[$scope.key_groups[promo.ITEMNAME]].ids.push(promo.RECID)
+					var promotion_group = $scope.promotion_groups[$scope.key_groups[promo.ITEMNAME]];
+					var discount_type = $scope.promotion_payment_types.find({code:'discount'});
+
+					
+					if(promo.type_id == discount_type.id)
+					{
+						promotion_group.payment = $scope.payments.find({id:discount_type.id});
+						promotion_group.paymentType = $scope.payment_types.find({id:promo.option2});
+					}
 					//$scope.key_groups[promo.ITEMNAME].index
 					//$scope.promotion_groups[promo.ITEMNAME].ids.push(promo.RECID)
 				}else if(typeof($scope.unset_key_groups[promo.ITEMNAME]) == 'undefined' )
@@ -1098,6 +1110,12 @@ function PromotionAxCtrl($scope, $rootScope, $location, $routeParams, $filter, P
 			var promotion = {};
 			promotion.RECID = group.ids[i];
 			promotion.type_id = group.type.id;
+			var discount_type = $scope.promotion_payment_types.find({code:'discount'});
+			if(promotion.type_id == discount_type.id)
+			{
+				promotion.option1 = group.payment.id;
+				promotion.option2 = group.paymentType.id;
+			}
 			promotions.push(promotion)
 		}
 		return promotions;
@@ -1126,12 +1144,16 @@ function PromotionAxCtrl($scope, $rootScope, $location, $routeParams, $filter, P
 		})
 	}
 
-	$scope.getClassPayment = function()
+	$scope.getClassPayment = function(group)
 	{
-		/*if(typeof($scope.group.type) != 'undefined' && $scope.group.type.id == promotion_payment_types.find())
-		{
+		var discount_type = $scope.promotion_payment_types.find({code:'discount'});			
 
-		}*/
+		if(typeof(group) != 'undefined' && typeof(group.type) != 'undefined' && group.type.id == discount_type.id)
+		{
+			return "show";
+		}
+		else
+			return "hide";
 	}
 
 	$scope.refresh();
@@ -1145,30 +1167,40 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 	});
 	$scope.unit = Unit.find({unit_id:$routeParams.unit_id},function(data){
 		console.log(data);
+		
 		$scope.tranfer_promotions = Promotion.find({unit_id:$routeParams.unit_id}, function(data){
+			seed = 1;
 			for(var i = 0; i < data.length;i++)
 			{
 				promotion = data[i];
 				promotion.promotion_type = 'tranfer';
+				promotion.order =  seed;
+				seed++;
 			}
 			
 			console.log(data)
 		});
 
 		$scope.pre_promotions = Promotion.findPre({item_id:$scope.unit.item_id}, function(data){
+			seed = 1;
 			for(var i = 0; i < data.length;i++)
 			{
 				promotion = data[i];
 				promotion.promotion_type = 'preapprove';
+				promotion.order =  seed;
+				seed++;
 			}
 			console.log(data);
 		})
 
 		$scope.ax_promotions = Promotion.findAx({item_id:$scope.unit.item_id}, function(data){
+			seed = 1;
 			for(var i = 0; i < data.length;i++)
 			{
 				promotion = data[i];
 				promotion.promotion_type = 'ax';
+				promotion.order =  seed;
+				seed++;
 			}
 			console.log(data);
 		})
@@ -1189,7 +1221,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 	{
 		console.log('before');
 		console.log(promotion);
-
+		promotion.is_select = true;
 		if(typeof(promotion.issue) == 'number')
 			promotion.issue = !promotion.issue;
 		else
@@ -1209,6 +1241,10 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 			});
 		else if(promotion.promotion_type == 'tranfer')
 			Promotion.updateTranferPromotion({action:'updateTranferPromotion', promotion:promotion}, function(data){
+				console.log(data);
+			});
+		else if(promotion.promotion_type == 'ax')
+			Promotion.updateAxPromotion({action:'updateAxPromotion', promotion:promotion}, function(data){
 				console.log(data);
 			});
 	}

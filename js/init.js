@@ -186,9 +186,9 @@ Array.prototype.find =  function(condition)
 		
 		var isPassCondition = true;
 		for(var index in condition) { 
-			console.log('check:'+index);
-			console.log(this[i][index]);
-			console.log(condition[index])
+			//console.log('check:'+index);
+			//console.log(this[i][index]);
+			//console.log(condition[index])
 			if(this[i][index] != condition[index])
 			{
 				isPassCondition = false;

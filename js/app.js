@@ -103,11 +103,13 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
   return function(input) {
     switch(input)
     {
-      case null: return "Not Select";
+      case null: return "No";
         break;
-      case 0: return "Not Select";
+      case 0: return "No";
         break;
-      case 1: return "Select";
+      case "1":
+      case 1: return "Yes";
+
         break;
     } 
     return input ;
@@ -116,13 +118,21 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
   return function(input) {
     switch(input)
     {
-      case null: return "Not Issue";
+      case null: return "No";
         break;
-      case 0: return "Not Issue";
+      case 0: return "No";
         break;
-      case 1: return "Issue";
+      case 1: return "Yes";
+        break;
+      case "1": return "Yes";
         break;
     } 
+    return input ;
+  };
+}).filter('promotionType', function() {
+  return function(input) {
+    if(input == null || input == '')
+      return '<a href="#/promotions/ax" class="btn btn-danger">ยังไม่ระบุ</a>';
     return input ;
   };
 })

@@ -88,6 +88,12 @@
     </style>
 </head>
 <body>
+
+    <?php 
+        if(isset($_GET['have_menu']))
+            include "header.php";
+    ?>
+
     <div id="main-menu" class="navbar noPrint" style="display:none;">
       <div class="navbar-inner">
         <a class="brand" href="#">Tranfer System</a>
