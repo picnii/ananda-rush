@@ -9,6 +9,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
           when('/promotions/update/:pid', {templateUrl: 'template/promotion-create.html',   controller: PromotionUpdateCtrl}).
           when('/units', {templateUrl: 'template/units.html',   controller: UnitListCtrl}).
 		  	  when('/bills/print/:tid', {templateUrl: 'template/print.html',   controller: BillPrintCtrl}).
+          when('/bills/print/:tid/:uid', {templateUrl: 'template/print.html',   controller: BillPrintCtrl}).
 		      when('/bills/preview/:tid/:uid', {templateUrl: 'template/bill.html',   controller: BillCtrl}).
 		      when('/bills', {templateUrl: 'template/bills.html',   controller: BillListCtrl}).
 		      when('/bills/:bid/edit', {templateUrl: 'template/bill-edit.html',   controller: BillEditCtrl}).
@@ -105,8 +106,12 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
     {
       case null: return "No";
         break;
-      case 0: return "No";
+      case false:
+      case 0: 
+      case "0":
+        return "No";
         break;
+      case true:
       case "1":
       case 1: return "Yes";
 
@@ -120,8 +125,12 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
     {
       case null: return "No";
         break;
-      case 0: return "No";
+        case false:
+      case 0: 
+      case "0":
+      return "No";
         break;
+      case true:
       case 1: return "Yes";
         break;
       case "1": return "Yes";
@@ -133,6 +142,12 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
   return function(input) {
     if(input == null || input == '')
       return '<a href="#/promotions/ax" class="btn btn-danger">ยังไม่ระบุ</a>';
+    return input ;
+  };
+}).filter('ifBlank', function() {
+  return function(input) {
+    if(input == null || input == '' || input == ' ')
+      return '-';
     return input ;
   };
 })

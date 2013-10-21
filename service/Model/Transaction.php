@@ -339,15 +339,14 @@ function createTransaction($unit_id, $template_id, $payments_json, $variables_js
 ELSE
     INSERT INTO Table1 VALUES (...)
     */
-	$SQL  = "INSERT INTO tranfer_transaction(unit_id,template_id,create_time, payments, variables)  VALUES ('$unit_id', '$template_id',GETDATE(), '{$payments_json}' ,'{$variables_json}'); SELECT SCOPE_IDENTITY()";
+	$SQL  = "INSERT INTO tranfer_transaction(unit_id,template_id,create_time, payments, variables)  VALUES ('$unit_id', '$template_id',GETDATE(), '{$payments_json}' ,'{$variables_json}'); SELECT SCOPE_IDENTITY() as ins_id";
 
   //  echo $SQL;
     //echo "<br/><br/>";
      $result = DB_query($GLOBALS['connect'],converttis620($SQL));
     if($result){
-        sqlsrv_next_result($result); 
-        sqlsrv_fetch($result); 
-        $created_id = sqlsrv_get_field($result, 0); 
+        $row = DB_fetch_array($result);
+        $created_id = $row['ins_id'];
         return $created_id;
     }else{
         return false;
@@ -802,6 +801,7 @@ function findAllBill($q)
    {
        // print_r($bill);
         $reason_id = $bill->Preapp_appoint_reason1_id;
+
         if(isset($bill->banks))
         {
 
@@ -825,6 +825,7 @@ function findAllBill($q)
    function getBanksVariable($bill)
    {
         $banks = getIsBank($bill);
+
         $bank_name = '-';
         $return_bank = new stdClass;
         $firstBank = $banks[0];
@@ -851,63 +852,64 @@ function findAllBill($q)
             else
                 echo count($banks);
         }*/
-        foreach($banks as $bank)
-        {
-            
-            if($bank['id_credit_approval'] == 1)
-            {
-                 $variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  $bank['Price_Approve']);
-                 $banks_variable_flag['BankLoanRoom'] = true;
-                 $return_bank->BankLoanRoom =  $bank['Price_Approve'];
-                 array_push($bill->variables, $variable);
-                 $bank_name = $bank['master_bank_name'];
-            }
-            else if($bank['id_credit_approval'] == 2)
-            {
-                 $variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  $bank['Price_Approve']);
-                 $banks_variable_flag['BankLoanInsurance'] = true;
-                 $return_bank->BankLoanInsurance =  $bank['Price_Approve'];
-                 array_push($bill->variables, $variable);
-                 $bank_name = $bank['master_bank_name'];
-            }else if($bank['id_credit_approval'] == 3)
-            {
-                 $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  $bank['Price_Approve']);
-                 $banks_variable_flag['BankLoanDecorate'] = true;
-                 $return_bank->BankLoanDecorate =  $bank['Price_Approve'];
-                 array_push($bill->variables, $variable);
-                 $bank_name = $bank['master_bank_name'];
-            }else if($bank['id_credit_approval'] == 5)
-            {
-                $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  $bank['Price_Approve']);
-                $banks_variable_flag['BankLoanMulti'] = true; 
-                $return_bank->BankLoanMulti =  $bank['Price_Approve'];
-                array_push($bill->variables, $variable);  
-                $bank_name = $bank['master_bank_name'];
-            }else if($bank['id_credit_approval'] == 6)
-            {
-                /*$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  $bank['Price_Approve']);
-                $banks_variable_flag['SumBankLoan'] = true;  
-                 $return_bank->SumBankLoan =  $bank['Price_Approve']; 
-                array_push($bill->variables, $variable);*/
-            }else
-            {
-                array_push( $bank_other_loans,  $bank['Price_Approve']);        
-                $bank_name = $bank['master_bank_name'];
-                //$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
-            }
 
-            
-                /*$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
-                array_push($bill->variables, $variable);
-                $variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '-');
-                array_push($bill->variables, $variable);
-                $variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '-');
-                array_push($bill->variables, $variable);
-                $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
-                array_push($bill->variables, $variable);
-                $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
-                array_push($bill->variables, $variable);*/
-        }
+            foreach($banks as $bank)
+            {
+                
+                if($bank['id_credit_approval'] == 1)
+                {
+                     $variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  $bank['Price_Approve']);
+                     $banks_variable_flag['BankLoanRoom'] = true;
+                     $return_bank->BankLoanRoom =  $bank['Price_Approve'];
+                     array_push($bill->variables, $variable);
+                     $bank_name = $bank['master_bank_name'];
+                }
+                else if($bank['id_credit_approval'] == 2)
+                {
+                     $variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  $bank['Price_Approve']);
+                     $banks_variable_flag['BankLoanInsurance'] = true;
+                     $return_bank->BankLoanInsurance =  $bank['Price_Approve'];
+                     array_push($bill->variables, $variable);
+                     $bank_name = $bank['master_bank_name'];
+                }else if($bank['id_credit_approval'] == 3)
+                {
+                     $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  $bank['Price_Approve']);
+                     $banks_variable_flag['BankLoanDecorate'] = true;
+                     $return_bank->BankLoanDecorate =  $bank['Price_Approve'];
+                     array_push($bill->variables, $variable);
+                     $bank_name = $bank['master_bank_name'];
+                }else if($bank['id_credit_approval'] == 5)
+                {
+                    $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  $bank['Price_Approve']);
+                    $banks_variable_flag['BankLoanMulti'] = true; 
+                    $return_bank->BankLoanMulti =  $bank['Price_Approve'];
+                    array_push($bill->variables, $variable);  
+                    $bank_name = $bank['master_bank_name'];
+                }else if($bank['id_credit_approval'] == 6)
+                {
+                    /*$variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  $bank['Price_Approve']);
+                    $banks_variable_flag['SumBankLoan'] = true;  
+                     $return_bank->SumBankLoan =  $bank['Price_Approve']; 
+                    array_push($bill->variables, $variable);*/
+                }else
+                {
+                    array_push( $bank_other_loans,  $bank['Price_Approve']);        
+                    $bank_name = $bank['master_bank_name'];
+                    //$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+                }
+
+                
+                    /*$variable = getBillVariable('BankLoanOther', 'อนุมัติวงเงินอื่น ๆ ',  '-');
+                    array_push($bill->variables, $variable);
+                    $variable = getBillVariable('SumBankLoan', 'วงเงินจำนองรวม',  '-');
+                    array_push($bill->variables, $variable);
+                    $variable = getBillVariable('BankLoanInsurance', 'อนุมัติวงเงินค่าประกัน',  '-');
+                    array_push($bill->variables, $variable);
+                    $variable = getBillVariable('BankLoanMulti', 'อนุมัติวงเงินเอนกประสงค์',  '-');
+                    array_push($bill->variables, $variable);
+                    $variable = getBillVariable('BankLoanDecorate', 'อนุมัติวงเงินตกแต่ง',  '-');
+                    array_push($bill->variables, $variable);*/
+            }
 
         $bank_sum = 0;
 
@@ -1013,9 +1015,14 @@ function findAllBill($q)
 
    function getCallTime($bill)
    {
+
     if(isset($bill->call_time))
     {
-     return $bill->call_time->format('Y/m/d H:i:s');
+        
+       // if(!is_string($bill->call_time))
+         //   return $bill->call_time->format('Y/m/d H:i:s');
+        //else
+            return $bill->call_time;
     }else 
       return "?";
    }   
@@ -1024,7 +1031,8 @@ function findAllBill($q)
    {
     if(isset($bill->appoint_time))
     {
-     return $bill->appoint_time->format('Y/m/d');
+     //return $bill->appoint_time->format('Y/m/d');
+        return $bill->appoint_time;
     }else 
       return "?";
    }
@@ -1033,7 +1041,8 @@ function findAllBill($q)
    {
     if(isset($bill->appoint_time))
     {
-     return $bill->appoint_time->format('H:i:s');
+     //return $bill->appoint_time->format('H:i:s');
+        return $bill->appoint_time;
     }else 
       return "?";
    }
@@ -1042,6 +1051,14 @@ function findAllBill($q)
    {
         if(isset($bill->IVZ_ESTIMATEPRICE))
             return $bill->IVZ_ESTIMATEPRICE;
+        else
+            return false;
+   }
+
+   function getBasePrice($bill)
+   {
+        if(isset($bill->BasePrice))
+            return $bill->BasePrice;
         else
             return false;
    }
@@ -1115,15 +1132,20 @@ function findAllBill($q)
         $variable = getBillVariable('DifferenOfSpace', 'ส่วนต่างพื้นที่',  getAreaDiffFromSaleData($data));
         array_push($bill->variables, $variable);
 
+        //getBasePrice($bill)
+        $variable = getBillVariable('BasePrice', 'baseprice',  getBasePrice($data));
+        array_push($bill->variables, $variable);
+
         /*print_r($data->promotions);
         $variable = getBillVariable('Promotions', 'promotion',  $data->promotions);
         array_push($bill->variables, $variable);*/
 
         $isBankPay = getIsBank($data);
     ;
+
         if($isBankPay)
         {   
-            
+          
             $bank = getBanksVariable($data);
             foreach ($bank as $key => $value) {
                 # code...
@@ -1132,7 +1154,7 @@ function findAllBill($q)
             }
         }else
         {
-        
+            
             $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  '-');
             array_push($bill->variables, $variable);
             $variable = getBillVariable('BankLoanRoom', 'อนุมัติค่าห้อง',  '-');

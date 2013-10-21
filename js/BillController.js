@@ -414,6 +414,11 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 		var obj = loadTempData();
 		var uids = obj.uids;
 		var template_ids = obj.tids;
+	}else if($routeParams.uid > 0){
+		var uids = [];
+		uids[0] = $routeParams.uid;
+		var send_data = {action:"bills", template_id:$routeParams.tid, unit_ids:uids};
+	
 	}else
 	{
 		var uids = loadTempData();

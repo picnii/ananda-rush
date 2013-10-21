@@ -49,6 +49,7 @@ angular.module('dataServices', ['ngResource']).
   return $resource('service/index.php', {}, {
     create:{method:'POST', params:{action:'createBills'}},
     preview:{method:'POST', isArray:true},
+    testBill:{method:'GET', params:{action:'bills'}, isArray:true},
     list:{method:'GET', params:{action:'listTransactions'}, isArray:true},
     test:{method:'POST', isArray:true},
     view:{method:'GET', params:{action:'transaction',id:""}},

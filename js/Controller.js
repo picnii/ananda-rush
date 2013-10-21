@@ -850,9 +850,10 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 				Promotion.matchPromotion({action:'matchPromotion', condition_id:data.condition_id, unit_ids:unit_ids},function(data){
 
 					console.log(data);
+					$scope.loadMatchPromotions();
 				})
 			});
-			$scope.loadMatchPromotions();
+			
 
 		})
 		
@@ -1211,7 +1212,10 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 		console.log('before');
 		console.log(promotion);
 		promotion.is_select = !promotion.is_select;
+		if(!promotion.is_select)
+			promotion.issue = 0;
 		promotion.is_select = Number(promotion.is_select)
+
 		$scope.updatePromotionServer(promotion);
 		console.log('after');
 		console.log(promotion);
@@ -1221,7 +1225,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 	{
 		console.log('before');
 		console.log(promotion);
-		promotion.is_select = true;
+		promotion.is_select = 1;
 		if(typeof(promotion.issue) == 'number')
 			promotion.issue = !promotion.issue;
 		else

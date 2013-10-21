@@ -1,11 +1,15 @@
 <section class="container">
 	<header class="noPrint">
 		<button ng-click="save()">Save</button>
+
 	</header>
 	<section ng-repeat="bill in bills">
 	<!--- Start Loop Print-->	
+	<div>
+		Base Price : {{bill.BasePrice}} Repayment : {{bill.Repayment}}
+	</div>
 		<div class="row" >
-			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน {{bill.AppointmentMonth}} เท่านั้น</h4></div>
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน ตุลาคม เท่านั้น</h4></div>
 			<div class="span12" align="center"> <h4>โครงการไอดีโอ มอร์ฟ 38 </h4>
 			</div>
 			<div  class="span12" align="center">
@@ -21,10 +25,10 @@
 			<div class="offset6 span1">UNIT NO.</div>
 			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.UnitNumber}}</div>
 			<div class="span1">บ้านเลขที่</div>
-			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseNumber}}</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseNumber | ifBlank}}</div>
 			
 			<div class="offset6 span1">แบบบ้าน</div>
-			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseType}}</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center"> {{bill.HouseType | ifBlank}}.</div>
 			<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
 			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}}</div>
 		</font>
@@ -36,7 +40,7 @@
 			<div class="row">
 				<font size="2">
 					<div class="span1"><b>วันที่แจ้ง</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.DocumentDate}}</div>
+					<div class="span5" style="border-bottom: groove;">{{bill.DocumentDate | date:'short' }}</div>
 					<div class="span1"><b>จาก</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.SaleName}}</div><br>
 					<div class="span1"><b>วันนัดโอน</b></div>

@@ -1,16 +1,17 @@
 <?php
 //rawee@ananda.co.th
-	//$transaction_ids = array(1352, 2302, 1307, 2174, 1835, 1854, 2169, 2157, 1302, 2177);
-	$units = findAllUnits();
+	$transaction_ids = array(1302, 1304);
+	/*$units = findAllUnits();
 	$transaction_ids = array();
 	foreach ($units as $unit) {
 		# code...
 		array_push($transaction_ids, $unit->id);
-	}
+	}*/
 	$rows = fetchBillInformation($transaction_ids);
-
+	
 	$bills = getVariableUnits($rows);
-
+	//print_r($bills);
+	
 	//check for project name
 	foreach($bills as $bill)
 	{
@@ -182,7 +183,9 @@
 	foreach($bills as $bill)
 	{
 		$result = getIsBank($bill);
+		print_r($result);
 		$bank = getBanksVariable($bill);
+
 		if($result)
 		{
 			assertEquals(true, is_numeric($bank->BankLoanRoom), "bank loan room {$bill->transaction_id}");
@@ -205,7 +208,7 @@
 		}
 		
 	}
-
+/*
 	//print_r($bills);
 	foreach ($bills as $bill) {
 		# code...
@@ -213,6 +216,8 @@
 		print_r($bill_data);
 		echo "------";
 	}
+
+	/*
 	$unit_ids = $transaction_ids;
 
 	$transactions = findAllLastTransactionsByUnitIds("id",$unit_ids);
