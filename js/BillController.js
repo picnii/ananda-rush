@@ -554,8 +554,25 @@ function TransactionCtrl($scope, $filter, $rootScope, $routeParams, $location, B
 
 			var transaction = transactions[i];
 			transaction.checked = true;
+
+			transaction.tranfer = function()
+			{
+				console.log(this);
+				this.is_tranfer = 1;
+				if(this.tranfer_date == null || this.tranfer_date == "")
+					this.tranfer_date = new Date();
+				
+				var args ={is_tranfer:this.is_tranfer, tranfer_time:convertDateTimeToSqlFormat(this.tranfer_date)};
+				console.log('tranfer id '+ this.id);
+				console.log(args)
+				Bill.updateBill({transaction_id:this.id, args:args},function(data){
+					console.log(data);
+				});
+			}
 		}
+
 	});
+
 
 	$scope.selectedTransactions = function () {
     	return $filter('filter')($scope.transactions, {checked: true});
@@ -627,6 +644,17 @@ function TransactionCtrl($scope, $filter, $rootScope, $routeParams, $location, B
 		saveTempData({transaction_ids:transaction_ids});
 		$location.path('/transactions/print');
 	}
+
+	$scope.tranfer = function()
+	{
+		var transactions = $scope.selectedTransactions();
+		for(var i =0; i < transactions.length;i++)
+		{
+			transactions[i].tranfer_date = $scope.tranfer_time
+			transactions[i].tranfer();
+		}
+	}
+
 }
 
 function TransactionPrintCtrl($scope, $rootScope, $routeParams, $location, Bill, Print, Type)
@@ -1007,6 +1035,8 @@ function convertBillPrint($scope, data)
 			if(typeof(sum_bank_loan) == 'undefined' || sum_bank_loan == null || sum_bank_loan == '-')
 				sum_bank_loan = 0;
 
+			console.log('check sum bank loan')
+			console.log(sum_bank_loan)
 			if(sum_bank_loan == 0)
 				bill.isCashTranfer = true;
 			else

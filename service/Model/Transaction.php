@@ -422,8 +422,6 @@ function convertToTransaction($row)
 }
 
 
-
-
 function findTransactionById($id)
 {
     $SQL  = "select * from tranfer_transaction where id = $id";
@@ -504,14 +502,23 @@ function updateTransaction($transaction_id, $args)
 	*/
             if($transaction_id != ""){
                 $sql ="UPDATE tranfer_transaction SET ";
-            }if($args['unit_id'] != ""){
+            }
+            if($args['unit_id'] != ""){
                 $sql.="unit_id='".$args['unit_id']."', ";
-            }if($args['template_id'] != ""){
+            }
+            if($args['template_id'] != ""){
                 $sql.="template_id='".$args['template_id']."', ";
             }
-                $sql.="create_time= GETDATE() ";
-                $sql.="WHERE id='".$transaction_id."' ";
-                $rs = DB_query($GLOBALS['connect'],$sql); 
+            if($args['is_tranfer'] != "")
+            {
+                $sql.="is_tranfer = ".$args['is_tranfer'];
+                $sql.=", tranfer_time = '".$args['tranfer_time']."'";
+            }
+
+
+            $sql.="create_time= GETDATE() ";
+            $sql.="WHERE id='".$transaction_id."' ";
+            $rs = DB_query($GLOBALS['connect'],$sql); 
             if($rs){
                 $SQL  = "SELECT * from tranfer_transaction where id = $transaction_id ";
                 $result = DB_query($GLOBALS['connect'],$SQL);
@@ -631,6 +638,15 @@ function findAllBill($q)
         return $project_name;
     }
 
+    function getRegulationFromSaleData($bill)
+    {
+        $project_id = $bill->proj_id;
+        $sql = "SELECT name FROM regulation INNER JOIN regulation_masterproject ON regulation_masterproject.id_regulation = regulation.id WHERE id_master_project = {$project_id} ";
+        $result = DB_query($GLOBALS['connect'],$sql);
+        $row = DB_fetch_array($result);
+        return $row['name'];
+    }
+
     function getCompanyNameFromSaleData($bill)
     {
         if(isset($bill->comp_name_th))
@@ -696,8 +712,11 @@ function findAllBill($q)
 
     function getCustomerNameFromSaleData($bill)
     {
-        if(isset($bill->SalesName) && is_string($bill->SalesName))
-            $SalesName = converttis620($bill->SalesName);
+       
+        if(isset($bill->people))
+            $SalesName = $bill->people;
+        else if(isset($bill->SalesName) && is_string($bill->SalesName))
+            $SalesName = $bill->SalesName;
         else
             $SalesName = '?';
     ;
@@ -851,7 +870,10 @@ function findAllBill($q)
         $return_bank = new stdClass;
         $firstBank = $banks[0];
         if($banks)
+        {
             $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',   $firstBank['master_bank_name']);
+            //print_r($banks)
+        }
         else
             $variable = getBillVariable('BankLoanName', 'ชื่อธนาคาร',  '-');
         array_push($bill->variables, $variable); 
@@ -1207,7 +1229,7 @@ function findAllBill($q)
         $variable = getBillVariable('PayTime', 'เวลาที่นัดโอน',  getAppointTime($data));
         array_push($bill->variables, $variable);
         
-        $variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  $data->SalesName );
+        $variable = getBillVariable('CustomerName', 'ชื่อูลกค้า',  getCustomerNameFromSaleData($data));
         array_push($bill->variables, $variable);
 
         $variable = getBillVariable('CustomerTel', 'เบอร์โทรลูกค้า',  getCustomerMobileFromSaleData($data));
@@ -1303,6 +1325,11 @@ function findAllBill($q)
 
         $variable = getBillVariable('ProjectName','ค่าปลอด', getProjectNameFromSaleData($data));
         array_push($bill->variables, $variable);
+
+         $variable = getBillVariable('Regulation','นิติ', getRegulationFromSaleData($data));
+        array_push($bill->variables, $variable);
+
+        //getRegulationFromSaleData($bill)
 
         if(isset( $data->master_transaction_id))
             $variable = getBillVariable('UnitId', '-',  $data->master_transaction_id);

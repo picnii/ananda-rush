@@ -52,6 +52,10 @@
             </span>
              <button ng-click="print()" class="primary">Print</button>
 				<button ng-click="tranfer()" class="danger">Tranfer</button>
+                <div class="control-group input-append">
+                  <input type="text" ng-model="tranfer_time" data-date-format="dd/mm/yyyy" class="datepicker" bs-datepicker>
+                  <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+                </div>
         </div>
 	</form>
 	
@@ -78,7 +82,11 @@
 			<td>
                 <a class="btn btn-inverse" href="#/transactions/{{transaction.id}}/edit">แก้ไข</a>
                 <a class="btn" href="#/bills/preview/{{transaction.template_id}}/{{transaction.unit_id}}">อัพเดต</a>
-				<button ng-click="tranfer()" class="btn">โอน</button>
+				<button ng-click="transaction.tranfer()" class="btn">โอน</button>
+                <div class="control-group input-append">
+                  <input type="text" ng-model="transaction.tranfer_date" data-date-format="dd/mm/yyyy" class="datepicker" bs-datepicker>
+                  <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
+                </div>
 			</td>
 		</tr>
 	</table>

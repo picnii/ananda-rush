@@ -37,9 +37,43 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
     	return input.formatMoney(2,',','.');  ;
     return input;
   };
-}).filter('zeroDash', function() {
+}).filter('zeroBlank', function() {
   return function(input) {
-  	if(input == 0 )
+    if(input==null || input == 0 || input =="0")
+      return " ";
+    if(!isNaN(input))
+    {
+      
+      input = Number(input);
+      input = Math.round(input / 10 ) *10
+      return input.formatMoney(2,',','.'); 
+    }else if(typeof(input)!="string" || input == "NaN")
+      return " ";
+
+    
+    return input;
+  };
+})
+.filter('zeroBank', function() {
+  return function(input) {
+    if(input==null || input == 0 || input =="0")
+      return "-";
+    if(!isNaN(input))
+    {
+      
+      input = Number(input);
+      input = Math.round(input / 10 ) *10
+      return input.formatMoney(2,',','.'); 
+    }else if(typeof(input)!="string" || input == "NaN")
+      return "-";
+
+    
+    return input;
+  };
+})
+.filter('zeroDash', function() {
+  return function(input) {
+  	if(input == 0 || input==null )
       return "-";
    	if(!isNaN(input))
     {

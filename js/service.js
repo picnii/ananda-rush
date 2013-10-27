@@ -54,7 +54,8 @@ angular.module('dataServices', ['ngResource']).
     test:{method:'POST', isArray:true},
     view:{method:'GET', params:{action:'transaction',id:""}},
     viewTransaction:{method:'GET', params:{action:'viewTransaction', unit_id:'*'}},
-    createTransaction:{method:'POST', params:{action:'createTransaction'}}
+    createTransaction:{method:'POST', params:{action:'createTransaction'}},
+    updateBill:{method:'POST', params:{action:'updateBill'}},
   });
 }).factory('Appoint', function($resource){
   return $resource('service/index.php', {}, {

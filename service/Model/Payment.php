@@ -121,10 +121,10 @@ function isFixPaymentOrder($id)
     $LOAN_FEE = 42;
     $SHARE_PLACE_FEE = 18;
     $BANK_PAY_BACK = 47;
-    $ARGORN = 42;
+    $ARGORN = 41;
     $ARGORN_LOAN = 48;
     //order FROM MIN TO MAX
-    $orders = array($ROOM_PAYMENT, $ELECTRIC_BILL_15, $ELECTRIC_BILL_30, $WATER_METER, $SHARE_PLACE_FEE, $SUPPORT_FUND, $TRANFER_FEE, $LOAN_FEE, $BANK_PAY_BACK, $ARGORN, $ARGORN_LOAN);
+    $orders = array( $ROOM_PAYMENT,$ELECTRIC_BILL_15 , $ELECTRIC_BILL_30, $WATER_METER, $SHARE_PLACE_FEE, $SUPPORT_FUND, $TRANFER_FEE, $LOAN_FEE, $BANK_PAY_BACK, $ARGORN, $ARGORN_LOAN);
 
     //search for index in order
     for($i = 0; $i < count($orders); $i++) {
@@ -132,12 +132,31 @@ function isFixPaymentOrder($id)
         $value = $orders[$i];
         if($value == $id)
         {
-
-            return  $i - count($orders);
+            //$num = $i - count($orders) -1;
+           // echo "found {$id} return $num";
+            return  $i + 1;
         }
     }
-
-
+/*found 6
+found 18
+found 24
+found 25
+found 27
+found 34
+not found41
+found 42
+found 47
+found 48
+found 6
+found 18
+found 24
+found 25
+found 27
+found 34
+not found41
+found 42found 47found 48
+*/
+    //echo "not found{$id}";
     return false;
     // if have no index return false
 
@@ -160,12 +179,12 @@ function getPaymentsByTemplateId($template_id)
         $payment = new stdClass;
         $payment->id = $row['id'];
         $fixOrder = isFixPaymentOrder($payment->id);
-        if($fixOrder)
+        //if($fixOrder)
             $payment->order = $fixOrder;
-        else
-            $payment->order = $index++;
+        //else
+          //  $payment->order = 20;
         //hardcode
-        $payment->order += 12;
+       // $payment->order += 12;
         $payment->name = $row['name'];
         $payment->description = $row['description'];
         $payment->formulas = array(
@@ -183,7 +202,7 @@ function getPaymentsByTemplateId($template_id)
         array_push($payments, $payment);
     }
 
-    for($i = 0; $i < count($payments); $i++)
+    /*for($i = 0; $i < count($payments); $i++)
     {
         for($j = 0; $j <count($payments); $j++)
         {
@@ -196,7 +215,7 @@ function getPaymentsByTemplateId($template_id)
             }
         }
         
-    }
+    }*/
 
     for($i = 0 ; $i < count($payments); $i++)
     {

@@ -106,10 +106,13 @@
 
 	function actionUpdateBill($transaction_id, $args)
 	{
+		$args = objectToArray($args);
 		$transaction = updateTransaction($transaction_id, $args);
-		$sample = getSampleBill();
-		return $sample;
+		//$sample = getSampleBill();
+		return $transaction ;
 	}
+
+
 
 	function actionBill($unit_id, $template_id)
 	{
@@ -189,7 +192,7 @@
 			;
 		}
 		
-		return findAllLastTransactionsByUnitIds("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id, master_transaction.UnitNo as unit_number, tranfer_transaction.template_id", $unit_ids);
+		return findAllLastTransactionsByUnitIds("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id, master_transaction.UnitNo as unit_number, tranfer_transaction.template_id, tranfer_transaction.is_tranfer, tranfer_transaction.tranfer_time", $unit_ids);
 	}
 
 	function actionViewTransaction($id)
@@ -202,7 +205,7 @@
 
 	function actionAllTransactions()
 	{
-		return findAllLastTransactions("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id, master_transaction.UnitNo as unit_number, tranfer_transaction.template_id");
+		return findAllLastTransactions("tranfer_transaction.id, master_transaction.itemId, master_transaction.transaction_id as unit_id, master_transaction.UnitNo as unit_number, tranfer_transaction.template_id, tranfer_transaction.is_tranfer, tranfer_transaction.tranfer_time");
 	}
 
 	function actionViewTransactionByUnitId($unit_id)

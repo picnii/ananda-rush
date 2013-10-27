@@ -1,6 +1,6 @@
 <?php
 
-    $billActions = array('bills', 'bill','createBills', 'billPayment', 'transactions', 'listTransactions', 'createTransaction', 'transaction', 'searchTransaction', 'viewTransaction');
+    $billActions = array('bills', 'bill','createBills', 'billPayment', 'transactions', 'listTransactions', 'createTransaction', 'transaction', 'searchTransaction', 'viewTransaction', 'updateBill');
 /* Bill Service */
 
 	if(isset($_POST['action']))
@@ -41,6 +41,7 @@
 			$response = array('cool');
 		if($action == 'viewTransaction')
 			$response = actionViewTransactionByUnitId($_GET['unit_id']);
+
 	}
 
 	if(isset($reqBody->action))
@@ -61,6 +62,8 @@
 			$response = actionCreateTransactions( $reqBody->template_id, $reqBody->bills);
 		if($reqBody->action == 'transactions')
 			$response = actionTransactions($reqBody->transaction_ids);
+		if($reqBody->action == 'updateBill')
+			$response = actionUpdateBill($reqBody->transaction_id, $reqBody->args);
 
 	}
 
