@@ -21,7 +21,7 @@
 	<td>Sale</td>
 	<td>{{promotion.quantity}}</td>
 	<td>{{promotion.amount}}</td>
-	<td><button ng-click="setIssue(promotion)">{{promotion.issue | isIssue}}</button></td>
+	<td><button ng-show="promotion.is_show" ng-click="setIssue(promotion)">{{promotion.issue | isIssue}}</button><span ng-show="!promotion.is_show">{{promotion.issue | isIssue}}</span></td>
 </tr>
 <!-- 
 [{"item_id":"TH01C106009","promotion_name":"TV","promotion_amount":1},{"item_id":"TH01C106009","promotion_name":"BUFFET","promotion_amount":1},{"item_id":"TH01C106009","promotion_name":"KOREA","promotion_amount":1}]

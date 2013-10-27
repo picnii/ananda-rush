@@ -24,7 +24,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
           when('/appoint/:itemId', {templateUrl:'template/appoint.html', controller: AppointCtrl}).
           when('/transactions', {templateUrl:'template/transactions.html', controller: TransactionCtrl}).
           when('/cheque', {templateUrl:'template/check-many.html', controller: TransactionPrintCtrl}).
-          when('/transactions/print',{templateUrl:'template/print-transactions.html', controller:TransactionPrintCtrl} ).
+          when('/transactions/print',{templateUrl:'template/print.html', controller:TransactionPrintCtrl} ).
           when('/transactions/:transaction_id/edit', {templateUrl:'template/transaction-edit.html', controller:TransactionEditCtrl}).
 		      otherwise({redirectTo: '/'});
 		}]);
@@ -39,15 +39,17 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
   };
 }).filter('zeroDash', function() {
   return function(input) {
-  	if(input == 0)
-  		return "-";
+  	if(input == 0 )
+      return "-";
    	if(!isNaN(input))
     {
       
       input = Number(input);
       input = Math.round(input / 10 ) *10
       return input.formatMoney(2,',','.'); 
-    }
+    }else if(typeof(input)!="string" || input == "NaN")
+      return "-";
+
     
     return input;
   };
@@ -141,7 +143,7 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
 }).filter('promotionType', function() {
   return function(input) {
     if(input == null || input == '')
-      return '<a href="#/promotions/ax" class="btn btn-danger">ยังไม่ระบุ</a>';
+      return '<a href="#/promotions/ax" target="_blank" class="btn btn-danger">ยังไม่ระบุ</a>';
     return input ;
   };
 }).filter('ifBlank', function() {
@@ -150,7 +152,37 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
       return '-';
     return input ;
   };
+}).filter('bankFilterName', function(){
+  return function(input) {
+    if(input == null || input == '' || input == ' ' || input == '-' )
+      return 'ธนาคาร กรุงไทย จำกัด มหาชน';
+    return input ;
+  };
+
+}).filter('bankCashFilter', function(){
+  return function(input) {
+    if(input == null || input == '' || input == ' ' || input == '-' )
+      return 'สด';
+    return input ;
+  };
+
+}).filter('saleNamePrint', function(){
+  return function(input) {
+    if(input == null || input == '-' || input == '--' || input == ' ')
+      return 'คุณสุกัญญา 081-5561037';
+    return input ;
+  };
+
+}).filter('isCashFilter', function(){
+  return function(input) {
+    if(input)
+      return 'สด';
+    return '-' ;
+  };
+
 })
+
+//bankCashFilter
 
 app.value('$strapConfig', {
   datepicker: {

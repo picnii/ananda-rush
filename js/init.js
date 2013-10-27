@@ -49,6 +49,8 @@ function getFormulaValue(varset, formula)
 		return 0;
 	if(formula[0] == "#")
 		return formula.substr(1);
+	if(typeof(formula) != 'string')
+		return 0;
 	var express = /{[\w\d]*}/g;
 	if(express != undefined && formula != undefined)
 		var raw_varset = formula.match(express);

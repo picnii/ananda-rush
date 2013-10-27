@@ -7,7 +7,7 @@
 		$sale_datas = getSaleDatas($unit_ids);
 		$bills = array();
 		$template = findTemplateById($template_id);
-		
+		//echo "hi";
 		foreach($sale_datas as $sale_data)
 		{
 
@@ -15,10 +15,6 @@
 			
 			array_push($bills, $bill);
 		}
-		/*$samples[0] = getSampleBill();
-		$samples[1] = getSampleBill();
-		$samples[2] = getSampleBill();*/
-
 		return $bills;
 	}
 
@@ -142,9 +138,26 @@
 
 		for($i =0; $i < count($bills); $i++)
 		{		# code...
+				$uids = array();
+				$uids[0] = $bills[$i]['unit_id'];
+				$sale_datas = getSaleDatas($uids);
+				$bills2 = array();
+				//echo "hi";
+				foreach($sale_datas as $sale_data)
+				{
+
+					$bill = convertSaleDataToBill($sale_data, 20);
+					$bill->is_tranfer = $bills[$i]['is_tranfer'];	
+					array_push($bills2, $bill);
+				}
 				$bills[$i]['payments'] = json_decode($bills[$i]['payments']);
-				$bills[$i]['variables'] = json_decode($bills[$i]['variables']);
+				//$bills[$i]['variables'] = $bills[$i]['variables'];
+				$bills[$i]['variables'] = $bills2[0]->variables;
 		}
+		//halt
+
+			
+
 
 		return $bills;
 	}

@@ -1201,6 +1201,11 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 				promotion = data[i];
 				promotion.promotion_type = 'ax';
 				promotion.order =  seed;
+				if(promotion.issue == null)
+					promotion.is_show = false;
+				else
+					promotion.is_show = true;
+
 				seed++;
 			}
 			console.log(data);
@@ -1216,6 +1221,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 			promotion.issue = 0;
 		promotion.is_select = Number(promotion.is_select)
 
+
 		$scope.updatePromotionServer(promotion);
 		console.log('after');
 		console.log(promotion);
@@ -1225,11 +1231,20 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 	{
 		console.log('before');
 		console.log(promotion);
-		promotion.is_select = 1;
+		
 		if(typeof(promotion.issue) == 'number')
 			promotion.issue = !promotion.issue;
+		else if(typeof(promotion.issue) ==  'string')
+			promotion.issue = !Number(promotion.issue);
 		else
-			promotion.issue = 1;
+		{
+			console.log(typeof(promotion.issue))
+			 promotion.issue = 1;
+		}
+
+
+		if(promotion.issue)
+			promotion.is_select = 1;
 		promotion.issue = Number(promotion.issue)
 		$scope.updatePromotionServer(promotion);
 		console.log('after');

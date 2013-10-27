@@ -72,14 +72,12 @@ function createPayment($name, $description, $formulas, $is_shows, $is_add_in_che
 {   
     $SQL = "INSERT INTO tranfer_payment(name,description,formula1,formula2,formula3,is_show1,is_show2,is_show3,is_add_in_cheque, is_compare_with_repayment)
          VALUES ('$name', '$description','{$formulas[0]}','{$formulas[1]}','{$formulas[2]}', '{$is_shows[0]}',  '{$is_shows[1]}', '{$is_shows[2]}','{$is_add_in_cheque}', '{$is_compare_with_repayment}');
-         SELECT SCOPE_IDENTITY()
+         SELECT SCOPE_IDENTITY() ins_id
     ";
      $result = DB_query($GLOBALS['connect'],$SQL);
     if($result){
-            sqlsrv_next_result($result); 
-            sqlsrv_fetch($result); 
-            $payment_id = sqlsrv_get_field($result, 0);
-            return $payment_id; 
+           $row = DB_fetch_array($result);
+            return $row['ins_id']; 
             //return $payment_id;
     }else{
             return false;
@@ -112,6 +110,43 @@ function deletePayment($payment_id)
 }
 
 
+function isFixPaymentOrder($id)
+{
+    $ELECTRIC_BILL_15 = 6;
+    $ELECTRIC_BILL_30 = 26;
+    $ROOM_PAYMENT = 24;
+    $WATER_METER = 25;
+    $SUPPORT_FUND =  27;
+    $TRANFER_FEE = 34;
+    $LOAN_FEE = 42;
+    $SHARE_PLACE_FEE = 18;
+    $BANK_PAY_BACK = 47;
+    $ARGORN = 42;
+    $ARGORN_LOAN = 48;
+    //order FROM MIN TO MAX
+    $orders = array($ROOM_PAYMENT, $ELECTRIC_BILL_15, $ELECTRIC_BILL_30, $WATER_METER, $SHARE_PLACE_FEE, $SUPPORT_FUND, $TRANFER_FEE, $LOAN_FEE, $BANK_PAY_BACK, $ARGORN, $ARGORN_LOAN);
+
+    //search for index in order
+    for($i = 0; $i < count($orders); $i++) {
+        # code...
+        $value = $orders[$i];
+        if($value == $id)
+        {
+
+            return  $i - count($orders);
+        }
+    }
+
+
+    return false;
+    // if have no index return false
+
+    //if have index return index - length of orders
+
+
+
+}
+
 function getPaymentsByTemplateId($template_id)
 {
     $SQL  = "select *,* from tranfer_payment INNER JOIN ";
@@ -119,11 +154,18 @@ function getPaymentsByTemplateId($template_id)
 	$result = DB_query($GLOBALS['connect'],$SQL);
     
     $payments =  array();
+    $index = 0;
 	while($row = DB_fetch_array($result) )
     {
         $payment = new stdClass;
         $payment->id = $row['id'];
-        $payment->order = $row['orders'];
+        $fixOrder = isFixPaymentOrder($payment->id);
+        if($fixOrder)
+            $payment->order = $fixOrder;
+        else
+            $payment->order = $index++;
+        //hardcode
+        $payment->order += 12;
         $payment->name = $row['name'];
         $payment->description = $row['description'];
         $payment->formulas = array(
@@ -139,6 +181,26 @@ function getPaymentsByTemplateId($template_id)
         $payment->is_add_in_cheque = $row['is_add_in_cheque'];
         $payment->is_compare_with_repayment = $row['is_compare_with_repayment'];
         array_push($payments, $payment);
+    }
+
+    for($i = 0; $i < count($payments); $i++)
+    {
+        for($j = 0; $j <count($payments); $j++)
+        {
+            if($payments[$i]->order < $payments[$j]->order)
+            {
+                //swap
+                $tmp = $payments[$i]->order;
+                $payments[$i]->order = $payments[$j]->order;
+                $payments[$j]->order = $tmp;
+            }
+        }
+        
+    }
+
+    for($i = 0 ; $i < count($payments); $i++)
+    {
+        $payments[$i]->number = ($i + 1);
     }
     //if(count($payments) >0){
     	return $payments;
@@ -170,6 +232,29 @@ function getSamplePayments($count)
         }
 
         return $payments;
+    }
+
+    function convertPaymentsToValues($payment, $search, $search_value)
+    {
+        $answer = array();
+
+        foreach ($search as $key => $value) {
+            # code...
+            $search[$key] = '{'.$value.'}';
+        }
+
+        for($i =0; $i < count($payment->formulas); $i++)
+        {
+            $test = $payment->formulas[$i]; 
+            $answer[$i] = str_replace($search, $search_value, $test);
+            if(is_string( $answer[$i] ) && strlen($answer[$i] )> 1)
+                eval("\$answer[\$i] = ".$answer[$i].";");
+            //echo  strlen($answer[$i] );
+
+            //if(is_string( $answer[$i] ))
+              //  eval();
+        }
+        return $answer;
     }
 
 ?>

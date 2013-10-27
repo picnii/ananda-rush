@@ -277,8 +277,8 @@ function findAllPromotionAx()
 function findAllPromotionAxByItemId($itemId)
 {
 	//$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE ITEMID = '{$itemId}'";
-	$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id FROM Promotion_AX INNER JOIN Sale_Transection ON Sale_Transection.SO = Promotion_AX.SO  LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE Sale_Transection.ITEMID = '{$itemId}'";
-	//echo $sql;	
+	$sql = "SELECT Promotion_AX.*, promotion_ax_type.type_id, promotion_ax_type.issue FROM Promotion_AX INNER JOIN Sale_Transection ON Sale_Transection.SO = Promotion_AX.SO  LEFT JOIN promotion_ax_type on promotion_ax_type.id = Promotion_AX.RECID  WHERE Sale_Transection.ITEMID = '{$itemId}'";
+//	echo $sql;	
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	$answer = array();
 	while($row = DB_fetch_array($result))
@@ -289,7 +289,7 @@ function findAllPromotionAxByItemId($itemId)
 		$promotion->amount = $row['Cash Promotion'];
 		$promotion->is_select = $row['SELECT PROMOTION'];
 		$promotion->quantity = $row['QTY'];
-		$promotion->issue = $row['SELECT PROMOTION'];
+		$promotion->issue = $row['issue'];
 		$promotion->type_id = $row['type_id'];
 		array_push($answer, $promotion);
 	}
@@ -543,9 +543,44 @@ function findAllPromotionFromUnitId($id)
 	
 	foreach ($promotions as $key => $promotion) {
 		# code...
-		if($promotion['is_select'])
+
+		if($promotion['is_select'] || $promotion['issue'])
 			array_push($answer, convertPromotionData($promotion));
 	}
+
+	$unit = findUnitById($id);
+	$item_id = $unit->item_id;
+
+	$promotion_ax_types = findAllPromotionAxByItemId($item_id);
+	foreach ($promotion_ax_types as $key => $promotion) {
+		//print_r($promotion);
+		$promotion = objectToArray($promotion);
+		if($promotion['is_select'] || $promotion['issue'])
+			array_push($answer, convertPromotionData($promotion));
+	}
+	//print_r($answer);
+	/*
+//$promotion->row = $row;
+	$promotion->id = $row['id'];
+	if($promotion->type->id == $types['spacial']->id || $promotion->type->id == $types['discount']->id )
+		$promotion->spacial_discount = $row['amount'];
+	else
+		$promotion->spacial_discount = 0;
+
+	if($promotion->type->id == $types['discount']->id && $payment_types['percent']->id == $row['option2'])
+		$promotion->is_discount_percent = true;
+	else
+		$promotion->is_discount_percent = false;
+
+	if($promotion->type->id == $types['discount']->id)
+		$promotion->payment_id = $row['option1'];
+	else
+		$promotion->payment_id = null;
+
+	*/
+	//$answer = $answer[0];
+	//print_r($answer);
+
 	
 	return objectToArray($answer);
 }
@@ -582,13 +617,21 @@ function updatePromotionPreapprove($promotion_id, $is_select, $issue)
 
 function updatePromotionAx($rec_id,$is_select,$issue)
 {
-	return "rec id $rec_id";
+	$sql = "UPDATE Promotion_AX SET [SELECT PROMOTION] = {$is_select} WHERE RECID = {$rec_id}";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+
+	$sql2 = "UPDATE promotion_ax_type SET issue = {$issue} WHERE id = {$rec_id}";
+	$result = DB_query($GLOBALS['connect'], converttis620($sql2));
+
+	return "sql1 = {$sql}, sql2 = {$sql2}";
 }
 
 function updatePromotionTranfer($promotion_id, $is_select, $issue)
 {
 	$sql = "UPDATE promotion_condition_unit SET is_select = {$is_select}, issue = {$issue} WHERE id = $promotion_id";
+	$sql2 = "UPDATE promotion_ax_type SET issue = {$issue} WHERE id = {$promotion_id}";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	$result = DB_query($GLOBALS['connect'], converttis620($sql2));
 	return $sql;
 }
 
@@ -730,14 +773,14 @@ function convertPromotionData($row)
 	$types = getPromotionRewardTypes();
 	$payment_types = getDiscountTypes();
 	$promotion->type = $types[$row['type_id']];//getPromotionType('Preapprove');
-	
+	$ax_type= getPromotionType('Ax');
 	$promotion->type_name =  $promotion->type->name;
 
 
 	foreach($row as $key => $value)
 	{
 		
-		if(is_string($value))
+		if(is_string($value) && !mb_detect_encoding($value,'utf8'))
 		{
 			$promotion->$key = convertutf8($value);
 		}else

@@ -22,7 +22,14 @@
 
 	function actionPromotionPhases()
 	{
-		return getPhases(true);
+		$phase = new stdClass;
+		$phase->id =2;
+		$phase->code ='tranfer';
+		$phase->name = 'Tranfer';
+		$answer = array();
+		$answer[0] = $phase;
+		//return getPhases(true);
+		return $answer;
 	}
 
 	function actionPromotionPaymentTypes()

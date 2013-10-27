@@ -5,20 +5,24 @@
 	</header>
 	<section ng-repeat="bill in bills">
 	<!--- Start Loop Print-->	
-	<div>
+	<div class="noPrint">
 		Base Price : {{bill.BasePrice}} Repayment : {{bill.Repayment}}
 	</div>
 		<div class="row" >
-			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน ตุลาคม เท่านั้น</h4></div>
-			<div class="span12" align="center"> <h4>โครงการไอดีโอ มอร์ฟ 38 </h4>
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน ตุลาคม 2556 เท่านั้น</h4></div>
+			<div class="span12" align="center"> <h5>โครงการ{{bill.ProjectName}} </h5>
 			</div>
 			<div  class="span12" align="center">
-				<strong><p>บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด</p>
-				<p>{{bill.companyAddress}} {{bill.getName("companyPhone")}}.{{bill.companyPhone}} {{bill.getName("companyFax")}}.{{bill.companyFax}}</p></strong>
+				<strong><p>บริษัท อนันดา ดีเวลลอปเม้นท์ จำกัด(มหาชน)</p>
+				<!--<p>{{bill.companyAddress}} {{bill.getName("companyPhone")}}.{{bill.companyPhone}} {{bill.getName("companyFax")}}.{{bill.companyFax}}</p>-->
+				
+				<p>เลขที่ 99/1 หมู่ที่ 14 ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ 10540 โทร. 02-3171155 ต่อ 102-109, 121 โทรสาร. 02-3160180-1</p>
+				</strong>
+				
 			</div>
 		</div>
 		<div style="border-bottom: groove"></div>
-		<br><br>
+		<br>
 		
 		<div class="row">
 		<font size="2">
@@ -42,7 +46,7 @@
 					<div class="span1"><b>วันที่แจ้ง</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.DocumentDate | date:'short' }}</div>
 					<div class="span1"><b>จาก</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.SaleName}}</div><br>
+					<div class="span5" style="border-bottom: groove;">{{bill.SaleName | saleNamePrint}}</div><br>
 					<div class="span1"><b>วันนัดโอน</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.PayDate}}</div>
 					<div class="span1"><b>เวลา :</b></div>
@@ -54,44 +58,44 @@
 					<div class="span12" style="border-bottom-style:groove;"></div>
 				</font>
 				</div>
-			<div><h4>1.ราคาและวิธีโอนกรรมสิทธิ์</h4></div>
+			<div><h5>1.ราคาและวิธีโอนกรรมสิทธิ์</h5></div>
 				<div class="container" >
 					<div class="row" >
 						<font size="2">
 						<div class="span1"><b><u>1.1 ราคา</u></b></div>
-						<div class="span3">ราคาตามสัญญา</div>
-						<div class="span1" align="right">{{bill.PriceOnContract | currency:"" | zeroDash}}</div>
+						<div class="span2">ราคาตามสัญญา</div>
+						<div class="span2" align="right">{{bill.PriceOnContract | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						
 						<div class="span6"><b><u>1.2 วิธีการโอนกรรมสิทธิ์</u></b></div>
-						<div class="offset1 span3">ราคาต่อตารางเมตร</div>
-						<div class="span1" align="right">{{bill.PricePerArea | currency:"" | zeroDash}}</div>
+						<div class="offset1 span2">ราคาต่อตารางเมตร</div>
+						<div class="span2" align="right">{{bill.PricePerArea | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
-						<div class="span6">โอนสด</div>
-						
-						<div class="offset1 span3">หัก ส่วนลดพิเศษ</div>
-						<div class="span1" align="right">{{ bill.SpecialDiscount | currency:"" | zeroDash}}</div>
+						<div class="span2">โอนสด</div>
+						<div class="span4">{{ bill.isCashTranfer | isCashFilter}}</div>
+						<div class="offset1 span2">หัก ส่วนลดพิเศษ</div>
+						<div class="span2" align="right">{{ bill.SpacialDiscount | currency:"" | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span2">ใช้สินเชื่อ  ธนาคาร/สาขา</div>
 						<div class="span4">{{bill.BankLoanName | zeroDash}}</div>
 						
-						<div class="offset1 span3">พื้นที่ตามสัญญา</div>
-						<div class="span1" align="right">{{bill.ContractSpace | currency:"" | zeroDash}}</div>
+						<div class="offset1 span2">พื้นที่ตามสัญญา</div>
+						<div class="span2" align="right">{{bill.ContractOfSpace  | up2area}}</div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติค่าห้อง</div>
 						<div class="span2" align="right">{{bill.BankLoanRoom | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						
 						
-						<div class="offset1 span3">พื้นที่จริง</div>
-						<div class="span1" align="right">{{bill.ActualSpace | up2area }}</div>
+						<div class="offset1 span2">พื้นที่จริง</div>
+						<div class="span2" align="right">{{bill.ActualSpace | up2area }}</div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าประกัน</div>
 						<div class="span2" align="right">{{bill.BankLoanInsurance | zeroDash}}</div>
 						<div class="span1">บาท</div>
 						
 						
-						<div class="offset1 span3">ส่วนต่างพื้นที่ {{bill.ActualSpace - bill.ContractSpace | up2area }} ตร.ม.</div>
+						<div class="offset1 span3">ส่วนต่างพื้นที่ {{bill.ActualSpace - bill.ContractOfSpace | up2area}} ตร.ม.</div>
 						<div class="span1" align="right">{{bill.DifferenOfSpace | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าตกแต่ง</div>
@@ -99,8 +103,8 @@
 						<div class="span1">บาท</div> 
 						
 						
-						<div class="offset1 span3">ราคาห้องชุด ณ วันโอน</div>
-						<div class="span1" align="right">{{bill.PriceDateOfPayment | zeroDash}}</div>
+						<div class="offset1 span2">ราคาห้องชุด ณ วันโอน</div>
+						<div class="span2" align="right">{{bill.PriceDateOfPayment | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="offset1 span2">อนุมัติวงเงินเอนกประสงค์</div>
 						<div class="span2" align="right">{{bill.BankLoanMulti | zeroDash}}</div>
@@ -115,21 +119,31 @@
 						<div class="span1">บาท</div>
 						
 						
-						<div class="offset1 span2"><b>ค่าห้องชุดต้องชำระ</b></div>
-						<div class="span2" align="right" style="border-bottom-style: double;"><b>{{bill.PriceRoomOfPayment | zeroDash}}</div>
-						<div class="span1" align="center">บาท</div>
-						<div class="offset1 span2">วงเงินจำนองรวม</div>
-						<div class="span2" align="right" style="border-bottom-style: double;">{{bill.SumBankLoan | zeroDash}}</div>
+						<div class="offset1 span2">
+							<b>ค่าห้องชุดต้องชำระ</b>
+						</div>
+						<div class="span2" align="right" style="border-bottom-style: double;">
+							<b>{{bill.PriceRoomOfPayment | zeroDash}}</b>
+						</div>
+						<div class="span2"  style="">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;บาท
+						</div>
+						<div class="span2">
+							วงเงินจำนองรวม
+						</div>
+						<div class="span2" align="right" style="border-bottom-style: double;">
+							{{bill.SumBankLoan | zeroDash}}
+						</div>
 						<div class="span1">บาท</div>
 						<br><br>
 							
-						<div class="span12" style="border-bottom-style:groove;">-</div>
+						
 						</font>
 					</div>
 				</div>
 				
 				
-			   <div><h4>2.ค่าใช้จ่าย ณ วันโอน</h4></div>
+			   <div><h5>2.ค่าใช้จ่าย ณ วันโอน</h5></div>
 					<table border = "1" align="center" width ="100%" hight ="30%"  cellspacing = "0"  style="font-size:13px" >
              			 
                     	 <thead>
@@ -166,24 +180,25 @@
 					<div class="row">
 					<div class="span12" style="border-bottom-style:groove;"></div>
 					</div>
-					<div><h4>3.วิธีการชำระเงิน</h4></div>
+					<div><h5>3.วิธีการชำระเงิน</h5></div>
 						<div class="row" style="font-size:13px;">
 						
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
-						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{bill.BankLoanName}}</b> </div>
+						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{bill.BankLoanName | bankFilterName}}</b> </div>
 						<div class="span3" align="right">{{bill.getShowBankPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.CompanyName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowCompanyPayment(bill.variables, bill.payments) | zeroDash}}</div>
-						<div class="span3">3.2 ชำระค่าส่วนกลาง </div>
-						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{bill.ProjectName}}"</b></div>
+						<div class="span5">3.2 ชำระค่าส่วนกลาง เป็นแคชเชียร์เช็คสั่งจ่าย</div>
+						<div class="span6"><b>"นิติบุคคล{{bill.ProjectName}}"</b></div>
 						<div class="span1" align="right">{{bill.getPaymentBase(bill.variables, bill.payments).share_payment | zeroDash}}</div>
-						<div class="span3">3.3 ชำระเงินสมทบกองทุนส่วนกลาง</div>
-						<div class="span8">เป็นแคชเชียร์เช็คสั่งจ่าย <b>"นิติบุคคล{{bill.ProjectName}}"</b></div>
+						
+						<div class="span5">3.3 ชำระเงินสมทบกองทุนส่วนกลางเป็นแคชเชียร์เช็คสั่งจ่าย</div>
+						<div class="span6"> <b>"นิติบุคคล{{bill.ProjectName}}"</b></div>
 						<div class="span1" align="right">{{bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment | zeroDash}}</div>
-						<div class="span7">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ค่าจำนองอีก 1% เป็นแคชเชียร์เช็คสั่งจ่าย </div>
-						<div class="span4"><b>"กระทรวงการคลัง"</b></div>
-						<div class="span1" align="right">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</div>
+						<div class="span8">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ ค่าอากรสำหรับโอนกรรมสิทธิ์ และจำนอง เป็นแคชเชียร์เช็คสั่งจ่าย </div>
+						<div class="span2" style="text-align:right"><b>"กระทรวงการคลัง"</b></div>
+						<div class="span2" style="text-align:right">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="span10" align="right"><b>และแบ่งเป็นเงินสด</b></div>
 						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.getCashPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
@@ -209,6 +224,136 @@
 			
 			</div>
 		<div class="page-break"></div>	
+
+		<!-- Checqueue Area-->
+
+		<div class="container"  style="margin-top:50px;" >
+		<font size="2">
+			<div class="row" >
+				<div class="span1" align="right">To.</div>
+				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | bankFilterName}}</div>
+				<div class="span1" align="right">Tel :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanTel}}&nbsp;</div>
+				<div class="span1" align="right">Fax :</div>
+				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanFax}}&nbsp;</div><br><br>
+				
+				
+				<div class="span1" align="right">From :</div>
+				<div class="span5" style=" border-bottom-style:groove;">{{bill.SaleName | saleNamePrint}}</div>
+				<div class="span1" align="right">Tel :</div>
+				<div class="span2" style="border-bottom-style:groove;">02-317-1155 ตอ่ 114 &nbsp;</div>
+				<div class="span1" align="right">Fax :&nbsp;</div>
+				<div class="span2" style="border-bottom-style:groove;">02-316-0180-81&nbsp;</div><br><br>
+			<div class="span12" style="border-bottom-style:groove;"></div>
+			</div><br>
+		
+		
+		
+		
+		</div>
+		<div class="row">
+			<div align="center">{{bill.currentDate}}</div><br><br>
+			<div class="span1">เรื่อง</div>
+			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
+			<div class="span1">เรียน</div>
+			<div class="span11">ผู้จัดการ</div>
+			<div class="offset1 span11">{{bill.BankLoanName | bankCashFilter}}</div><br><br><br><br>
+			
+			<div class="offset1 span1" align="right" >ตามที่</div>
+			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{bill.BankLoanName | bankCashFilter}}</b></div>
+			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดใน{{bill.ProjectName}}</div><br><br>
+			<div class="span2" align="right">ห้องชุด เลขที่ </div>
+			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.HouseType}} {{bill.HouseNumber}}</b></div>
+			<div class="span2" align="center">ให้กับลูกค้าราย</div>
+			<div class="span4" align="center" style="border-bottom-style:groove"><b>{{bill.CustomerName}}</b></div>
+			<div class="span2">ดังต่อไปนี้</div>
+			</div><br><br>
+			
+			<div class="row">
+				<div class="offset1 span5">วงเงินกู้อนุมัติห้องชุด</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{bill.BankLoanRoom | zeroDash}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">วงเงินกู้ (&CO)</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{bill.BankLoanCustomerAndCO}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">ประกัน และ/หรือ ตกแต่ง</div>
+				<div class="span1">จำนวน</div>
+				<div class="span2" align="center">{{(bill.BankLoanInsurance + bill.BankLoanDecorate)}}</div>
+				<div class="span3">บาท</div>
+				
+				<div class="offset1 span5">ซึ่งลูกค้าได้นัดโอนกรรมสิทธิ์ห้องชุดในวันที่</div>
+				<div class="span3" align="center" style="border-bottom-style:groove">{{bill.PayDate}}</div>
+				<div class="span2">เวลา {{bill.PayTime}} น.</div>
+				
+				</div><br><br>
+				
+			<div class="row">
+				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
+				<div class="span2" align="center"  style="text-align:right;"><b>{{bill.SumBankLoan | zeroDash}}</b> </div>
+				<div class="span1">บาท</div>
+				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
+				
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b>ธนาคาร กรุงไทย จำกัด มหาชน</b></div>
+				<div class="span2" align="center" style="text-align:right;">{{bill.Repayment| zeroDash}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์ ทู จำกัด"</b></div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment- getSumCompanyPayment(bill.variables, bill.payments) - bill.Repayment| zeroDash}} </div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคล{{bill.ProjectName}}"</b></div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).share_payment | zeroDash}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "นิติบุคคล{{bill.ProjectName}}"</b></div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment | zeroDash}}</div>
+				<div class="span1">บาท</div>
+				
+				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>{{bill.CustomerName}}</b></div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.bank_pay_back | zeroDash}}</div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b>{{bill.CustomerName}}</b></div>
+				<div class="span2" align="center"  style="text-align:right;"> -</div>
+				<div class="span1">บาท</div><br><br><br>
+				
+				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</div>
+				<div class="span1">บาท</div>
+			
+				
+			</div><br><br>
+			
+			<div class="row">
+				<div class="offset1 span11"> จึงเรียบมาเพื่อทราบและโปรดดำเนินการ</div>
+				<br><br>
+				<div class="offset6 span4" align="center">ขอแสดงความนับถือ</div>
+				<br><br><br><br>
+				<div class="offset6 span4" align="center" style="border-bottom-style:groove">(คุณสุกัญญา สุยากรรม)
+</div>
+				<div class="offset6 span4" align="center">Manager/Directer</div>
+				
+			</div>
+			
+			<div class="row">
+				<div class="span12">Sukanya  Phonpattana</div>
+				<div class="span12">Ananda Devlopment Co.,ltd</div>
+				<div class="span12">Tel : (66) 02-317-1155 ext 114</div>
+				<div class="span12">Fax : (66) 02-316-0180-81</div>
+				<div class="span12">Mobile : (66) 087-592-8658</div>
+				<div class="span12">Email : Sukanyap@ananda.co.th</div>
+			<div>
+			</font>
+			
+			
+			<br><br>
+		</div> 
+
+
 	</section>
 
 </section>

@@ -208,6 +208,12 @@
 		}
 		
 	}
+
+	echo "start";
+	$unit_ids = array();
+	$unit_ids[0] = 4019;
+	$transactions = findAllTransaction($unit_ids);
+	print_r($transactions);
 /*
 	//print_r($bills);
 	foreach ($bills as $bill) {

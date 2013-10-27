@@ -275,8 +275,8 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 			tax_loan_payment:tax_loan_payment,
 			tax_payment:tax_payment
 		};
-		console.log('log');
-		console.log(payment_base)
+		//console.log('log');
+		//console.log(payment_base)
 		return payment_base;
 	}
 
@@ -404,7 +404,7 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 		    console.log(value);
 		    $scope.meter_ids.push(value);
 		}); 
-		$scope.getPaymentBase();
+		//$scope.getPaymentBase();
 	})
 	/*$scope.bills = Print.save({action:"bills", template_id:$routeParams.tid, unit_ids:uids}, function(data){
 		console.log(data)
@@ -433,7 +433,67 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 		ids_str += "unit_ids[]=" + uids[i]
 	}
 	
-	
+	$http({
+                method: 'GET',
+                url: 'service/index.php?'+'action=bills&template_id='+$routeParams.tid+'&'+ids_str,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(data, status) {
+            	$scope.bills = convertBillPrint($scope, data)          
+       for(var i=0; i < $scope.bills.length;i++)
+		{
+			for(var j=0; j < $scope.bills[i].payments.length;j++)
+			{
+				var payment = $scope.bills[i].payments[j];
+				//payment.test_formulas = []
+				payment.formulas[0] =  $scope.getFormulaValue($scope.bills[i].variables,payment.formulas[0]);
+				payment.formulas[1] =  $scope.getFormulaValue($scope.bills[i].variables, payment.formulas[1]);
+				payment.formulas[2] =  $scope.getFormulaValue($scope.bills[i].variables, payment.formulas[2]);
+
+			}	
+			//console.log('update new payment');
+			console.log('update-new-payment');
+			$scope.bills[i].payments = updateNewPayment( $scope.bills[i].payments, 
+			 	$scope.bills[i].getPaymentBase( $scope.bills[i].variables,  $scope.bills[i].payments).sum_bank_loan)
+			console.log('check bank payment');
+			
+
+			var sum_bank_payment = 0;
+			for(var j = 0; j < $scope.bills[i].payments.length; j++)
+			{
+				var bill_payment = $scope.bills[i].payments[j];
+				//console.log('check-bill')
+				 sum_bank_payment += Number(bill_payment.formulas[BANK_INDEX]);
+			}
+			console.log( sum_bank_payment );
+
+			if(!isNaN(sum_bank_payment))
+			{
+
+				var payment_base = $scope.bills[i].getPaymentBase( $scope.bills[i].variables,  $scope.bills[i].payments);
+				console.log(payment_base.sum_bank_loan);
+				//console.log($scope.bills[i].payments)
+				if(sum_bank_payment < payment_base.sum_bank_loan)
+				{
+					$scope.bills[i].bank_pay_back = payment_base.sum_bank_loan - sum_bank_payment;
+					var bank_payback_payment_id = 47;
+					for(var j =0; j < $scope.bills[i].payments.length; j++)
+					{
+						var bill_payment = $scope.bills[i].payments[j];
+						if(bill_payment.id == bank_payback_payment_id)
+						{
+							bill_payment.formulas[BANK_INDEX] = $scope.bills[i].bank_pay_back;
+							break;
+						}
+					} 
+				}
+			}
+			
+			//check if sum_bank_payment <= bank_loan?
+			//convert payment bank to blablabla
+		}
+            });
+
+	/*
     Bill.preview({action:'bills', unit_ids:uids, template_id:$routeParams.tid}, function(data){
        $scope.bills = convertBillPrint($scope, data)          
        for(var i=0; i < $scope.bills.length;i++)
@@ -454,7 +514,7 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 			console.log( $scope.bills[i].payments );
 		}
 
-    });
+    });*/
 
     $scope.save = function()
     {
@@ -593,6 +653,8 @@ function TransactionPrintCtrl($scope, $rootScope, $routeParams, $location, Bill,
 			transaction = transactions[i];
 			if(typeof(transaction.variables) == 'string')
 			{
+				//tran
+				console.log(transaction.variables);
 				temp = JSON.parse(transaction.variables);
 			
 				transaction.variables = temp.variables;
@@ -601,17 +663,58 @@ function TransactionPrintCtrl($scope, $rootScope, $routeParams, $location, Bill,
 			//transaction.payments = JSON.parse(transaction.payments);
 		}
 		$scope.bills = transactions;
-		$scope.bills = convertBillPrint($scope, transactions)
-		for(var i=0; i < transactions.length;i++)
+		$scope.bills = convertBillPrint($scope, transactions)          
+       for(var i=0; i < $scope.bills.length;i++)
 		{
-			for(var j=0; j < transactions[i].payments.length;j++)
+			for(var j=0; j < $scope.bills[i].payments.length;j++)
 			{
-				var payment = transactions[i].payments[j];
+				var payment = $scope.bills[i].payments[j];
 				//payment.test_formulas = []
-				payment.formulas[0] =  $scope.getFormulaValue(transactions[i].variables,payment.formulas[0]);
-				payment.formulas[1] =  $scope.getFormulaValue(transactions[i].variables, payment.formulas[1]);
-				payment.formulas[2] =  $scope.getFormulaValue(transactions[i].variables, payment.formulas[2]);
+				payment.formulas[0] =  $scope.getFormulaValue($scope.bills[i].variables,payment.formulas[0]);
+				payment.formulas[1] =  $scope.getFormulaValue($scope.bills[i].variables, payment.formulas[1]);
+				payment.formulas[2] =  $scope.getFormulaValue($scope.bills[i].variables, payment.formulas[2]);
+
 			}	
+			//console.log('update new payment');
+			console.log('update-new-payment');
+			$scope.bills[i].payments = updateNewPayment( $scope.bills[i].payments, 
+			 	$scope.bills[i].getPaymentBase( $scope.bills[i].variables,  $scope.bills[i].payments).sum_bank_loan)
+			console.log('check bank payment');
+			
+
+			var sum_bank_payment = 0;
+			for(var j = 0; j < $scope.bills[i].payments.length; j++)
+			{
+				var bill_payment = $scope.bills[i].payments[j];
+				//console.log('check-bill')
+				 sum_bank_payment += Number(bill_payment.formulas[BANK_INDEX]);
+			}
+			console.log( sum_bank_payment );
+
+			if(!isNaN(sum_bank_payment))
+			{
+
+				var payment_base = $scope.bills[i].getPaymentBase( $scope.bills[i].variables,  $scope.bills[i].payments);
+				console.log(payment_base.sum_bank_loan);
+				//console.log($scope.bills[i].payments)
+				if(sum_bank_payment < payment_base.sum_bank_loan)
+				{
+					$scope.bills[i].bank_pay_back = payment_base.sum_bank_loan - sum_bank_payment;
+					var bank_payback_payment_id = 47;
+					for(var j =0; j < $scope.bills[i].payments.length; j++)
+					{
+						var bill_payment = $scope.bills[i].payments[j];
+						if(bill_payment.id == bank_payback_payment_id)
+						{
+							bill_payment.formulas[BANK_INDEX] = $scope.bills[i].bank_pay_back;
+							break;
+						}
+					} 
+				}
+			}
+			
+			//check if sum_bank_payment <= bank_loan?
+			//convert payment bank to blablabla
 		}
 		console.log('check payment')
 		console.log(transactions[0].payments)
@@ -904,8 +1007,17 @@ function convertBillPrint($scope, data)
 			if(typeof(sum_bank_loan) == 'undefined' || sum_bank_loan == null || sum_bank_loan == '-')
 				sum_bank_loan = 0;
 
+			if(sum_bank_loan == 0)
+				bill.isCashTranfer = true;
+			else
+				bill.isCashTranfer = false;
 
-
+			var cur_date = new Date();
+			var cur_month = cur_date.getMonth();
+			var cur_year = cur_date.getYear() +   (1900 + 543);
+			var month_th = ['มกราคม', 'กุมภาพันธุ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤษจิกายน', 'ธันวาคม' ]
+			cur_month = month_th[cur_month];
+			bill.currentDate = (cur_date.getDate() + 1) + ' ' + cur_month + ' ' +cur_year;
 
 			//ค่าห้อง
 			var payment_base = {
@@ -928,6 +1040,8 @@ function convertBillPrint($scope, data)
 				console.log('trander')
 				console.log(bill.getPaymentByPaymentId($scope.billPayment.tranfer_payment_id, variables, payments));
 			}
+			//console.log('payment base');
+			//console.log(payment_base);
 			
 			return payment_base;
 		}
@@ -1046,18 +1160,21 @@ function convertBillPrint($scope, data)
 
 function updateNewPayment(payments, sum_bank_loan)
 {
+	console.log('update new payment')
 	console.log('sum bank loan');
 	console.log(sum_bank_loan)
-	if(isNaN(sum_bank_loan) ||sum_bank_loan == 0)
-		return payments;
+	/*if(isNaN(sum_bank_loan) ||sum_bank_loan == 0)
+		return payments;*/
 	console.log('update payments here')
 	console.log(sortPaymentByOrder(payments));
 	payments = sortPaymentByOrder(payments);
 	var sum_bank = sum_bank_loan;
+	console.log('check payments count :' + payments.length)
 	for(var i =0; i < payments.length;i++)
 	{
 		var payment = payments[i];
-
+		console.log('check payment');
+		console.log(payment)
 		//promotion zone
 		if(typeof(payment.promotion) != 'undefined')
 		{
@@ -1067,11 +1184,12 @@ function updateNewPayment(payments, sum_bank_loan)
 				promotion_discount = promotion_discount / 100 * payment.formulas[CUSTOMER_INDEX];
 			}
 			payment.formulas[CUSTOMER_INDEX] -= promotion_discount;
-			payment.formulas[COMPANY_INDEX] += promotion_discount
+			if(!isNaN(promotion_discount))
+				payment.formulas[COMPANY_INDEX] += promotion_discount
 		}
 
 
-		if(payment.is_compare_with_repayment)
+		if(payment.is_compare_with_repayment && !(isNaN(sum_bank_loan) ||sum_bank_loan == 0))
 		{
 			//var discount = sum_bank - payment.formulas[CUSTOMER_INDEX] ;
 			console.log('before '+ sum_bank);
@@ -1082,7 +1200,8 @@ function updateNewPayment(payments, sum_bank_loan)
 				var discount = Math.min(sum_bank, payment.formulas[CUSTOMER_INDEX]);
 
 				payment.formulas[CUSTOMER_INDEX] -= discount;
-				payment.formulas[BANK_INDEX] += discount;
+				if(!isNaN(discount))
+					payment.formulas[BANK_INDEX] += discount;
 				sum_bank -= discount;;
 			//	console.log('after customerPayment ' + payment.formulas[CUSTOMER_INDEX]);
 			//	console.log('afer bank payment' + payment.formulas[BANK_INDEX])
@@ -1090,7 +1209,8 @@ function updateNewPayment(payments, sum_bank_loan)
 			{	
 				//console.log('over load cause :' + payment.formulas[CUSTOMER_INDEX] )
 				payment.formulas[CUSTOMER_INDEX] -= sum_bank;
-				payment.formulas[BANK_INDEX] += sum_bank;
+				if(!isNaN(sum_bank))
+					payment.formulas[BANK_INDEX] += sum_bank;
 				sum_bank = 0;;
 			}
 

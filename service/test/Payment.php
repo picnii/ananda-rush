@@ -27,4 +27,18 @@
 	$payment_del_result = findPaymentById($payment->id);
 	assertEquals(false, $payment_del_result);
 
+	$payment_id = createPayment("Test Payment", "-", array(
+			"","","{bankLoan}*5"
+		), array(
+			"1","1","1"
+		), false, false);
+
+	$payment = findPaymentById($payment_id);
+	$test = convertPaymentsToValues($payment,
+		array('bankLoan'),
+		array(500)
+	);
+	print_r($test);
+	deletePayment($payment->id);
+
 ?>

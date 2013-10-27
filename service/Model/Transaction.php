@@ -25,20 +25,24 @@ function fetchBillInformation($transaction_ids)
         if($tran_item){
             $pre_id = findPreID($tran_item);
         }
+
         if($pre_id){
             $data = findInformation($pre_id);
 
        //     echo "new-data no.. {$data['transaction_id']} code:{$data['CompanyCode']} ..";
         }else{
             $data = findOldInformation($transaction_id);
+
         //    echo "old-data no.. {$data['transaction_id']} code:{$data['CompanyCode']} ..";
         }
-
+       // print_r($data);
         /*
         * Promotion
         */
         //if(isset($data['main_appointment_log_id']))
         $data['promotions'] = findAllPromotionFromUnitId($transaction_id);
+       //$data['promotions_should'] = $data['promotions'][0];
+      //  $data['promotions'] = $data['promotions'][0];
             //$data['promotions'] = findAllPromotionPreapproveFromAppoinmentId($data['main_appointment_log_id']);
 
         //get company info
@@ -48,7 +52,7 @@ function fetchBillInformation($transaction_ids)
         }
         $comp_data = findCompanyInfo($data);
        
-     //   print_r($comp_data);
+        if(isset($comp_data))
         foreach ($comp_data as $key => $value) {
             # code...
 
@@ -75,18 +79,20 @@ function findPreID($tran_item){
 
 function findOldInformation($transaction_id)
 {
-    $sql = "SELECT *, m.projID as project_code, tranfer_appointment.id as main_appointment_log_id FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
+    $sql = "SELECT *, m.projID as project_code, tap.id as main_appointment_log_id FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
     LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
     LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = m.transaction_id
     LEFT JOIN tranfer_appointment_log as tapl ON tapl.id = tap.log_id
     WHERE m.transaction_id = {$transaction_id}";
-
+    
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
+    //print_r( $row );
     //$row['promotions'] = findAllPromotionPreapproveFromAppoinmentId($row['main_appointment_log_id']);
    // $row['promotions'] = findAllPromotionFromUnitId($transaction_id);
      $row['q_type'] = 'oldInfo';
-     if(isset($row['transaction_id']))
+
+     if(isset($row['transaction_id']) || $row[0] == $transaction_id)
         return $row;
     else
         return null;
@@ -466,14 +472,20 @@ function findAllTransaction($transaction_ids=null)
     else
 	   $SQL = "SELECT * FROM tranfer_transaction WHERE ".getIdClauseFromParams($transaction_ids, 'id');
     
-    $result = DB_query($GLOBALS['connect'],$SQL);
 
+    $result = DB_query($GLOBALS['connect'],$SQL);
+   // echo $SQL;;
     $numrow = DB_num_rows($result);
 	if($numrow > 0){
         $data = array(); 
         while($res =  DB_fetch_array($result))
 		{
             array_push($data,$res);
+            //test
+            //$test = mssql_fetch_row($result);
+            //echo "test";
+          //  print_r($test);
+           // print_r($res);
         }
         return $data;
     }else{
@@ -735,9 +747,10 @@ function findAllBill($q)
         return $sum;*/
         $sum = 0;
         $types = getPromotionRewardTypes();
-        //print_r($bill->promotions);
+       
         foreach ($bill->promotions as $promotion)
         {
+         //   print_r($promotion);
             if($promotion['type_id'] == $types['spacial']->id)
                 $sum += $promotion['amount'];
         }
@@ -746,10 +759,12 @@ function findAllBill($q)
 
     function getAreaOnContractFromSaleData($bill)
     {
+      //  print_r($bill);
          if(isset($bill->master_LANDSIZE))
             $master_LANDSIZE = $bill->master_LANDSIZE;
         else
             $master_LANDSIZE = '?';
+        //echo $master_LANDSIZE;
         return $master_LANDSIZE;
     }
 
@@ -768,7 +783,13 @@ function findAllBill($q)
 
     function getActualAreaFromSaleData($bill)
     {
-        return getAreaFromSaleData($bill);;
+
+        return getAreaFromSaleData($bill);// - getAreaOnContractFromSaleData($bill) ;;
+       /* $diff =  getAreaFromSaleData($bill) - getAreaFromSaleData($bill);
+        if($diff < 0)
+            return (0 - $diff);
+        else
+            return $diff;*/
     }
 
    function getPriceAtPaydate($bill)
@@ -1015,14 +1036,17 @@ function findAllBill($q)
 
    function getCallTime($bill)
    {
-
     if(isset($bill->call_time))
     {
+     //return $bill->appoint_time->format('Y/m/d');
+        $d = $bill->call_time;
+        if($d instanceof DateTime){ 
+            return convertDateThai($d->format('d m Y')); 
+        } else { 
+            //$answer = new DateTime(strtotime($d))
+            return convertDateThai(date('d m Y', strtotime($d))); 
+        }
         
-       // if(!is_string($bill->call_time))
-         //   return $bill->call_time->format('Y/m/d H:i:s');
-        //else
-            return $bill->call_time;
     }else 
       return "?";
    }   
@@ -1032,19 +1056,86 @@ function findAllBill($q)
     if(isset($bill->appoint_time))
     {
      //return $bill->appoint_time->format('Y/m/d');
-        return $bill->appoint_time;
+        $d = $bill->appoint_time;
+        if($d instanceof DateTime){ 
+            return convertDateThai($d->format('d m Y')); 
+            
+        } else { 
+            //$answer = new DateTime(strtotime($d))
+            return convertDateThai(date('d m Y', strtotime($d))); 
+        }
+        
     }else 
-      return "?";
+      return "-";
+   }
+
+   function convertDateThai($date)
+   {
+        $split_arr = split(" ", $date);
+        switch($split_arr[1])
+        {
+            case "01":
+                $split_arr[1] = "มกราคม";
+            break;
+            case "02":
+                $split_arr[1] = "กุมภาพันธ์";
+            break;
+            case "03":
+                $split_arr[1] = "มีนาคม";
+            break;
+            case "04":
+                $split_arr[1] = "เมษายน";
+            break;
+            case "05":
+                $split_arr[1] = "พฤษภาคม";
+            break;
+            case "06":
+                $split_arr[1] = "มิถุนายน";
+            break;
+            case "07":
+                $split_arr[1] = "กรกฎาคม";
+            break;
+            case "08":
+                $split_arr[1] = "สิงหาคม";
+            break;
+            case "09":
+                $split_arr[1] = "กันยายน";
+            break;
+            case 10:
+                $split_arr[1] = "ตุลาคม";
+            break;
+            case 11:
+                $split_arr[1] = "พฤษจิกายน";
+            break;
+            case 12:
+                $split_arr[1] = "ธันวาคม";
+            break;
+
+        }
+        $answer ='';
+        foreach ($split_arr as $key => $value) {
+            # code...
+            $answer = $answer.$value.' ';
+        }
+        return $answer;
    }
 
    function getAppointTime($bill)
    {
     if(isset($bill->appoint_time))
     {
-     //return $bill->appoint_time->format('H:i:s');
-        return $bill->appoint_time;
+     //return $bill->appoint_time->format('Y/m/d');
+        $d = $bill->appoint_time;
+        if($d instanceof DateTime){ 
+            return $d->format('H:i'); 
+        } else { 
+            //$answer = new DateTime(strtotime($d))
+            return date('H:i', strtotime($d)); 
+        }
+        
     }else 
-      return "?";
+      return "-";
+    
    }
 
    function getEstimatePrice($bill)
@@ -1068,7 +1159,11 @@ function findAllBill($q)
         $variable = new stdClass;
         $variable->$codename = new stdClass;
         $variable->$codename->name = $description;
-        $variable->$codename->value = convertutf8($value);
+
+        if(!mb_detect_encoding($value,'utf8') || $codename == "CustomerName" || $codename == "ProjectName")
+            $variable->$codename->value = convertutf8($value);
+        else
+            $variable->$codename->value = $value;
         return $variable;
     }
 
@@ -1121,7 +1216,6 @@ function findAllBill($q)
         array_push($bill->variables, $variable);
         $variable = getBillVariable('PricePerArea', 'ราคาต่อตารางเมตร',  getPricePerAreaSaleData($data));
         array_push($bill->variables, $variable);
-
 
         $variable = getBillVariable('SpacialDiscount', 'หักส่วนลดพิเศษ',  getDiscountSaleData($data));
         array_push($bill->variables, $variable);
