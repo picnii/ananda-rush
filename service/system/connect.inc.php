@@ -7,7 +7,7 @@ $connectType = connectType();
 $hostname = '58.97.74.26';
 $username = 'ASFOLDER_TMS';
 $password = 'zaq1XSW@cde3VFR$';
-$database = 'TMSUAT';
+$database = 'TMS';
 
 
 /*

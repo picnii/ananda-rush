@@ -518,6 +518,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		$scope.payment_type_obj = data.find({id:getData.id_status_transfer});
 	});
 	$scope.authorize_status_types = Appoint.getAppointAuthorizeStatus(function(data){
+		console.log('status_types')
+		console.log(data);
 		$scope.authorize_status = data.find({id:getData.id_status_authorize});
 	});
 	console.log('test');
@@ -616,7 +618,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		console.log($scope.authorize_status)
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
-			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions()
+			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions(),
+			payment:$scope.paymentAtTranfer
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
@@ -685,9 +688,20 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	{
 		var ss= $scope.search;
 		var query = "";
-		var params_name = ['ItemId', 'ProjID', 'room_type', 'Floor', 'CompanyCode','SalesName'];
+		var params_name = ['ItemId', 'ProjID', 'room_type', 'Floor', 'CompanyCode','SalesName', 'Period', 'SQM'];
 		//ss.company = ss.company.toLowerCase();
-		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company, ss.customer_name];
+		var period = '';
+		period += typeof(ss.date_from) == 'undefined' || ss.date_from == null ? 0 : ss.date_from;
+		period += '|';
+		period += typeof(ss.date_to) == 'undefined' || ss.date_to == null ? 0 : ss.date_to;
+		console.log(period);
+		var sqm = '';
+		if (ss.area) {
+			sqm += typeof(ss.area.from) == 'undefined' || ss.area.from == null ? 0 : ss.area.from;
+			sqm += '|';
+			sqm += typeof(ss.area.To) == 'undefined' || ss.area.To == null ? 0 : ss.area.To;
+		}
+		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company, ss.customer_name, period, sqm];
 		var params_count = 0;
 		for(var i =0; i < params_name.length; i++)
 		{
@@ -1176,6 +1190,10 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 				promotion = data[i];
 				promotion.promotion_type = 'tranfer';
 				promotion.order =  seed;
+				promotion.changeAmount = function()
+				{
+					console.log('id : ' + this.id + ', amount ' + this.amount)
+				}
 				seed++;
 			}
 			
@@ -1267,6 +1285,8 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 				console.log(data);
 			});
 	}
+
+
 
 
 

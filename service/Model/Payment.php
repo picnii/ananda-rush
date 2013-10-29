@@ -126,6 +126,7 @@ function isFixPaymentOrder($id)
     //order FROM MIN TO MAX
     $orders = array( $ROOM_PAYMENT,$ELECTRIC_BILL_15 , $ELECTRIC_BILL_30, $WATER_METER, $SHARE_PLACE_FEE, $SUPPORT_FUND, $TRANFER_FEE, $LOAN_FEE, $BANK_PAY_BACK, $ARGORN, $ARGORN_LOAN);
 
+    $order_number = array( 1,2 , 2, 3, 4, 5, 6, 7, 8, 9, 10);
     //search for index in order
     for($i = 0; $i < count($orders); $i++) {
         # code...
@@ -134,7 +135,7 @@ function isFixPaymentOrder($id)
         {
             //$num = $i - count($orders) -1;
            // echo "found {$id} return $num";
-            return  $i + 1;
+            return  $order_number[$i];
         }
     }
 /*found 6

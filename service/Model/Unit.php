@@ -136,7 +136,7 @@
 
 	function findAllUnitsByQuery($q, $operators =null, $isDebugMode = false)
 	{
-		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID ".getWhereClauseFromParams($q, $operators);
+		$sql = "SELECT * FROM master_transaction INNER JOIN Sale_Transection on master_transaction.ItemId = Sale_Transection.ItemID LEFT JOIN (SELECT contract_time AS Period, tranfer_appointment.transaction_id AS tid FROM tranfer_appointment INNER JOIN tranfer_appointment_log ON tranfer_appointment.log_id = tranfer_appointment_log.id) appointment ON master_transaction.transaction_id = appointment.tid ".getWhereClauseFromParams($q, $operators);
 		//echo $sql;
 		$result = DB_query($GLOBALS['connect'], converttis620($sql) );
 

@@ -119,12 +119,19 @@
                   <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button>
             </div>
             
-            <span style="margin-right:67px;">อื่นๆ : </span>
-            <span style="margin-right:166px;"><input type="text"  ng-model="remark"></span>
-            <span><button ng-click="createAppoint()" class="btn btn-danger">Create</button></span>
-            <span><button ng-click="" class="btn">Cancel</button></span>
+            <span style="margin-right:67px;">สถานะการโอน</span>
+            <span style="margin-right:166px;">
+                 <select ng-model="authorize_status"  ng-options="t.name for t in authorize_status_types">   </select>
+                <input type="hidden"  ng-model="remark">
+            </span>
+          
         </div>
-        <div class="appoint_text"></div>
+        <div class="appoint_text">
+            <label>ค่าใช้จ่าย ณ วันโอน</label>
+            <input type="text" ng-model="paymentAtTranfer" placeholder="ค่าใช้จ่าย ณ วันโอน"></input>
+        </div>
+          <span><button ng-click="createAppoint()" class="btn btn-danger">Create</button></span>
+            <span><button ng-click="" class="btn">Cancel</button></span>
         <div class="appoint_text"></div>
         <div class="appoint_text"></div>
         <div class="appoint_text"></div>  

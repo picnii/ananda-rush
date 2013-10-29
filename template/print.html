@@ -231,7 +231,7 @@
 		<font size="2">
 			<div class="row" >
 				<div class="span1" align="right">To.</div>
-				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | bankFilterName}}</div>
+				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | bankCashFilter}}&nbsp;</div>
 				<div class="span1" align="right">Tel :</div>
 				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanTel}}&nbsp;</div>
 				<div class="span1" align="right">Fax :</div>
@@ -257,13 +257,13 @@
 			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
 			<div class="span1">เรียน</div>
 			<div class="span11">ผู้จัดการ</div>
-			<div class="offset1 span11">{{bill.BankLoanName | bankCashFilter}}</div><br><br><br><br>
+			<div class="offset1 span11">{{ bill.isCashTranfer | isCashFilterCheque}} {{bill.BankLoanName | bankCashFilter}}&nbsp;</div><br><br><br><br>
 			
 			<div class="offset1 span1" align="right" >ตามที่</div>
-			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{bill.BankLoanName | bankCashFilter}}</b></div>
+			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{ bill.isCashTranfer | isCashFilterCheque}} {{bill.BankLoanName | bankCashFilter}}&nbsp;</b></div>
 			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดใน{{bill.ProjectName}}</div><br><br>
 			<div class="span2" align="right">ห้องชุด เลขที่ </div>
-			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.UnitNumber}} {{bill.HouseNumber}}</b></div>
+			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.UnitNumber}}  ({{bill.HouseNumber}})</b></div>
 			<div class="span2" align="center">ให้กับลูกค้าราย</div>
 			<div class="span4" align="center" style="border-bottom-style:groove"><b>{{bill.CustomerName}}</b></div>
 			<div class="span2">ดังต่อไปนี้</div>

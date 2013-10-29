@@ -246,4 +246,9 @@
 		
 		return $answer;
 	}
+
+	function actionChangePromotionAmount($condition_unit_id, $amount)
+	{
+		return updatePromotionAmount($condition_unit_id, $amount);
+	}
 ?>

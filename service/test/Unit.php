@@ -50,32 +50,27 @@
 	}
 
 	$search_unit = new Stdclass;
-	$search_unit->item_id = "TH01C106001";
+	$search_unit->item_id = "TH01C101001";
 	$q = convertSearchObjectToRow($search_unit);
-	$ops = array();
-	$ops['ItemId'] = 'ALIAS master_transaction.ItemId';
-	$search_units = findAllUnitsByQuery($q, $ops);
+	$search_units = findAllUnitsByQuery($q);
 	assertEquals(1, count($search_units));
 	$result_search_unit = $search_units[0];
-	assertEquals("TH01C106001", $result_search_unit->item_id );
-	assertEquals("IDEO Mobi Sathorn Unit No.06-01:Room TypeDP-F1-2", $result_search_unit->item_name);
+	assertEquals("TH01C101001", $result_search_unit->item_id );
+	assertEquals("IDEO Mobi Sathorn: Unit No.A0101 :Room Type:Shop", $result_search_unit->item_name);
 	
 
 	$search_unit = new Stdclass;
 	$search_unit->project_id = "TH01";
-	$search_unit->floor = "6";
+	$search_unit->floor = "1";
 	$q = convertSearchObjectToRow($search_unit);
 	//print_r($q);
 	//print_r(findAllUnitsByQuery($q, true));
-	$ops = array();
-	$ops['ProjID'] = 'ALIAS master_transaction.ProjID';
-	$ops['Floor'] = 'ALIAS master_transaction.Floor';
-	$search_units = findAllUnitsByQuery($q, $ops);
+	$search_units = findAllUnitsByQuery($q);
 	assertEquals(true, count($search_units)>= 1);
 	foreach($search_units as $unit)
 	{
 		assertEquals("TH01", $unit->project_id);
-		assertEquals("6", $unit->floor);
+		assertEquals("1", $unit->floor);
 	}
 
 ?>

@@ -452,8 +452,11 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 			}	
 			//console.log('update new payment');
 			console.log('update-new-payment');
+
 			$scope.bills[i].payments = updateNewPayment( $scope.bills[i].payments, 
 			 	$scope.bills[i].getPaymentBase( $scope.bills[i].variables,  $scope.bills[i].payments).sum_bank_loan)
+
+
 			console.log('check bank payment');
 			
 
@@ -1093,13 +1096,24 @@ function convertBillPrint($scope, data)
 				console.log(payment_base.tax_loan_payment);
 				console.log(answer);
 			}
-			return answer - bill.getCashPayment(variables, payments);
+
+			if(answer < 0)
+			{
+				bill.ministryMinus = answer;
+				return answer;
+			}else
+			{
+				bill.ministryMinus = 0;
+				return answer - bill.getCashPayment(variables, payments);
+			}
+
+			//return answer - bill.getCashPayment(variables, payments);
 			
 		}
 
 		bill.getCashPayment = function(variables, payments)
 		{
-			return 1000;
+			return 1000 + bill.ministryMinus ;
 		}	
 
 		/**/
@@ -1130,6 +1144,10 @@ function convertBillPrint($scope, data)
 			payment.customerFormula = payment.formulas[2];
 			//console.log( bill.getFormulaValue(payment.formulas[2]));
 		}
+
+		var appoint_payment = {"id":-1,"order":11,"name":"ค่าใช้จ่าย ณ วันโอน","description":"","formulas":[0,0, Number(bill.AppointPayment)],"is_shows":[1,1,1],"is_add_in_cheque":0,"is_compare_with_repayment":0,"number":11}
+		bill.payments.push(appoint_payment);
+
 
 
 	}
@@ -1183,6 +1201,9 @@ function convertBillPrint($scope, data)
 		//console.log('get sum:'+sum)
 		return sum;
 	}
+
+
+	
 
 
 	return $scope.bills;
@@ -1252,6 +1273,9 @@ function updateNewPayment(payments, sum_bank_loan)
 
 		
 	}
+
+
+
 	return payments;
 }
 

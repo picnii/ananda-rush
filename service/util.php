@@ -92,18 +92,30 @@ function getWhereClauseFromParams($params, $oparators = null)
     			if($values[1])
     				$to = $values[1];
 				$sql = $sql." {$key} {$oparators[$key]} {$from} AND {$to}";
-				print_r($sql);
     		}
-    		else if (strpos($oparators[$key], 'ALIAS') === 0) {
-    			$alias = explode(" ", $oparators[$key]);
-    			$alias = $alias[1];
-    			$sql = $sql." {$alias} = '{$value}'"; 
+    		else if($oparators[$key] == 'PERIOD') {
+    			$values = explode("|", $value);
+    			if($values[0] == '0' && $values[1] == '0')
+    			{
+    				
+    			}
+    			else
+    			{
+	    			$from = '2013-01-01';
+	    			$to = '2999-12-31';
+	    			if($values[0] != '0')
+	    				$from = $values[0];
+	    			if($values[1] != '0')
+	    				$to = $values[1];
+					$sql = $sql." {$key} BETWEEN '{$from}' AND '{$to}'";
+				}
     		}
     		else
     			$sql = $sql." {$key} {$oparators[$key]} '{$value}'";
     	}else
     		$sql = $sql." {$key} = '{$value}'"; 
     }
+
 	return $sql;
 }
 

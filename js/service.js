@@ -96,6 +96,7 @@ angular.module('dataServices', ['ngResource']).
     updatePrePromotion:{method:'POST', params:{action:'updatePrePromotion'}},
     updateTranferPromotion:{method:'POST', params:{action:'updateTranferPromotion'}},
     updateAxPromotion:{method:'POST', params:{action:'updateAxPromotion'}},
+    changeAmount:{method:'POST', params:{action:'changePromotionAmount'}},
   });
 })
     //, params:{unitId:'data'}, isArray:false

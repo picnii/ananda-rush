@@ -529,6 +529,15 @@ function findUnitByPromotionConditionId($condition_id){
 	}
 	return $units;
 }
+
+function updatePromotionAmount($condition_unit_id, $amount)
+{
+	$sql = "UPDATE promotion_condition_unit SET amount = {$amount} WHERE id = {$condition_unit_id}";
+	$result = DB_query($GLOBALS['connect'], $sql);
+	return $result;
+}
+
+
 //for bill
 function findAllPromotionFromUnitId($id)
 {
