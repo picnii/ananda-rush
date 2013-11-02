@@ -1,5 +1,6 @@
 <?php
 	require_once('util.php');
+    $isReport = true;
 	//use for preview what bills will be liked
 	function actionReportAppoinment()
 	{
@@ -118,4 +119,74 @@
 
         return $promotionInfo;
     }
+
+
+
+
+
+    function actionReportPromotions()
+    {
+        
+        return convertToPromotionTable(getReportPromotions());
+    }
+
+    function convertToPromotionTable($response)
+    {
+        $header = array('Project', 'So No.', 'Project', 'CreateDate ');
+        //print_r($response);
+        //create table tag
+
+        $table = "<table>";
+        //create tr in head using header
+        $table = $table."<thead>";
+        $table = $table."<tr>";
+        foreach ($header as $key => $value) {
+            # code...
+            $table = $table."<td>";
+            $table = $table.$value;
+            $table = $table."</td>";
+        }
+        $table = $table."</tr>";
+        $table = $table."</thead>";
+        //create content using response
+        $table = $table."<tbody>";
+        foreach ($response as $key => $row) {
+            # code...
+
+           // $unit = findUnitById($row['unit_id']);
+
+            $table = $table."<tr>";
+         
+            $table = $table."<td>";
+            $table = $table.$row['id'];
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row['amount'];
+            $table = $table."</td>";
+
+             $table = $table."<td>";
+            $table = $table.$row['name'];
+            $table = $table."</td>";
+
+             $table = $table."<td>";
+            $table = $table.convertutf8($row['proj_name_th']);
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row['SO'];
+            $table = $table."</td>";
+                   
+            $table = $table."</tr>";
+        }
+
+        $table = $table."</tbody>";
+        //end table tag
+        $table = $table."</table>";
+        return $table;
+    }
+
+
+
+
 ?>

@@ -79,7 +79,8 @@ function findPreID($tran_item){
 
 function findOldInformation($transaction_id)
 {
-    $sql = "SELECT *, m.projID as project_code, tap.id as main_appointment_log_id FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
+    $sql = "SELECT *, m.projID as project_code, tap.id as main_appointment_log_id , tapl.payment as appoint_payment, tapl.promotion_co 
+    FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
     LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
     LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = m.transaction_id
     LEFT JOIN tranfer_appointment_log as tapl ON tapl.id = tap.log_id
@@ -177,7 +178,7 @@ function findInformation($pre_id)
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,b.status_user_select,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank as priceApp_id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
 
-                     $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time, tap.id as main_appointment_log_id ";
+                     $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time, tap.id as main_appointment_log_id, tapl.payment as appoint_payment , tapl.promotion_co  ";
                      //tap.id as main_appointment_log_id 
 
                      $SQL1.="from Sale_Transection s ";
@@ -996,7 +997,9 @@ function findAllBill($q)
         array_push($bill->variables, $variable);
         
         $return_bank->SumBankDiff = $sum_bank - $return_bank->BankLoanRoom;
-        $variable = getBillVariable('SumBankDiff', '-',  $return_bank->SumBankDiff);
+        //$variable = getBillVariable('SumBankDiff', '-',  $return_bank->SumBankDiff);
+        $variable = getBillVariable('SumBankDiff', '-',  0);
+
         array_push($bill->variables, $variable);
        // $return_bank->test = "sompo";
         if(isset($return_bank))
@@ -1338,6 +1341,12 @@ function findAllBill($q)
         array_push($bill->variables, $variable);
         
         $variable = getBillVariable('WorkName', '-',  $data->work);
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("AppointPayment", "-", $data->appoint_payment);
+        array_push($bill->variables, $variable);
+
+         $variable = getBillVariable("PromotionCo", "-", $data->promotion_co);
         array_push($bill->variables, $variable);
 
         //$variable = getBillVariable('Promotions', '-',  $data->promotions);

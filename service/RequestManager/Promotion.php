@@ -1,7 +1,7 @@
 <?php
 	//
 	//actionPromotion($itemId, $invoiceAcount)
-    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId', 'updatePrePromotion', 'updateTranferPromotion', 'updateAxPromotion', 'createConfirmPromotion', 'deleteConfirmPromotion', 'isConfirmPromotion');
+    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId', 'updatePrePromotion', 'updateTranferPromotion', 'updateAxPromotion', 'createConfirmPromotion', 'deleteConfirmPromotion', 'isConfirmPromotion', 'changePromotionAmount');
 
 	if(isset($_GET['action']))
 	{
@@ -88,6 +88,8 @@
 			$response = actionDeleteConfirmPromotion($reqBody->promotion);
 		if($action == 'isConfirmPromotion')
 			$response = actionIsConfirmPromotion($reqBody->promotion);
+		if($action == 'changePromotionAmount')
+			$response  = actionChangePromotionAmount($reqBody->id, $reqBody->amount);
 		//'createConfirmPromotion', 'deleteConfirmPromotion', 'findConfirmPromotion'
 	}
 

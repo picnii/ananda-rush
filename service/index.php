@@ -3,7 +3,7 @@
 	//json_decode(file_get_contents('php://input'))
 	$response = array("Error"=> "none service exists", "post"=>$_POST, "get"=>$_GET, "reqBody"=>json_decode(file_get_contents('php://input')));
 	$reqBody =json_decode(file_get_contents('php://input'));
-
+	$isReport = false;
 	
 	
 	/* util */
@@ -28,7 +28,24 @@
 	include 'RequestManager/Payment.php';
 	include 'RequestManager/Type.php';
 	include 'RequestManager/Unit.php';*/
+	if(!$isReport)
+	{
+		$response = json_encode($response);
+		echo $response;
+	}else
+	{
 
-	$response = json_encode($response);
-	echo $response;
+		//header('Content-type: application/msexcel');
+
+		// It will be called downloaded.pdf
+		//header('Content-Disposition: attachment; filename="report.xls"');
+
+		echo $response_header;
+
+		echo $response;
+
+		echo $response_footer;
+
+	}
+	
 ?>

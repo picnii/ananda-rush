@@ -518,6 +518,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		$scope.payment_type_obj = data.find({id:getData.id_status_transfer});
 	});
 	$scope.authorize_status_types = Appoint.getAppointAuthorizeStatus(function(data){
+		console.log('status_types')
+		console.log(data);
 		$scope.authorize_status = data.find({id:getData.id_status_authorize});
 	});
 	console.log('test');
@@ -568,8 +570,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 				var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);*/
 				log.appoint_date_time = new Date(log.appoint_time.date);
 				log.call_date_time = new Date(log.call_time.date);
-				log.display_call_date = log.call_date_time.getDate() + '/' + log.call_date_time.getMonth() + '/' + (log.call_date_time.getYear() + 1900);
-				log.display_appoint_date = log.appoint_date_time.getDate() + '/' + log.appoint_date_time.getMonth() + '/' + (log.appoint_date_time.getYear() + 1900);
+				log.display_call_date = log.call_date_time.getDate() + '/' + (log.call_date_time.getMonth() +1)+ '/' + (log.call_date_time.getYear() + 1900);
+				log.display_appoint_date = log.appoint_date_time.getDate() + '/' + (log.appoint_date_time.getMonth()+1) + '/' + (log.appoint_date_time.getYear() + 1900);
 
 				log.display_call_time = log.call_date_time.getHours() + ':' + log.call_date_time.getMinutes() + ':' + log.call_date_time.getSeconds();
 				log.display_appoint_time = log.appoint_date_time.getHours() + ':' + log.appoint_date_time.getMinutes() + ':' + log.appoint_date_time.getSeconds();
@@ -579,7 +581,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 
 		})
 	}
-
+	$scope.paymentAtTranfer = 0;
+	$scope.promotionCo = 0;
 	$scope.createAppoint = function()
 	{
 		$scope.def_appointdate = $scope.appointdate ;
@@ -616,7 +619,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		console.log($scope.authorize_status)
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
-			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions()
+			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions(),
+			payment:$scope.paymentAtTranfer,promotion_co:$scope.promotionCo
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
@@ -685,9 +689,20 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	{
 		var ss= $scope.search;
 		var query = "";
-		var params_name = ['ItemId', 'ProjID', 'room_type', 'Floor', 'CompanyCode','SalesName'];
+		var params_name = ['ItemId', 'ProjID', 'room_type', 'Floor', 'CompanyCode','SalesName', 'Period', 'SQM'];
 		//ss.company = ss.company.toLowerCase();
-		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company, ss.customer_name];
+		var period = '';
+		period += typeof(ss.date_from) == 'undefined' || ss.date_from == null ? 0 : ss.date_from;
+		period += '|';
+		period += typeof(ss.date_to) == 'undefined' || ss.date_to == null ? 0 : ss.date_to;
+		console.log(period);
+		var sqm = '';
+		if (ss.area) {
+			sqm += typeof(ss.area.from) == 'undefined' || ss.area.from == null ? 0 : ss.area.from;
+			sqm += '|';
+			sqm += typeof(ss.area.To) == 'undefined' || ss.area.To == null ? 0 : ss.area.To;
+		}
+		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company, ss.customer_name, period, sqm];
 		var params_count = 0;
 		for(var i =0; i < params_name.length; i++)
 		{
@@ -1176,6 +1191,38 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 				promotion = data[i];
 				promotion.promotion_type = 'tranfer';
 				promotion.order =  seed;
+				promotion.canPress = true;
+				promotion.canUpdate= false;
+				promotion.attemptChange = function()
+				{
+					var pass=prompt("Please Enter Your password","Ask P poom");
+					if(pass == "9999")
+					{
+						this.canUpdate = true;
+						this.canPress = false;
+						console.log(this);
+						console.log('#promo-'+this.id)
+						console.log($('#promo-'+this.id))
+
+						$('#promo-'+this.id).focus();
+					}
+					else
+					{
+						this.canUpdate = false;
+						alert("Wrong password");
+					}
+				}
+				promotion.changeAmount = function()
+				{
+					console.log("Test")
+					var self = this;
+					Promotion.changeAmount({action:'changePromotionAmount',id:this.id, amount:this.amount}, function(data){
+						self.canPress = true;
+						self.canUpdate = false;
+					})
+					
+					console.log('id : ' + this.id + ', amount ' + this.amount)
+				}
 				seed++;
 			}
 			
@@ -1270,6 +1317,8 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 
 
 
+
+
 }
 
 
@@ -1288,10 +1337,11 @@ function convertDateToSqlDate(date)
 {
 	var test  = (date.getYear() + 1900);
 		test += '-';
-		if(date.getMonth() < 10)
-			test += '0' + date.getMonth();
+	var month = date.getMonth() +1
+		if(month < 10)
+			test += '0' +month;
 		else
-			test += date.getMonth();
+			test += month
 		test += '-';
 		if(date.getDate() < 10)
 			test += '0' + date.getDate();

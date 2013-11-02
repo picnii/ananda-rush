@@ -447,7 +447,7 @@ function findMatchPromotion($condition, $join = false)
 	}else
 	{
 		$conditions = array();
-		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id";
+		$sql = "SELECT promotion_condition_unit.*, promotion_condition.project_id, master_project.proj_name_th, Sale_Transection.SO , promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id LEFT JOIN  master_project ON project_id = master_project.proj_id LEFT JOIN master_transaction ON master_transaction.transaction_id = unit_id LEFT JOIN Sale_Transection ON Sale_Transection.ItemID = master_transaction.ItemId";
 
 		$result = DB_query($GLOBALS['connect'], converttis620($sql));
 		while($row = DB_fetch_array($result))
@@ -529,6 +529,15 @@ function findUnitByPromotionConditionId($condition_id){
 	}
 	return $units;
 }
+
+function updatePromotionAmount($condition_unit_id, $amount)
+{
+	$sql = "UPDATE promotion_condition_unit SET amount = {$amount} WHERE id = {$condition_unit_id}";
+	$result = DB_query($GLOBALS['connect'], $sql);
+	return $result;
+}
+
+
 //for bill
 function findAllPromotionFromUnitId($id)
 {
@@ -712,6 +721,14 @@ function getPromotionRewardTypes($is_array = false)
 		$types[$item->code] = $item;
 
 	return $types;
+}
+
+function getReportPromotions()
+{
+	//
+	$condition  = new stdClass;
+
+	return findMatchPromotion($condition);	
 }
 
 function getPhases($is_array = false)

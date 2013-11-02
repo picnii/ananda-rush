@@ -6,7 +6,7 @@
 	<section ng-repeat="bill in bills">
 	<!--- Start Loop Print-->	
 	<div class="noPrint">
-		Base Price : {{bill.BasePrice}} Repayment : {{bill.Repayment}}
+		ราคาประเมิน : {{bill.BasePrice}} ค่าปลอด : {{bill.Repayment}}
 	</div>
 		<div class="row" >
 			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน ตุลาคม 2556 เท่านั้น</h4></div>
@@ -80,7 +80,7 @@
 						<div class="span4">{{bill.BankLoanName | zeroDash}}</div>
 						
 						<div class="offset1 span2">พื้นที่ตามสัญญา</div>
-						<div class="span2" align="right">{{bill.ContractOfSpace  | up2area}}</div>
+						<div class="span2" align="right">{{bill.ContractOfSpace  | up2area}}&nbsp;&nbsp;&nbsp;&nbsp;</div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติค่าห้อง</div>
 						<div class="span2" align="right">{{bill.BankLoanRoom | zeroDash}}</div>
@@ -88,7 +88,7 @@
 						
 						
 						<div class="offset1 span2">พื้นที่จริง</div>
-						<div class="span2" align="right">{{bill.ActualSpace | up2area }}</div>
+						<div class="span2" align="right">{{bill.ActualSpace | up2area }}&nbsp;&nbsp;&nbsp;&nbsp;</div>
 						<div class="span1" align="center">ตร.ม.</div>
 						<div class="offset1 span2">อนุมัติวงเงินค่าประกัน</div>
 						<div class="span2" align="right">{{bill.BankLoanInsurance | zeroDash}}</div>
@@ -185,7 +185,7 @@
 						
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
-						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>{{bill.BankLoanName | bankFilterName}}</b> </div>
+						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.BankLoanName | bankFilterName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowBankPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.CompanyName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowCompanyPayment(bill.variables, bill.payments) | zeroDash}}</div>
@@ -215,8 +215,8 @@
 						3. สำเนาใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
 			
 						<strong>
-							บัญชี &nbsp;"บริษัท อนันดา ดีเวลลอปเม้น  จำกัด " ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
-							หรือ &nbsp;&nbsp;&nbsp;"บริษัท อนันดา ดีเวลลอปเม้น  จำกัด " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
+							บัญชี &nbsp;"บริษัท อนันดา ดีเวลลอปเม้น  จำกัด (มหาชน)" ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
+							หรือ &nbsp;&nbsp;&nbsp;"บริษัท อนันดา ดีเวลลอปเม้น  จำกัด (มหาชน) " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
 							บัญชี:&nbsp; "{{bill.Regulation}}" ธนาคาร...................สาขา.........................................(ออมทรัพย์)เลขที่....................................<br><br>
 
 						</strong>
@@ -231,7 +231,7 @@
 		<font size="2">
 			<div class="row" >
 				<div class="span1" align="right">To.</div>
-				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | bankFilterName}}</div>
+				<div class="span5" style="border-bottom-style:groove;">{{bill.BankLoanName | bankCashFilter}}&nbsp;</div>
 				<div class="span1" align="right">Tel :</div>
 				<div class="span2" style="border-bottom-style:groove;">{{bill.BankLoanTel}}&nbsp;</div>
 				<div class="span1" align="right">Fax :</div>
@@ -257,13 +257,13 @@
 			<div class="span11">ขอแจ้งการสั่งจ่ายเช็คเงินกู้</div>
 			<div class="span1">เรียน</div>
 			<div class="span11">ผู้จัดการ</div>
-			<div class="offset1 span11">{{bill.BankLoanName | bankCashFilter}}</div><br><br><br><br>
+			<div class="offset1 span11">{{ bill.isCashTranfer | isCashFilterCheque}} {{bill.BankLoanName | bankCashFilter}}&nbsp;</div><br><br><br><br>
 			
 			<div class="offset1 span1" align="right" >ตามที่</div>
-			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{bill.BankLoanName | bankCashFilter}}</b></div>
+			<div class="span5" style="border-bottom-style:groove; text-align:center;"><b>{{ bill.isCashTranfer | isCashFilterCheque}} {{bill.BankLoanName | bankCashFilter}}&nbsp;</b></div>
 			<div class="span5">ได้อนุมัติสินเชื่อเพื่อซื้อห้องชุดใน{{bill.ProjectName}}</div><br><br>
 			<div class="span2" align="right">ห้องชุด เลขที่ </div>
-			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.UnitNumber}} {{bill.HouseNumber}}</b></div>
+			<div class="span2" align="center" style="border-bottom-style:groove"><b>{{bill.UnitNumber}}  ({{bill.HouseNumber}})</b></div>
 			<div class="span2" align="center">ให้กับลูกค้าราย</div>
 			<div class="span4" align="center" style="border-bottom-style:groove"><b>{{bill.CustomerName}}</b></div>
 			<div class="span2">ดังต่อไปนี้</div>
@@ -293,7 +293,7 @@
 				
 			<div class="row">
 				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
-				<div class="span2" align="center"  style="text-align:right;"><b>{{bill.SumBankLoan | zeroDash}}</b> </div>
+				<div class="span2" align="center"  style="text-align:right;"><b>{{bill.BankLoanRoom -bill.PromotionCo | zeroDash}}</b> </div>
 				<div class="span1">บาท</div>
 				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
 				
@@ -317,8 +317,8 @@
 				<div class="span2" align="center"  style="text-align:right;">{{bill.bank_pay_back | zeroDash}}</div>
 				<div class="span1">บาท</div><br><br><br>
 				
-				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b>{{bill.CustomerName}}</b></div>
-				<div class="span2" align="center"  style="text-align:right;"> -</div>
+				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b></b></div>
+				<div class="span2" align="center"  style="text-align:right;"> {{bill.PromotionCo| zeroDash}}</div>
 				<div class="span1">บาท</div><br><br><br>
 				
 				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
