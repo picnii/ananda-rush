@@ -620,7 +620,11 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
 			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions(),
+<<<<<<< HEAD
 			payment:$scope.paymentAtTranfer,promotion_co:$scope.promotionCo
+=======
+			payment:$scope.paymentAtTranfer
+>>>>>>> 78ad693ec3b1995dae1d23a9eb3962ae87c879ee
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
@@ -1191,6 +1195,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 				promotion = data[i];
 				promotion.promotion_type = 'tranfer';
 				promotion.order =  seed;
+<<<<<<< HEAD
 				promotion.canPress = true;
 				promotion.canUpdate= false;
 				promotion.attemptChange = function()
@@ -1221,6 +1226,10 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 						self.canUpdate = false;
 					})
 					
+=======
+				promotion.changeAmount = function()
+				{
+>>>>>>> 78ad693ec3b1995dae1d23a9eb3962ae87c879ee
 					console.log('id : ' + this.id + ', amount ' + this.amount)
 				}
 				seed++;

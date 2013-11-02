@@ -251,6 +251,4 @@
 	{
 		return updatePromotionAmount($condition_unit_id, $amount);
 	}
-
-	
 ?>

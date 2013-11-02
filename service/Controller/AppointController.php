@@ -62,8 +62,9 @@
 		$reqBody->call_datetime_str = $reqBody->call_date.' '.$reqBody->call_time.'.0';
 		$reqBody->payment_date_str = $reqBody->payment_date.' 00:00:00.0';
 		$reqBody->contract_date_str = $reqBody->contract_date.' 00:00:00.0';
-//		$result = $reqBody;
+
 		$result = createAppointment($unit_id, $reqBody->type, $reqBody->call_datetime_str, $reqBody->appoint_datetime_str, $reqBody->status, $reqBody->payment_type, $reqBody->coming_status, $reqBody->remark, $reqBody->people, $reqBody->call_duration, $reqBody->authorize, $reqBody->payment_date_str, $reqBody->contract_date_str, $reqBody->tranfer_status, $reqBody->payment, $reqBody->promotion_co);
+
 		$result_promotion  = array();
 		$appointment = findAppointmentByUnitId($unit_id);
 		$appointment_id = $appointment->main_id;

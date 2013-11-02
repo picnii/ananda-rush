@@ -250,5 +250,5 @@ function getAuthorizeStatus()
 	}
 	return $answers;
 }
-	
+
 ?>
