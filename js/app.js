@@ -78,9 +78,11 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
    	if(!isNaN(input))
     {
       
+
       input = Number(input);
       input = Math.round(input * 10 ) /10
       input = Math.round(input);
+
       return input.formatMoney(2,',','.'); 
     }else if(typeof(input)!="string" || input == "NaN")
       return "-";
@@ -190,7 +192,7 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
 }).filter('bankFilterName', function(){
   return function(input) {
     if(input == null || input == '' || input == ' ' || input == '-' )
-      return 'ธนาคาร กรุงไทย จำกัด มหาชน';
+      return 'ธนาคาร กรุงไทย จำกัด (มหาชน)';
     return input ;
   };
 
@@ -222,7 +224,18 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
     return '' ;
   };
 
+}).filter('promotionUnit', function(){
+  return function(promotion) {
+    if(promotion.type_id == 2 && promotion.option2 == 1)
+      return '%';
+    if(promotion.type_id == 0)
+      return 'ชิ้น';
+    return 'บาท' ;
+  };
+
 })
+
+//
 
 //isCashFilterCheque
 

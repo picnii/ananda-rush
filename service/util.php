@@ -69,8 +69,11 @@ function getWhereClauseFromParams($params, $oparators = null)
 {
 	$sql = "WHERE ";
 	$isFirst = true;
+	$isAppoint = false;
+	$paramCount = 0;
 	foreach ($params as $key => $value)
     {
+    	$before_sql = $sql;
     	if($isFirst)
     		$isFirst = false;
     	else
@@ -94,10 +97,12 @@ function getWhereClauseFromParams($params, $oparators = null)
 				$sql = $sql." {$key} {$oparators[$key]} {$from} AND {$to}";
     		}
     		else if($oparators[$key] == 'PERIOD') {
+    		
     			$values = explode("|", $value);
     			if($values[0] == '0' && $values[1] == '0')
     			{
-    				
+    				$paramCount--;
+    				$sql = $before_sql;
     			}
     			else
     			{
@@ -108,13 +113,19 @@ function getWhereClauseFromParams($params, $oparators = null)
 	    			if($values[1] != '0')
 	    				$to = $values[1];
 					$sql = $sql." {$key} BETWEEN '{$from}' AND '{$to}'";
+					
 				}
     		}
     		else
     			$sql = $sql." {$key} {$oparators[$key]} '{$value}'";
     	}else
     		$sql = $sql." {$key} = '{$value}'"; 
+
+    	$paramCount++;
     }
+
+//print_r($params);
+  
 
 	return $sql;
 }

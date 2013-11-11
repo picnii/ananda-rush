@@ -141,9 +141,9 @@
 		return findAllCondition();
 	}
 
-	function actionMatchPromotion($condition_id, $unit_ids)
+	function actionMatchPromotion($condition_id, $unit_ids, $invoiceAcounts)
 	{
-		return matchPromotion($condition_id, $unit_ids);
+		return matchPromotion($condition_id, $unit_ids, $invoiceAcounts);
 	}
 
 	function actionFindAllUnitPromotion($condition_id)
@@ -191,6 +191,8 @@
 		$condition = new stdClass;
 		if(isset($getParams['unit_id']))
 			$condition->unit_id = $getParams['unit_id'];
+		if(isset($getParams['invoice_account']))
+			$condition->invoice_account = $getParams['invoice_account'];
 		return findMatchPromotion($condition, true);
 	}
 
@@ -201,19 +203,20 @@
 		return findMatchPromotion($condition);
 	}
 
-	function actionFindAllPrePromotionFromItemId($itemId)
+	function actionFindAllPrePromotionFromItemId($itemId, $invoiceAccount)
 	{
-		return findAllPromotionPreapproveFromItemId($itemId);
+		return findAllPromotionPreapproveFromItemId($itemId, $invoiceAccount);
 	}
 
 	function actionUpdatePrePromotion($promotion)
 	{
-		return updatePromotionPreapprove($promotion->id, $promotion->is_select, $promotion->issue);
+		return updatePromotionPreapprove($promotion->id, $promotion->invoice_account, $promotion->is_select, $promotion->issue);
 	}
 
 	function actionUpdateTranferPromotion($promotion)
 	{
-		return updatePromotionTranfer($promotion->id, $promotion->is_select, $promotion->issue);
+		//updatePromotionTranfer($promotion_id, $invoice_account, $is_select, $issue)
+		return updatePromotionTranfer($promotion->id, $promotion->invoice_account, $promotion->is_select, $promotion->issue);
 	}
 
 	function actionUpdateAxPromotion($promotion)

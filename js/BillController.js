@@ -469,6 +469,14 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
 				console.log(bill_payment)
 				 sum_bank_payment += Number(bill_payment.formulas[BANK_INDEX]);
 				 console.log('sum_bank_payment:'+ sum_bank_payment );
+				 console.log('biller')
+				 var bill = $scope.bills[i];
+				console.log('meter'+bill.getPaymentBase(bill.variables, bill.payments).meter_payment)
+				console.log('room'+bill.getPaymentBase(bill.variables, bill.payments).room_payment)
+				console.log('sum com'+$scope.getSumCompanyPayment(bill.variables, bill.payments));
+				console.log('repayment'+bill.Repayment);
+				console.log('end biller')
+
 			}
 			
 
@@ -1004,6 +1012,8 @@ function convertBillPrint($scope, data)
 				room_payment += Number(room_payment_def[BANK_INDEX]);
 			}
 
+
+
 			var share_payment = bill.getPaymentByPaymentId($scope.billPayment.share_payment_id, variables, payments);	
 			if(isNaN(share_payment[CUSTOMER_INDEX]))
 				share_payment = 0;
@@ -1059,7 +1069,7 @@ function convertBillPrint($scope, data)
 			var cur_year = cur_date.getYear() +   (1900 + 543);
 			var month_th = ['มกราคม', 'กุมภาพันธุ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤษจิกายน', 'ธันวาคม' ]
 			cur_month = month_th[cur_month];
-			bill.currentDate = (cur_date.getDate() + 1) + ' ' + cur_month + ' ' +cur_year;
+			bill.currentDate = (cur_date.getDate()) + ' ' + cur_month + ' ' +cur_year;
 
 			//ค่าห้อง
 			var payment_base = {
@@ -1096,24 +1106,21 @@ function convertBillPrint($scope, data)
 			var estimate_payment = payment_base.tranfer_payment;
 			
 			var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment;
-			if(payment_base.sum_bank_loan >= 4093716.09)
+			
+			bill.ministryMinus = 0;
+			var real_answer =  answer - bill.getCashPayment(variables, payments);
+			console.log('ministry')
+			console.log(answer);
+			console.log(bill.getCashPayment(variables, payments))
+			console.log(real_answer)
+			if(real_answer < 0)
 			{
-				console.log('ministry');
-				console.log(estimate_payment);
-				console.log(payment_base.customer_sum_bank_loan);
-				console.log(payment_base.tax_payment);
-				console.log(payment_base.tax_loan_payment);
-				console.log(answer);
-			}
-
-			if(answer < 0)
-			{
-				bill.ministryMinus = answer;
-				return answer;
+				bill.ministryMinus = real_answer;
+				return 0;
 			}else
 			{
-				bill.ministryMinus = 0;
-				return answer - bill.getCashPayment(variables, payments);
+			//	bill.ministryMinus = 0;
+				return real_answer;
 			}
 
 			//return answer - bill.getCashPayment(variables, payments);
@@ -1141,6 +1148,7 @@ function convertBillPrint($scope, data)
 			//console.log(eval_str);
 		}
 
+		
 		for(var k =0; k < bill.payments.length;k++)
 		{
 			var payment = bill.payments[k];
@@ -1157,7 +1165,11 @@ function convertBillPrint($scope, data)
 		var appoint_payment = {"id":-1,"order":11,"name":"ค่าใช้จ่าย ณ วันโอน","description":"","formulas":[0,0, Number(bill.AppointPayment)],"is_shows":[1,1,1],"is_add_in_cheque":0,"is_compare_with_repayment":0,"number":11}
 		bill.payments.push(appoint_payment);
 
-
+		bill.SumMini  = 0;
+		if(!isNaN(bill.BankLoanInsurance))
+			bill.SumMini += Number(bill.BankLoanInsurance);
+		if(!isNaN(bill.BankLoanDecorate))
+			bill.SumMini += Number(bill.BankLoanDecorate);
 
 	}
 

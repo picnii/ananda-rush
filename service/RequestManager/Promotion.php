@@ -33,7 +33,7 @@
 		if($action == 'doTestPromotion')
 			$response = actionTestPromotion();
 		if($action == 'findAllPrePromotionFromItemId')
-			$response = actionFindAllPrePromotionFromItemId($_GET['item_id']);
+			$response = actionFindAllPrePromotionFromItemId($_GET['item_id'], $_GET['invoice_account']);
 		if($action == 'findAllPromotionAxByItemId')
 			$response = actionFindAllPromotionAxByItemId($_GET['item_id']);
 
@@ -64,7 +64,7 @@
 		if($action == 'deleteCondition')
 			$response = actionDeleteCondition($reqBody->condition->id);
 		if($action == 'matchPromotion')
-			$response = actionMatchPromotion($reqBody->condition_id, $reqBody->unit_ids);
+			$response = actionMatchPromotion($reqBody->condition_id, $reqBody->unit_ids, $reqBody->invoice_accounts);
 		if($action == 'updatePromotion')
 			$response = actionUpdatePromotion($reqBody->promotion->id, $reqBody->promotion);
 		if($action == 'deletePromotion')

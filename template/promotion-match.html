@@ -21,7 +21,7 @@
 	<td>{{promotion.is_select | isSelect}}</td>
 	<td>Sale</td>
 	<td>{{promotion.quantity}}</td>
-	<td>{{promotion.amount}}</td>
+	<td>{{promotion.amount}} {{promotion | promotionUnit}}</td>
 	<td><button ng-show="promotion.is_show" ng-click="setIssue(promotion)">{{promotion.issue | isIssue}}</button><span ng-show="!promotion.is_show">{{promotion.issue | isIssue}}</span></td>
 </tr>
 <!-- 
@@ -48,8 +48,8 @@
 	<td>{{ promotion_payment_types.find({id:0}).name }}</td>
 	<td><button ng-click="setPromotion(promotion)">{{promotion.is_select | isSelect}}</button></td>
 	<td>Transfer</td>
-	<td>{{promotion.amount}}</td>
-	<td>{{promotion.amount}}</td>
+	<td>{{promotion.amount}} ชิ้น</td>
+	<td>{{promotion.amount}} ชิ้น</td>
 	<td><button ng-click="setIssue(promotion)">{{promotion.issue | isIssue}}</button></td>
 </tr>
 </table>
@@ -75,7 +75,7 @@
 	<td>Transfer</td>
 	<td>1</td>
 	<td>
-		<button ng-click="promotion.attemptChange()" ng-show="promotion.canPress" class="btn">{{promotion.amount}}</button>
+		<button ng-click="promotion.attemptChange()" ng-show="promotion.canPress" class="btn">{{promotion.amount}} {{promotion | promotionUnit}}</button>
 		<form ng-submit="promotion.changeAmount()">
 			<input id="promo-{{promotion.id}}" type="text" class="span2" ng-show="!promotion.canPress" ng-model="promotion.amount">
 		</form>

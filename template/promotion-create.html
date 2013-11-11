@@ -18,6 +18,10 @@
 				<div  class="{{getClassAmount()}}">
 					Amount <input type="text" ng-model="promotion.amount" ><br/>
 				</div>
+				<div class="{{getClassSpacial}}">
+					<select ng-model="promotion.spacial_payment"  ng-options="t.name for t in spacial_payments">	</select><br/>
+					Type <select ng-model="promotion.paymentType"  ng-options="t.name for t in payment_types">	</select><br/>
+				</div>
 			</div>
 			
 

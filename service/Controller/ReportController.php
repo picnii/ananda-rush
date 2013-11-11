@@ -169,8 +169,8 @@
             $table = $table.$row['name'];
             $table = $table."</td>";
 
-             $table = $table."<td>";
-            $table = $table.convertutf8($row['proj_name_th']);
+            $table = $table."<td>";
+            $table = $table."hi jack";// $table.convertutf8($row['proj_name_th']);
             $table = $table."</td>";
 
             $table = $table."<td>";

@@ -620,11 +620,8 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 		Appoint.create({type:$scope.type, call_date:$scope.calldate, call_time:$scope.calltime, call_duration:$scope.callduration , people:$scope.people, 
 			appoint_date:$scope.appointdate, appoint_time:$scope.appointtime, status:$scope.status, payment_type:$scope.payment_type, coming_status:$scope.coming_status, remark:$scope.remark,
 			unit_id:$scope.unit.id, action:'createAppoint', authorize:$scope.authorize, payment_date:$scope.paymentdate, contract_date:$scope.contractdate, tranfer_status:$scope.authorize_status.id,promotions:$scope.selectedPromotions(),
-<<<<<<< HEAD
 			payment:$scope.paymentAtTranfer,promotion_co:$scope.promotionCo
-=======
-			payment:$scope.paymentAtTranfer
->>>>>>> 78ad693ec3b1995dae1d23a9eb3962ae87c879ee
+
 		}, function(data){
 			console.log(data);
 			$scope.refresh();
@@ -706,8 +703,10 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 			sqm += '|';
 			sqm += typeof(ss.area.To) == 'undefined' || ss.area.To == null ? 0 : ss.area.To;
 		}
-		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company, ss.customer_name, period, sqm];
+		var check_params = [ss.unit, ss.project.value + '', ss.type, ss.floor, ss.company, ss.customer_name, period, sqm];
 		var params_count = 0;
+		console.log('check params')
+		console.log(check_params)
 		for(var i =0; i < params_name.length; i++)
 		{
 			
@@ -862,11 +861,17 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 			console.log(data);
 			$scope.searchUnit(function(){
 				var unit_ids = [];
+				var invoice_accounts = [];
 				for(var i=0; i < $scope.units.length;i++)
+				{
 					unit_ids.push($scope.units[i].id);
+					invoice_accounts.push($scope.units[i].invoice_account);
+				}
 				console.log('units');
 				console.log(unit_ids)
-				Promotion.matchPromotion({action:'matchPromotion', condition_id:data.condition_id, unit_ids:unit_ids},function(data){
+				console.log('invoices');
+				console.log(invoice_accounts)
+				Promotion.matchPromotion({action:'matchPromotion', condition_id:data.condition_id, unit_ids:unit_ids, invoice_accounts:invoice_accounts},function(data){
 
 					console.log(data);
 					$scope.loadMatchPromotions();
@@ -1185,17 +1190,21 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 	$scope.promotion_payment_types = Promotion.getTypes(function(data){
 		console.log(data.find({id:1}));
 	});
+
+	var tmpData= getGetData();
+	console.log(tmpData);
+	$scope.invoice_account = tmpData.InvoiceAccount;
+	console.log($scope.invoice_account);
 	$scope.unit = Unit.find({unit_id:$routeParams.unit_id},function(data){
 		console.log(data);
 		
-		$scope.tranfer_promotions = Promotion.find({unit_id:$routeParams.unit_id}, function(data){
+		$scope.tranfer_promotions = Promotion.find({unit_id:$routeParams.unit_id, invoice_account:$scope.invoice_account}, function(data){
 			seed = 1;
 			for(var i = 0; i < data.length;i++)
 			{
 				promotion = data[i];
 				promotion.promotion_type = 'tranfer';
 				promotion.order =  seed;
-<<<<<<< HEAD
 				promotion.canPress = true;
 				promotion.canUpdate= false;
 				promotion.attemptChange = function()
@@ -1225,11 +1234,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 						self.canPress = true;
 						self.canUpdate = false;
 					})
-					
-=======
-				promotion.changeAmount = function()
-				{
->>>>>>> 78ad693ec3b1995dae1d23a9eb3962ae87c879ee
+	
 					console.log('id : ' + this.id + ', amount ' + this.amount)
 				}
 				seed++;
@@ -1238,7 +1243,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 			console.log(data)
 		});
 
-		$scope.pre_promotions = Promotion.findPre({item_id:$scope.unit.item_id}, function(data){
+		$scope.pre_promotions = Promotion.findPre({item_id:$scope.unit.item_id, invoice_account:$scope.invoice_account}, function(data){
 			seed = 1;
 			for(var i = 0; i < data.length;i++)
 			{
@@ -1250,7 +1255,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 			console.log(data);
 		})
 
-		$scope.ax_promotions = Promotion.findAx({item_id:$scope.unit.item_id}, function(data){
+		$scope.ax_promotions = Promotion.findAx({item_id:$scope.unit.item_id, invoice_account:$scope.invoice_account}, function(data){
 			seed = 1;
 			for(var i = 0; i < data.length;i++)
 			{
@@ -1310,6 +1315,7 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 
 	$scope.updatePromotionServer = function(promotion)
 	{
+		promotion.invoice_account = $scope.invoice_account;
 		if(promotion.promotion_type == 'preapprove')
 			Promotion.updatePrePromotion({action:'updatePrePromotion', promotion:promotion}, function(data){
 				console.log(data);

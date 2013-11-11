@@ -41,7 +41,8 @@ function fetchBillInformation($transaction_ids)
         * Promotion
         */
         //if(isset($data['main_appointment_log_id']))
-        $data['promotions'] = findAllPromotionFromUnitId($transaction_id);
+        $invoice_account = $data['InvoiceAccount'];
+        $data['promotions'] = findAllPromotionFromUnitId($transaction_id, $invoice_account);
        //$data['promotions_should'] = $data['promotions'][0];
       //  $data['promotions'] = $data['promotions'][0];
             //$data['promotions'] = findAllPromotionPreapproveFromAppoinmentId($data['main_appointment_log_id']);
@@ -254,7 +255,7 @@ function findInformation($pre_id)
                          * Old Promotion
                          */
                          //$dt['promotions'] = findAllPromotionPreapproveFromAppoinmentId($dt['main_appointment_log_id']);
-                         $dt['promotions'] = findAllPromotionFromUnitId($dt['transaction_id']);
+                         //$dt['promotions'] = findAllPromotionFromUnitId($dt['transaction_id']);
                          return $dt;
                      }
             }

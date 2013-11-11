@@ -433,6 +433,7 @@ function findMatchPromotion($condition, $join = false)
 		return $answers;
 	}else if(isset($condition->unit_id))
 	{
+
 		$where_sql = "WHERE unit_id = {$condition->unit_id}";
 		$sql = "SELECT promotion_condition_unit.*, promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id {$where_sql}";
 		
@@ -441,6 +442,20 @@ function findMatchPromotion($condition, $join = false)
 		{
 			$row['name'] = convertutf8($row['name']);
 		
+			$result_row = findPromotionConditionUnitUser($row['id'], $condition->invoice_account);
+			if(isset($result_row['is_select']))
+				$row['is_select'] = $result_row['is_select'];
+			else
+				$row['is_select'] = 0;
+
+			if(isset($result_row['is_issue']))
+				$row['issue'] = $result_row['is_issue'];
+			else
+			{
+				$row['issue'] = 0;
+				createPromotionConditionUnitUser($row['id'], $condition->invoice_account);
+			}
+
 			array_push($answers, $row);
 		}
 		return $answers;
@@ -456,19 +471,21 @@ function findMatchPromotion($condition, $join = false)
 			//print_r($row);
 			array_push($answers, $row);
 		}
+		echo "row count:".count($answers);
 		return $answers;
 	}
 }
 
-function matchPromotion($condition_id, $unit_ids)
+function matchPromotion($condition_id, $unit_ids, $invoice_accounts)
 {
 	$result_ids = array();
 	$condition = findConditionById($condition_id);
 	
 	for($i =0; $i < count($unit_ids); $i++)
 	{
-		$unit_id = $unit_ids[$i];
-		
+		$unit_id = $unit_ids[$i];;
+
+		$invoice_account = $invoice_accounts[$i];
 		$amount = $condition['amount'];
 		$sql = "INSERT INTO promotion_condition_unit(condition_id, unit_id, amount) 
 			VALUES({$condition_id}, {$unit_id}, {$amount});SELECT SCOPE_IDENTITY() as ins_id;";
@@ -476,9 +493,13 @@ function matchPromotion($condition_id, $unit_ids)
 		if($result){
 	        //sqlsrv_next_result($result); 
 	        //sqlsrv_fetch($result); 
-	        $row = DB_fetch_array($result);
-	        $create_id = $row['ins_id'];
-	        array_push($result_ids,  $create_id);
+	         $row = DB_fetch_array($result);
+	        $condition_unit_id = $row['ins_id'];
+
+			createPromotionConditionUnitUser($condition_unit_id, $invoice_account);
+
+
+	       	array_push($result_ids,  $condition_unit_id);
 	    }
 	}
 	return $result_ids;
@@ -539,13 +560,12 @@ function updatePromotionAmount($condition_unit_id, $amount)
 
 
 //for bill
-function findAllPromotionFromUnitId($id)
+function findAllPromotionFromUnitId($id,  $invoice_account)
 {
 	
 	//convertPromotionData
 	$condition = new stdClass;
 	$condition->unit_id = $id;
-
 
 	$answer = array();
 	$promotions = findMatchPromotion($condition);
@@ -553,7 +573,9 @@ function findAllPromotionFromUnitId($id)
 	foreach ($promotions as $key => $promotion) {
 		# code...
 
-		if($promotion['is_select'] || $promotion['issue'])
+
+		$condition_unit_user = findPromotionConditionUnitUser($promotion['id'], $invoice_account);
+		if($condition_unit_user['is_select'] || $condition_unit_user['issue'])
 			array_push($answer, convertPromotionData($promotion));
 	}
 
@@ -594,10 +616,13 @@ function findAllPromotionFromUnitId($id)
 	return objectToArray($answer);
 }
 
-function findAllPromotionPreapproveFromItemId($itemId)
+function findAllPromotionPreapproveFromItemId($itemId, $invoiceAccount)
 {
-	$sql = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}'";
+	$sql = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}' AND InvoiceAccount = '{$invoiceAccount}'";
+	//echo $sql;
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
+	
+
 	$promotions = array();
 	while($row = DB_fetch_array($result))
 	{
@@ -611,14 +636,47 @@ function findAllPromotionPreapproveFromItemId($itemId)
 		$answer->amount = $row['amount'];
 		$answer->issue = $row['issue'];
 		$answer->is_select = $row['is_select'];
+		//rod issue
+		/*$sql_rod = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}' AND InvoiceAccount = '$invoiceAccount' AND id_preapprove = {$answer->preapprove_id}";
+		$result_rod = DB_query($GLOBALS['connect'], converttis620($sql_rod));
+		$row_rod = DB_fetch_array($result_rod);
+		if(isset($row_rod['issue']))
+		{
+			$answer->issue = $row_rod['issue'];
+			$answer->is_select = $row_rod['is_select'];
+		}else
+		{
+			
+			$answer->issue = 0;
+			$answer->is_select = 0;	
+		}*/
 		array_push($promotions, $answer);
 	}
+	if(count($promotions) > 0)
+		return $promotions;
+	else
+	{
+		//$sql = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}' AND InvoiceAccount = '{$invoiceAccount}'";
 
-	return $promotions;
+		$sql = "SELECT DISTINCT id_promotion, id_preapprove, amount FROM PreapPromo WHERE ItemID = '{$itemId}'";
+		$result = DB_query($GLOBALS['connect'], converttis620($sql));
+		while($row = DB_fetch_array($result))
+		{
+			$insert_sql = "INSERT INTO PreapPromo (id_promotion, id_preapprove, amount, itemID, InvoiceAccount, issue, is_select)
+				VALUES ({$row['id_promotion']}, {$row['id_preapprove']}, {$row['amount']}, '{$itemId}', '{$invoiceAccount}', 0, 0);
+
+			";
+			$result2 = DB_query($GLOBALS['connect'], converttis620($insert_sql));
+
+		}
+		return findAllPromotionPreapproveFromItemId($itemId, $invoiceAccount);
+	}
 }
 
-function updatePromotionPreapprove($promotion_id, $is_select, $issue)
+function updatePromotionPreapprove($promotion_id, $invoice_account, $is_select, $issue)
 {
+
+	//change it to insert or update?
 	$sql = "UPDATE PreapPromo SET PreapPromo.is_select = {$is_select}, issue = {$issue} WHERE id_pro_pre = $promotion_id";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	return $sql;
@@ -626,22 +684,23 @@ function updatePromotionPreapprove($promotion_id, $is_select, $issue)
 
 function updatePromotionAx($rec_id,$is_select,$issue)
 {
-	$sql = "UPDATE Promotion_AX SET [SELECT PROMOTION] = {$is_select} WHERE RECID = {$rec_id}";
+	$sql = "UPDATE Promotion_AX SET [SELECT PROMOTION] = {$is_select} WHERE RECID = '{$rec_id}'";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 
-	$sql2 = "UPDATE promotion_ax_type SET issue = {$issue} WHERE id = {$rec_id}";
+	$sql2 = "UPDATE promotion_ax_type SET issue = {$issue} WHERE id = '{$rec_id}'";
 	$result = DB_query($GLOBALS['connect'], converttis620($sql2));
 
 	return "sql1 = {$sql}, sql2 = {$sql2}";
 }
 
-function updatePromotionTranfer($promotion_id, $is_select, $issue)
+function updatePromotionTranfer($promotion_id, $invoice_account, $is_select, $issue)
 {
-	$sql = "UPDATE promotion_condition_unit SET is_select = {$is_select}, issue = {$issue} WHERE id = $promotion_id";
-	$sql2 = "UPDATE promotion_ax_type SET issue = {$issue} WHERE id = {$promotion_id}";
-	$result = DB_query($GLOBALS['connect'], converttis620($sql));
-	$result = DB_query($GLOBALS['connect'], converttis620($sql2));
-	return $sql;
+	//$sql = "UPDATE promotion_condition_unit SET is_select = {$is_select}, issue = {$issue} WHERE id = $promotion_id";
+//	$sql2 = "UPDATE promotion_ax_type SET issue = {$issue} WHERE id = {$promotion_id}";
+	//$result = DB_query($GLOBALS['connect'], converttis620($sql));
+//	$result = DB_query($GLOBALS['connect'], converttis620($sql2));
+	//return $sql;
+	return updatePromotionConditionUnitUser($promotion_id, $invoice_account, $is_select, $issue);
 }
 
 function createPromotionConfirmLog($name, $amount, $unit_id, $type, $promotion_ref_type, $promotion_ref_id, $option1='', $option2='')
@@ -782,6 +841,71 @@ function getDiscountTypes($is_array = false)
 
 	return $types;
 
+}
+
+function getSpacialDiscountTypes($is_array = false)
+{
+	$types = array();
+	$type = new stdClass;
+	$type->id = 0;
+	$type->code = 'baseprice';
+	$type->name = "Base Price";
+	$types[$type->id] = $type;
+	if(!$is_array)
+		$types[$type->code] = $type;
+
+	$type = new stdClass;
+	$type->id = 1;
+	$type->code = 'area';
+	$type->name = "Area";
+	$types[$type->id] = $type;
+	if(!$is_array)
+		$types[$type->code] = $type;
+
+	return $types;
+
+}
+
+
+
+
+
+function createPromotionConditionUnitUser($condition_unit_id, $invoiceAccount, $is_select = 0, $is_issue = 0)
+{
+	$sql = "INSERT INTO promotion_condition_unit_user(condition_unit_id, invoice_account, is_select, is_issue) 
+		VALUES($condition_unit_id, '{$invoiceAccount}', $is_select, $is_issue);";
+
+	$result = DB_query($GLOBALS['connect'], $sql);
+	return $result;
+}
+
+function updatePromotionConditionUnitUser($condition_unit_id, $invoiceAccount, $is_select, $is_issue)
+{
+	$sql = "UPDATE promotion_condition_unit_user
+		SET is_select = $is_select,
+		is_issue = $is_issue
+		WHERE condition_unit_id = $condition_unit_id AND invoice_account = '{$invoiceAccount}'
+	";
+
+	echo $sql;
+	$result = DB_query($GLOBALS['connect'], $sql);
+	return $result;
+}
+
+function findPromotionConditionUnitUser($condition_unit_id, $invoiceAccount)
+{
+	$sql = "SELECT * FROM promotion_condition_unit_user WHERE condition_unit_id = $condition_unit_id AND invoice_account = '{$invoiceAccount}'";
+	$result = DB_query($GLOBALS['connect'], $sql);
+
+	$row = DB_fetch_array($result);
+	return $row;
+}
+
+function deletePromotionConditionUnitUser($condition_unit_id, $invoiceAccount)
+{
+	$sql = "DELETE FROM promotion_condition_unit_user WHERE condition_unit_id = $condition_unit_id AND invoice_account = '{$invoiceAccount}'";
+	$result = DB_query($GLOBALS['connect'], $sql);
+	return $result;
 }
 
 function convertPromotionData($row)

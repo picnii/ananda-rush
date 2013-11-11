@@ -115,6 +115,8 @@ function getPostData()
 function getGetData()
 {
 	var json_str = $('#json-get-data').html();
+	console.log(json_str);
+	
 	return JSON.parse(json_str);
 }
 
@@ -139,6 +141,7 @@ function saveTempData(data)
 function loadTempData()
 {
 	var json = $('#json-controller-data').html();
+	console.log(json);
 	return JSON.parse(json);
 }
 

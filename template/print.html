@@ -10,7 +10,7 @@
 		ราคาประเมิน : {{bill.BasePrice}} ค่าปลอด : {{bill.Repayment}}
 	</div>
 		<div class="row" >
-			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน ตุลาคม 2556 เท่านั้น</h4></div>
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน พฤศจิกายน 2556 เท่านั้น</h4></div>
 			<div class="span12" align="center"> <h5>โครงการ{{bill.ProjectName}} </h5>
 			</div>
 			<div  class="span12" align="center">
@@ -34,8 +34,8 @@
 			
 			<div class="offset6 span1">แบบบ้าน</div>
 			<div class="span2" style="border-bottom-style:groove;" align="center"> {{bill.HouseType | ifBlank}}.</div>
-			<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย /ต.ร.ม</div>
-			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}}</div>
+			<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย</div>
+			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}} ต.ร.ม</div>
 		</font>
 		</div>
 		
@@ -216,8 +216,8 @@
 						3. สำเนาใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
 			
 						<strong>
-							บัญชี &nbsp;"บริษัท อนันดา ดีเวลลอปเม้น  จำกัด (มหาชน)" ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
-							หรือ &nbsp;&nbsp;&nbsp;"บริษัท อนันดา ดีเวลลอปเม้น  จำกัด (มหาชน) " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
+							บัญชี &nbsp;"{{bill.CompanyName}}" ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
+							หรือ &nbsp;&nbsp;&nbsp;"{{bill.CompanyName}} " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
 							บัญชี:&nbsp; "{{bill.Regulation}}" ธนาคาร...................สาขา.........................................(ออมทรัพย์)เลขที่....................................<br><br>
 
 						</strong>
@@ -278,12 +278,12 @@
 				
 				<div class="offset1 span5">วงเงินกู้ (&CO)</div>
 				<div class="span1">จำนวน</div>
-				<div class="span2" align="center">{{bill.BankLoanCustomerAndCO | zeroBlank}}</div>
+				<div class="span2" align="center">{{bill.BankLoanCustomerAndCO | zeroDash}}</div>
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">ประกัน และ/หรือ ตกแต่ง</div>
 				<div class="span1">จำนวน</div>
-				<div class="span2" align="center">{{(bill.BankLoanInsurance + bill.BankLoanDecorate) | zeroBlank}}</div>
+				<div class="span2" align="center">{{(bill.SumMini) | zeroDash}}</div>
 				<div class="span3">บาท</div>
 				
 				<div class="offset1 span5">ซึ่งลูกค้าได้นัดโอนกรรมสิทธิ์ห้องชุดในวันที่</div>
@@ -296,14 +296,14 @@
 				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
 				<div class="span2" align="center"  style="text-align:right;"><b>{{bill.BankLoanRoom -bill.PromotionCo | zeroDash}}</b> </div>
 				<div class="span1">บาท</div>
-				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเล็ค ดังต่อไปนี้</div>
+				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเช็ค ดังต่อไปนี้</div>
 				
-				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b>ธนาคาร กรุงไทย จำกัด มหาชน</b></div>
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "ธนาคาร กรุงไทย จำกัด (มหาชน)"</b></div>
 				<div class="span2" align="center" style="text-align:right;">{{bill.Repayment| zeroDash}}</div>
 				<div class="span1">บาท</div>
 				
-				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "บริษัท อนันดา ดีเวลลอปเม้นท์  จำกัด"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment- getSumCompanyPayment(bill.variables, bill.payments) - bill.Repayment| zeroDash}} </div>
+				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.CompanyName}}"</b></div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment - bill.Repayment| zeroDash}} </div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.Regulation}}"</b></div>
@@ -314,11 +314,11 @@
 				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment | zeroDash}}</div>
 				<div class="span1">บาท</div>
 				
-				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>{{bill.CustomerName}}</b></div>
+				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>"{{bill.CustomerName}}"</b></div>
 				<div class="span2" align="center"  style="text-align:right;">{{bill.bank_pay_back | zeroDash}}</div>
 				<div class="span1">บาท</div><br><br><br>
 				
-				<div class="span9">6. เช็คสั่งจ่าย"&CO" <b></b></div>
+				<div class="span9">6. เช็คสั่งจ่าย <b>"&CO"</b> <b></b></div>
 				<div class="span2" align="center"  style="text-align:right;"> {{bill.PromotionCo| zeroDash}}</div>
 				<div class="span1">บาท</div><br><br><br>
 				
@@ -330,7 +330,7 @@
 			</div><br><br>
 			
 			<div class="row">
-				<div class="offset1 span11"> จึงเรียบมาเพื่อทราบและโปรดดำเนินการ</div>
+				<div class="offset1 span11"> จึงเรียนมาเพื่อทราบและโปรดดำเนินการ</div>
 				<br><br>
 				<div class="offset6 span4" align="center">ขอแสดงความนับถือ</div>
 				<br><br><br><br>
