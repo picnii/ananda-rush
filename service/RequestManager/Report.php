@@ -61,7 +61,7 @@ xmlns=\"http://www.w3.org/TR/REC-html40\">
 
 	";
 
-	$reportAction = array('reportPromotions');
+	$reportAction = array('reportPromotions', 'reportTranfer');
 
 	if(isset($_GET['action']))
 	{
@@ -74,6 +74,11 @@ xmlns=\"http://www.w3.org/TR/REC-html40\">
 		{
 			$response = actionReportPromotions();
 		}
+
+    if($action == 'reportTranfer')
+    {
+      $response = actionReportTranfer();
+    }
 
 	}
 

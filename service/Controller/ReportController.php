@@ -120,7 +120,10 @@
         return $promotionInfo;
     }
 
-
+    function actionReportTranfer()
+    {
+        
+    }
 
 
 

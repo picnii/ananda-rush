@@ -1,7 +1,7 @@
 <?php
 	//
 	//actionPromotion($itemId, $invoiceAcount)
-    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId', 'updatePrePromotion', 'updateTranferPromotion', 'updateAxPromotion', 'createConfirmPromotion', 'deleteConfirmPromotion', 'isConfirmPromotion', 'changePromotionAmount');
+    $promotionAction = array('promotions', 'selectPromotion', 'promotionTypes', 'promotionPhases', 'promotionPaymentTypes', 'createPromotion', 'listPromotions', 'createCondition', 'listConditions', 'deleteCondition', 'matchPromotion', 'findAllUnitPromotion', 'countAllUnitPromotion', 'promotion', 'updatePromotion', 'deletePromotion', 'listAx', 'deletePromotionAx', 'createPromotionAx', 'findAllPromotionFromCondition' ,'doTestPromotion', 'findAllPrePromotionFromItemId', 'findAllPromotionAxByItemId', 'updatePrePromotion', 'updateTranferPromotion', 'updateAxPromotion', 'createConfirmPromotion', 'deleteConfirmPromotion', 'isConfirmPromotion', 'changePromotionAmount', 'spacialPromotionTypes');
 
 	if(isset($_GET['action']))
 	{
@@ -36,6 +36,8 @@
 			$response = actionFindAllPrePromotionFromItemId($_GET['item_id'], $_GET['invoice_account']);
 		if($action == 'findAllPromotionAxByItemId')
 			$response = actionFindAllPromotionAxByItemId($_GET['item_id']);
+		if($action == 'spacialPromotionTypes')
+			$response = actionPromotionSpacialTypes();
 
 
 		

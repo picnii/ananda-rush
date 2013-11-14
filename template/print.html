@@ -186,7 +186,7 @@
 						
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
-						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.BankLoanName | bankFilterName}}"</b> </div>
+						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.RepaymentBank}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowBankPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.CompanyName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowCompanyPayment(bill.variables, bill.payments) | zeroDash}}</div>
@@ -216,8 +216,8 @@
 						3. สำเนาใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
 			
 						<strong>
-							บัญชี &nbsp;"{{bill.CompanyName}}" ธ.กรุงเทพ/สาขาบางพลี(ออมทรัพย์)เลขที่ 216-4-15529-9 SWIFT CODE: BKKBTHBK <br>
-							หรือ &nbsp;&nbsp;&nbsp;"{{bill.CompanyName}} " ธ.กรุงไทย/สาขาบางพลี(ออมทรัพย์)เลขที่ 254-0-18199-6 SWIFT CODE: KRTHTHBK<br>
+							บัญชี &nbsp;"{{bill.CompanyName}}" {{bill.CompanyBankName}}/{{bill.CompanyBankInfo}} <br>
+							หรือ &nbsp;&nbsp;&nbsp;"{{bill.CompanyName}} " {{bill.CompanyBankName}}/{{bill.CompanyBankInfo}} <br>
 							บัญชี:&nbsp; "{{bill.Regulation}}" ธนาคาร...................สาขา.........................................(ออมทรัพย์)เลขที่....................................<br><br>
 
 						</strong>
@@ -298,12 +298,12 @@
 				<div class="span1">บาท</div>
 				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเช็ค ดังต่อไปนี้</div>
 				
-				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "ธนาคาร กรุงไทย จำกัด (มหาชน)"</b></div>
+				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.RepaymentBank}}"</b></div>
 				<div class="span2" align="center" style="text-align:right;">{{bill.Repayment| zeroDash}}</div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.CompanyName}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment - bill.Repayment| zeroDash}} </div>
+				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment - bill.Repayment - bill.PromotionCo| zeroDash}} </div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.Regulation}}"</b></div>

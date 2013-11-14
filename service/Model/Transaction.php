@@ -81,7 +81,7 @@ function findPreID($tran_item){
 
 function findOldInformation($transaction_id)
 {
-    $sql = "SELECT *, m.projID as project_code, tap.id as main_appointment_log_id , tapl.payment as appoint_payment, tapl.promotion_co 
+    $sql = "SELECT *, m.projID as project_code, tap.id as main_appointment_log_id , tapl.payment as appoint_payment, tapl.promotion_co, mp.repayment_bank 
     FROM master_transaction as m LEFT JOIN Sale_Transection as s on m.ItemId = s.ItemID 
     LEFT JOIN master_project as mp ON m.projID = mp.proj_code    
     LEFT JOIN tranfer_appointment as tap ON tap.transaction_id = m.transaction_id
@@ -107,14 +107,20 @@ function findCompanyInfo($row_transaction)
     $comp_code_lower = $row_transaction['CompanyCode'];
     $comp_code_sql = strtoupper($comp_code_lower);
 
-    $sql = "SELECT * from master_company WHERE comp_code = '{$comp_code_sql}'";
+    $sql = "SELECT * from master_company
+          LEFT JOIN master_company_bank ON master_company_bank.company_id = master_company.comp_id
+          WHERE comp_code = '{$comp_code_sql}'";
     //echo $sql;
     //echo "<br/>";
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
 
      if(isset($row['comp_code']))
+    {
+        $bank_name_row = getBankInfo($row['bank_id']);
+        $row['company_bank_name'] = $bank_name_row['bank_name'];
         return $row;
+    }
     else
         return null;
 }
@@ -179,7 +185,7 @@ function findInformation($pre_id)
                      $SQL1.=",t.IVZ_LOANREPAYMENTMINIMUNAMT, t.IVZ_LOANREPAYMENTPERC , t.IVZ_PROJSALESTITLEDEEDNUMBER, t.IVZ_ESTIMATEPRICE ";
                      $SQL1.=",b.id_preapprove_bank,b.bank_code,b.Branch,b.status_user_select,ar.appoint_reason1_id as preapp_appoint_reason1_id,ar.appoint_reason1_name as preapp_appoint_reason1_name,";
                      $SQL1.="pri.id_preapprove_bank as priceApp_id_preapprove_bank,pri.id_credit_approval,cr.id_credit_approval,cr.name_credit_approval,mp.* ";
-
+                     $SQL1.=" ,mp.repayment_bank ";
                      $SQL1.=" ,tapl.payment_type , tapl.appoint_time, tapl.people, tapl.call_time, tap.id as main_appointment_log_id, tapl.payment as appoint_payment , tapl.promotion_co  ";
                      //tap.id as main_appointment_log_id 
 
@@ -194,6 +200,7 @@ function findInformation($pre_id)
 
                      $SQL1.="LEFT JOIN tranfer_appointment tap on tap.transaction_id = t.transaction_id ";
                      $SQL1.="LEFT JOIN tranfer_appointment_log tapl on tapl.id = tap.log_id ";
+
 
                      $SQL1.="where p.id_preapprove = '".$pre_id."' and b.status_user_select = '2' order by p.lastupdate DESC ";
                      $res = DB_query($GLOBALS['connect'],$SQL1);
@@ -826,6 +833,9 @@ function findAllBill($q)
 
    }
 
+
+
+
    function getSettAmount($bill)
    {
         if(isset($bill->SETTAMOUNT))
@@ -1003,6 +1013,7 @@ function findAllBill($q)
         $variable = getBillVariable('SumBankDiff', '-',  0);
 
         array_push($bill->variables, $variable);
+
        // $return_bank->test = "sompo";
         if(isset($return_bank))
             return $return_bank;
@@ -1262,7 +1273,6 @@ function findAllBill($q)
         array_push($bill->variables, $variable);*/
 
         $isBankPay = getIsBank($data);
-    ;
 
         if($isBankPay)
         {   
@@ -1355,6 +1365,19 @@ function findAllBill($q)
         $bill->promotions = array();
         array_push($bill->promotions, $data->promotions);
 
+        $repayment_bank = getBankInfo($data->repayment_bank);
+        $variable = getBillVariable("RepaymentBank", "-", $repayment_bank['bank_name']);
+        array_push($bill->variables, $variable);
+        
+        $variable = getBillVariable("CompanyBankName", "-", convertutf8($data->company_bank_name));
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("CompanyBankInfo", "-", convertutf8($data->bank_info));
+        array_push($bill->variables, $variable);
+
+        
+
+
         $promotions = array();
         foreach ($data->promotions as $promotion) {
              
@@ -1391,6 +1414,13 @@ function findAllBill($q)
         return $sample; 
     }
 
+    function getBankInfo($bank_id)
+    {
+        $sql = "SELECT bank_name FROM master_bank WHERE bank_id = {$bank_id}";
+        $result = DB_query($GLOBALS['connect'],$sql);
+        $row = DB_fetch_array($result);
+        return $row;
+    }
 
 
 ?>

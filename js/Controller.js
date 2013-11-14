@@ -666,6 +666,8 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	$scope.promotions = Promotion.query();
 	$scope.promotion_payment_types = Promotion.getTypes();
 	$scope.phases = Promotion.getPhases();
+	$scope.spacial_payments = Promotion.spacialTypes();
+
 
 	$scope.promotion_types =[
 		{id:-1, name:"ALL"},
@@ -679,7 +681,9 @@ function PromotionCtrl($scope, $rootScope, $location, $filter, Promotion, Unit, 
 	$scope.PROMOTION_PRE_APPROVE = $scope.promotion_types[3];
 	$scope.PROMOTION_TRANFER= $scope.promotion_types[4];
 
-	$scope.promotion.type = $scope.PROMOTION_NOT_AX 
+	$scope.promotion.type = $scope.PROMOTION_TRANFER 
+
+
 
 	$scope.projects = Type.getProjectsList();
 	$scope.units = []

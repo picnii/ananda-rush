@@ -32,6 +32,12 @@
 		return $answer;
 	}
 
+	function actionPromotionSpacialTypes()
+	{
+		
+		return getSpacialDiscountTypes(true);
+	}
+
 	function actionPromotionPaymentTypes()
 	{
 		return getDiscountTypes(true);
