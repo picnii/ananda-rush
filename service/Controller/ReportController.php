@@ -1,131 +1,203 @@
 <?php
 	require_once('util.php');
     $isReport = true;
-	//use for preview what bills will be liked
-	function actionReportAppoinment()
-	{
-		/*
-		$data = array(
-			'unit'=>'1',
-			'appoint'=>'asd',
-			'logs'=> 'cool'
-		);
-		*/
-		$bills = getSaleDatas(array(1302));
-		$data = new stdClass;
-
-        //print_r($bills);
-
-        $bill = $bills[0];
-
-		// id & owner section
-		$data->id = 1;
-
-		if(isset($bill->ItemID))
-            $data->itemNumber = $bill->ItemID;
-        else
-            $data->itemNumber = '?';
-
-		if(isset($bill->plangNumber))
-            $data->plangNumber = $bill->plangNumber;
-        else
-            $data->plangNumber = '?';
-
-		$data->customerName = getCustomerNameFromSaleData($bill);
-
-		if(isset($bill->people))
-            $data->owner = $bill->people;
-        else
-            $data->owner = '?';
-
-        $data->land = getLandInfo($bill);
-        $data->house = getHouseInfo($bill);
-        $data->fence = getFenceInfo($bill);
-        $data->estimatePriceSum = $data->land->estimateLandPriceSum + $data->house->priceSum + $data->fence->priceSum;
-        
-        // about price section
-		//if(isset($bill->IVZ_ESTIMATEPRICE))
-        //    $data['estimatePriceSum'] = $bill->IVZ_ESTIMATEPRICE;
-        //else
-        //    $data['estimatePriceSum'] = '?';
-
-        $data->salePrice = getPriceOnContractFromSaleData($bill);
-        $data->loanRepayment = isset($bill->IVZ_LOANREPAYMENTMINIMUNAMT) ? $bill->IVZ_LOANREPAYMENTMINIMUNAMT : '?';
-        $data->companyPayment = getCompanyPaymentInfo($data);
-        $data->promotion = getPromotionInfo($bill);
-        
-		return $data;
-	}
-
-    function getLandInfo($bill){
-        $landInfo = new stdClass;
-
-        $landInfo->deedNumber = isset($bill->deedNumber) ? $bill->deedNumber : '?';
-        $landInfo->landNumber = isset($bill->landNumber) ? $bill->landNumber : '?';
-        $landInfo->surveyNumber = isset($bill->surveyNumber) ? $bill->surveyNumber : '?';
-        $landInfo->landSize = getAreaOnContractFromSaleData($bill);
-        $landInfo->estimateLandPricePerUnit = isset($bill->estimateLandPricePerUnit) ? $bill->estimateLandPricePerUnit : '?';
-        $landInfo->estimateLandPriceSum = isset($bill->estimateLandPriceSum) ? $bill->estimateLandPriceSum : '?';
-
-        return $landInfo;
-    }
-
-    function getHouseInfo($bill){
-        $houseInfo = new stdClass;
-
-        $houseInfo->number = isset($bill->IVZ_PROJSALESTITLEDEEDNUMBER) ? $bill->IVZ_PROJSALESTITLEDEEDNUMBER : '?';
-        $houseInfo->type = getItemTypeFromSaleData($bill);
-        $houseInfo->area =  getAreaFromSaleData($bill);
-        $houseInfo->pricePerArea =  5850;
-        $houseInfo->estimatePriceSum = $houseInfo->area * $houseInfo->pricePerArea;
-        $houseInfo->depreciate = $houseInfo->estimatePriceSum * 0.01;
-        $houseInfo->priceSum = $houseInfo->estimatePriceSum - $houseInfo->depreciate;
-
-        return $houseInfo;
-    }
-
-    function getFenceInfo($bill){
-        $fenceInfo = new stdClass;
-
-        $fenceInfo->area = 30;
-        $fenceInfo->pricePerArea = 1400;
-        $fenceInfo->estimatePriceSum = $fenceInfo->area * $fenceInfo->pricePerArea;
-        $fenceInfo->depreciate = $fenceInfo->estimatePriceSum * 0.01;
-        $fenceInfo->priceSum = $fenceInfo->estimatePriceSum - $fenceInfo->depreciate;
-
-        return $fenceInfo;
-    }
-
-    function getCompanyPaymentInfo($data){
-        $paymentInfo = new stdClass;
-
-        $paymentInfo->transferFee = $data->land->estimateLandPriceSum * 0.01;
-        $paymentInfo->tax = $data->salePrice * 0.01;
-        $paymentInfo->businessFee = $data->salePrice * 0.033;
-        $paymentInfo->summationFee = $paymentInfo->transferFee + $paymentInfo->tax + $paymentInfo->businessFee;
-
-        $paymentInfo->waterMeter = 7020;
-        $paymentInfo->powerMeter = 6550;
-        $paymentInfo->contribution = 3000;
-        $paymentInfo->powerMeterNet = $paymentInfo->powerMeter - $paymentInfo->contribution;
-
-        return $paymentInfo;
-    }
-
-    function getPromotionInfo($bill){
-        $promotionInfo = new stdClass;
-
-        print_r($bill->promotions);
-
-        return $promotionInfo;
-    }
-
-    function actionReportTranfer()
+	
+    function actionReportTranfer($unitID=null)
     {
-        
+        return convertToTranferTable(getReportTranfer($unitID));
     }
 
+    function convertToTranferTable($response)
+    {
+        $header = array('ลำดับ', 'Item no.', 'แปลงขายเลขที่', 'ชื่อลูกค้า', 'กรรมสิทธิ์', 'โฉนด', 'เลขที่ดิน', 'หน้าสำรวจ', 'เนื้อที่ดิน ตรว.', 'ตรว. ละ', 'รวม (ที่ดิน)', 
+            'บ้านเลขที่', 'แบบบ้าน', 'พื้นที่ใช้สอย (ตรม.)', 'ตรม. ละ', 'ราคาประเมิณ', 'หักค่าเสื่อม', 'รวม', 'ออกเมื่อวันที่', 'ปี', 
+            'พื้นที่รั้ว (ตรม.)', 'ตรม. ละ', 'ราคาประเมิณ', 'หักค่าเสื่อม', 'รวม', 
+            'รวมราคาประเมิณ', 'ราคาขาย (ที่ดิน + บ้าน)', 'ค่าปลอด KK', 'ค่าโอน', 'ภาษี', 'ธุรกิจเฉพาะ', 'รวมค่าใช้จ่าย', 'ค่ามิเตอร์น้ำ', 'ค่ามิเตอร์ไฟ', 'หักสมทบ', 'หลังหักเงินค่าสมทบ', 
+            'ส่วนลดพิเศษ', 'มูลค่า', 'รวมสุทธิ', 'สำนักงานที่ดิน', 'วันที่นัดโอนกรรมสิทธิ์', 'สถานะการปลอดโฉนด', 'เวลา', 'จำนวน', 'วันที่โอนจริง', 
+            'สถานะลูกค้า', 'สถานะรับโอน', 'ธนาคาร', 'สาขา', 'วงเงินค่าห้อง', 'วงเงินอื่น', 'วงเงินจำนองรวม', 'มอบ/ไปเอง', 'CS BU', 'remark');
+        print_r($response);
 
+        //create table tag
+        $table = "<table>";
+        //create tr in head using header
+        $table = $table."<thead>";
+        $table = $table."<tr>";
+        foreach ($header as $key => $value) {
+            # code...
+            $table = $table."<td>";
+            $table = $table.$value;
+            $table = $table."</td>";
+        }
+        $table = $table."</tr>";
+        $table = $table."</thead>";
+
+        //create content using response
+        $table = $table."<tbody>";
+        foreach ($response as $key => $row) {
+            # code...
+
+            //$unit = findUnitById($row['unit_id']);
+
+            $table = $table."<tr>";
+         
+            $table = $table."<td>";
+            $table = $table.$row->id;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->itemNumber;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->plangNumber;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerName;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->owner;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->land->deedNumber;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->land->landNumber;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->land->surveyNumber;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->land->landSize;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->land->estimateLandPricePerUnit;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->land->estimateLandPriceSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->number;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->type;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->area;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->pricePerArea;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->estimatePriceSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->depreciate;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->priceSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->built;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->house->old;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->fence->area;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->fence->pricePerArea;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->fence->estimatePriceSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->fence->depreciate;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->fence->priceSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->estimatePriceSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->salePrice;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->loanRepayment;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->transferFee;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->tax;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->businessFee;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->summationFee;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->waterMeter;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->powerMeter;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->contribution;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->companyPayment->powerMeterNet;
+            $table = $table."</td>";
+
+            /*
+            $table = $table."<td>";
+            $table = $table.$row->promotion;
+            $table = $table."</td>";
+            */
+                   
+            $table = $table."</tr>";
+        }
+
+        $table = $table."</tbody>";
+        //end table tag
+        $table = $table."</table>";
+        return $table;
+    }
 
     function actionReportPromotions()
     {
