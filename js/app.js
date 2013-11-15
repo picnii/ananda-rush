@@ -63,7 +63,8 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
     {
       
       input = Number(input);
-      input = Math.round(input / 10 ) *10
+      //input = Math.round(input / 10 ) *10
+      input = Math.round(input);
       return input.formatMoney(2,',','.'); 
     }else if(typeof(input)!="string" || input == "NaN")
       return "-";

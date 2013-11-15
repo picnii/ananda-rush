@@ -592,8 +592,12 @@ function findAllPromotionFromUnitId($id,  $invoice_account)
 
 
 		$condition_unit_user = findPromotionConditionUnitUser($promotion['id'], $invoice_account);
-		if($condition_unit_user['is_select'] || $condition_unit_user['issue'])
+
+		if($condition_unit_user['is_select'] || $condition_unit_user['is_issue'])
+		{
+			
 			array_push($answer, convertPromotionData($promotion));
+		}
 	}
 
 	$unit = findUnitById($id);

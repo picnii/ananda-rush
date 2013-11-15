@@ -860,7 +860,7 @@ function convertBillPrint($scope, data)
 	
 		var bill_vars = bill.variables;
 
-
+		bill.realMinstry =0;
 
 
 		bill.getFormulaValue  = function(formula)
@@ -951,9 +951,11 @@ function convertBillPrint($scope, data)
 			//if(bill.UnitId == 2174)
 				//console.log(bill);
 			var A = payment_base.customer_room_payment + payment_base.customer_meter_payment;
+			if(payment_base.niti_payment != 0)
+				A += bill.realMinstry ;
 			//console.log("A:"+A);
 			if(!$scope.isNoMinistry)
-				return A - bill.getShowBankPayment(variables, payments) + payment_base.niti_payment; 
+				return A - bill.getShowBankPayment(variables, payments) ; 
 			else
 			{
 				var old = A - bill.getShowBankPayment(variables, payments);
@@ -962,7 +964,7 @@ function convertBillPrint($scope, data)
 				var payment_base = bill.getPaymentBase(variables, payments);
 				var estimate_payment = payment_base.tranfer_payment;
 				
-				var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;
+				var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment ;
 				
 				return old + answer;
 			}
@@ -1121,6 +1123,14 @@ function convertBillPrint($scope, data)
 			else
 				bill.isCashTranfer = false;
 
+			if(bill.isCashTranfer)
+			{
+				//set argorn loan = 0;tax_payment
+				setPaymentByPaymentId($scope.billPayment.tax_payment_id, payments, variables, ["","",0]);
+				tax_payment = 0;
+			}
+
+
 			var cur_date = new Date();
 			var cur_month = cur_date.getMonth();
 			var cur_year = cur_date.getYear() +   (1900 + 543);
@@ -1152,6 +1162,17 @@ function convertBillPrint($scope, data)
 			var estimate_payment = payment_base.tranfer_payment;
 			if($scope.isNoMinistry)
 				payment_base.add_up_for_ministry_payment = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;// - bill.getCashPayment(variables, payments);
+			else if(niti_payment != 0)
+			{
+				var estimate_payment = payment_base.tranfer_payment;
+			
+				var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;
+				
+				
+				var real_answer =  answer - 500;
+				console.log('add up niti')
+				payment_base.add_up_for_ministry_payment = real_answer;
+			}
 			else
 				payment_base.add_up_for_ministry_payment = 0;
 				
@@ -1168,6 +1189,134 @@ function convertBillPrint($scope, data)
 			return payment_base;
 		}
 
+
+
+		
+
+		bill.getChequeRepayment =  function(variables, payments)
+		{
+
+			if($scope.isNoRepayment)
+				return 0;
+			else
+			{
+				
+				return bill._getResult(bill.BankLoanRoom, bill.Repayment)
+			}
+		}
+
+		bill._getLeft = function(checker, answer)
+		{
+			if(checker- answer> 0)
+				return checker - answer;
+			else
+				return 0;
+		}
+
+		bill._getResult = function(checker, answer)
+		{
+			if(checker - answer  > 0)
+					return answer;
+				else
+					return checker;
+		}
+
+
+		bill.getChequeAnanda = function(variables, payments)
+		{
+			var answer =  bill.getPaymentBase(variables, payments).meter_payment + bill.getPaymentBase(variables, payments).room_payment + bill.getPaymentBase(variables, payments).add_up_for_ministry_payment - bill.getChequeRepayment(variables, payments) ;
+			var checker = bill._getLeft(bill.BankLoanRoom, bill.Repayment)
+			if(!$scope.isNoRepayment)
+				return bill._getResult(checker, answer);
+			else
+				return bill._getResult(checker, answer) + bill._getResult(bill.BankLoanRoom, bill.Repayment);
+			
+		}
+
+
+		bill.getChequeRegulation = function(variables, payments)
+		{
+				//var repayment_left = bill._getLeft(bill.BankLoanRoom, bill.Repayment);
+			var answer_ananda =  bill.getPaymentBase(variables, payments).meter_payment + bill.getPaymentBase(variables, payments).room_payment + bill.getPaymentBase(variables, payments).add_up_for_ministry_payment - bill.getChequeRepayment(variables, payments) ;
+			var checker_ananda = bill._getLeft(bill.BankLoanRoom, bill.Repayment)
+
+			var answer = bill.getPaymentBase(bill.variables, bill.payments).share_payment
+			var checker = bill._getLeft(checker_ananda, answer_ananda )
+			return bill._getResult(checker, answer);
+		}
+
+		bill.getChequeRegulation2 = function(variables, payments)
+		{
+			var answer_ananda =  bill.getPaymentBase(variables, payments).meter_payment + bill.getPaymentBase(variables, payments).room_payment + bill.getPaymentBase(variables, payments).add_up_for_ministry_payment - bill.getChequeRepayment(variables, payments) ;
+			var checker_ananda = bill._getLeft(bill.BankLoanRoom, bill.Repayment)
+
+			var answer_regulation = bill.getPaymentBase(bill.variables, bill.payments).share_payment
+			var checker_regulation = bill._getLeft(checker_ananda, answer_ananda )
+
+			var answer = bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment;
+			var checker = bill._getLeft(checker_regulation, answer_regulation )
+			return bill._getResult(checker, answer);
+		}
+
+		bill.getChequeCustomer = function(variables, payments)
+		{
+
+			var answer_ananda =  bill.getPaymentBase(variables, payments).meter_payment + bill.getPaymentBase(variables, payments).room_payment + bill.getPaymentBase(variables, payments).add_up_for_ministry_payment - bill.getChequeRepayment(variables, payments) ;
+			var checker_ananda = bill._getLeft(bill.BankLoanRoom, bill.Repayment)
+
+			var answer_regulation = bill.getPaymentBase(bill.variables, bill.payments).share_payment
+			var checker_regulation = bill._getLeft(checker_ananda, answer_ananda )
+
+			var answer_regulation2 = bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment;
+			var checker_regulation2 = bill._getLeft(checker_regulation, answer_regulation )
+
+			var answer = bill.bank_pay_back;
+			var checker = bill._getLeft(checker_regulation2, answer_regulation2 )
+			return bill._getResult(checker, answer);
+		}
+
+		bill.getChequeCo = function(variables, payments)
+		{
+			var answer_ananda =  bill.getPaymentBase(variables, payments).meter_payment + bill.getPaymentBase(variables, payments).room_payment + bill.getPaymentBase(variables, payments).add_up_for_ministry_payment - bill.getChequeRepayment(variables, payments) ;
+			var checker_ananda = bill._getLeft(bill.BankLoanRoom, bill.Repayment)
+
+			var answer_regulation = bill.getPaymentBase(bill.variables, bill.payments).share_payment
+			var checker_regulation = bill._getLeft(checker_ananda, answer_ananda )
+
+			var answer_regulation2 = bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment;
+			var checker_regulation2 = bill._getLeft(checker_regulation, answer_regulation )
+
+			var answer_cheque_customer = bill.bank_pay_back;
+			var checker_cheque_customer = bill._getLeft(checker_regulation2, answer_regulation2 )
+
+			var answer = bill.PromotionCo;
+			var checker = bill._getLeft(checker_cheque_customer, answer_cheque_customer )
+			return bill._getResult(checker, answer);
+		}
+
+		bill.getChequeMinistry = function(variables, payments)
+		{
+			var answer_ananda =  bill.getPaymentBase(variables, payments).meter_payment + bill.getPaymentBase(variables, payments).room_payment + bill.getPaymentBase(variables, payments).add_up_for_ministry_payment - bill.getChequeRepayment(variables, payments) ;
+			var checker_ananda = bill._getLeft(bill.BankLoanRoom, bill.Repayment)
+
+			var answer_regulation = bill.getPaymentBase(bill.variables, bill.payments).share_payment
+			var checker_regulation = bill._getLeft(checker_ananda, answer_ananda )
+
+			var answer_regulation2 = bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment;
+			var checker_regulation2 = bill._getLeft(checker_regulation, answer_regulation )
+
+			var answer_cheque_customer = bill.bank_pay_back;
+			var checker_cheque_customer = bill._getLeft(checker_regulation2, answer_regulation2 )
+
+			var answer_ministry = bill.PromotionCo;
+			var checker_ministry = bill._getLeft(checker_cheque_customer, answer_cheque_customer )
+
+
+			var answer = bill.getMinistryPayment(bill.variables, bill.payments)
+			var checker = bill._getLeft(checker_ministry, answer_ministry )
+			return bill._getResult(checker, answer);
+		}
+
 		bill.getMinistryPayment = function(variables, payments)
 		{
 			var estimate = bill.getVar("EstimatePrice", variables);
@@ -1175,10 +1324,12 @@ function convertBillPrint($scope, data)
 			var payment_base = bill.getPaymentBase(variables, payments);
 			var estimate_payment = payment_base.tranfer_payment;
 			
-			var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment;
+			var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;
 			
 			bill.ministryMinus = 0;
 			var real_answer =  answer - bill.getCashPayment(variables, payments);
+			bill.realMinstry = real_answer;
+
 			console.log('ministry')
 			console.log(answer);
 			console.log(bill.getCashPayment(variables, payments))
@@ -1193,8 +1344,10 @@ function convertBillPrint($scope, data)
 
 				if($scope.isNoMinistry)
 					return 0;
-				else
+				else if(payment_base.niti_payment == 0)
 					return real_answer;
+				else
+					return 0;
 			}
 
 			//return answer - bill.getCashPayment(variables, payments);
@@ -1203,10 +1356,13 @@ function convertBillPrint($scope, data)
 
 		bill.getCashPayment = function(variables, payments)
 		{
+			var payment_base = bill.getPaymentBase(variables, payments);
 			if($scope.isNoMinistry)
 				return 0;
-			else
+			else if(payment_base.niti_payment == 0)
 				return 1000 + bill.ministryMinus ;
+			else 
+				return 500 + bill.ministryMinus;
 		}	
 
 		/**/
@@ -1247,6 +1403,9 @@ function convertBillPrint($scope, data)
 			bill.SumMini += Number(bill.BankLoanInsurance);
 		if(!isNaN(bill.BankLoanDecorate))
 			bill.SumMini += Number(bill.BankLoanDecorate);
+
+
+		bill.cheque_starter = bill.BankLoanRoom;
 
 	}
 

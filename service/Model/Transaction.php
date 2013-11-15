@@ -57,13 +57,13 @@ function fetchBillInformation($transaction_ids)
             $data['CompanyCode'] = $data['master_CompanyCode'];
         }
         $comp_data = findCompanyInfo($data);
-       
+        //print_r($data);       
         if(isset($comp_data))
-        foreach ($comp_data as $key => $value) {
-            # code...
+            foreach ($comp_data as $key => $value) {
+                # code...
 
-            $data[$key] = $comp_data[$key];
-        }
+                $data[$key] = $comp_data[$key];
+            }
 
        /*print_r($data);
             echo "<br/>";*/
@@ -111,18 +111,22 @@ function findCompanyInfo($row_transaction)
     $comp_code_lower = $row_transaction['CompanyCode'];
     $comp_code_sql = strtoupper($comp_code_lower);
 
-    $sql = "SELECT * from master_company
+    $sql = "SELECT master_company.*, master_company_bank.*, master_company_bank_2.bank_id as bank_id2, master_company_bank_2.bank_info as bank_info2 from master_company
           LEFT JOIN master_company_bank ON master_company_bank.company_id = master_company.comp_id
+          LEFT JOIN master_company_bank_2 ON master_company_bank_2.company_id = master_company.comp_id
           WHERE comp_code = '{$comp_code_sql}'";
-    //echo $sql;
+    
     //echo "<br/>";
     $result = DB_query($GLOBALS['connect'],$sql);
     $row =  DB_fetch_array($result);
-
+   
      if(isset($row['comp_code']))
     {
         $bank_name_row = getBankInfo($row['bank_id']);
         $row['company_bank_name'] = $bank_name_row['bank_name'];
+        $bank_name_row2 = getBankInfo($row['bank_id2']);
+        $row['company_bank_name2'] = $bank_name_row2['bank_name'];
+        //print_r($row);
         return $row;
     }
     else
@@ -717,8 +721,11 @@ function findAllBill($q)
 
     function getAreaFromSaleData($bill)
     {
-         if(isset($bill->master_HOUSESIZE))
+
+        if(isset($bill->master_HOUSESIZE))
             $master_HOUSESIZE = $bill->master_HOUSESIZE;
+        else if(isset($bill->HOUSESIZE))
+              $master_HOUSESIZE = $bill->HOUSESIZE;
         else
             $master_HOUSESIZE = '?';
         return $master_HOUSESIZE;
@@ -758,9 +765,10 @@ function findAllBill($q)
 
     function getPricePerAreaSaleData($bill)
     {
-         if(isset($bill->SQM))
-            $SQM = $bill->SQM;
-        else
+    /*     if(isset($bill->SQM))
+            $SQM = $bill->SQM;*/
+            $SQM = getAreaOnContractFromSaleData($bill);
+        if(!is_numeric($SQM))
             return '?';
         if(getPriceOnContractFromSaleData($bill) != '?')
             return getPriceOnContractFromSaleData($bill)/$SQM;
@@ -795,6 +803,8 @@ function findAllBill($q)
       //  print_r($bill);
          if(isset($bill->master_LANDSIZE))
             $master_LANDSIZE = $bill->master_LANDSIZE;
+        else if(isset($bill->LANDSIZE))
+              $master_LANDSIZE = $bill->LANDSIZE;
         else
             $master_LANDSIZE = '?';
         //echo $master_LANDSIZE;
@@ -1090,7 +1100,8 @@ function findAllBill($q)
         }
         
     }else 
-      return "?";
+        $d = date('d m Y');
+      return convertDateThai($d);;
    }   
 
    function getAppointDate($bill)
@@ -1147,7 +1158,7 @@ function findAllBill($q)
                 $split_arr[1] = "ตุลาคม";
             break;
             case 11:
-                $split_arr[1] = "พฤษจิกายน";
+                $split_arr[1] = "พฤศจิกายน";
             break;
             case 12:
                 $split_arr[1] = "ธันวาคม";
@@ -1377,6 +1388,12 @@ function findAllBill($q)
         array_push($bill->variables, $variable);
 
         $variable = getBillVariable("CompanyBankInfo", "-", convertutf8($data->bank_info));
+        array_push($bill->variables, $variable);
+
+         $variable = getBillVariable("CompanyBankName2", "-", convertutf8($data->company_bank_name2));
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("CompanyBankInfo2", "-", convertutf8($data->bank_info2));
         array_push($bill->variables, $variable);
 
         $variable = getBillVariable("ResponsibleName", "-", convertutf8($data->responsible_user_info['name_th']) );

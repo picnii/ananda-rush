@@ -2,25 +2,25 @@
 <section class="container">
 	<header class="noPrint">
 		<button ng-click="save()">Save</button>
-		<input type="checkbox" ng-model="isNoRepayment" >{{isNoRepayment | noRepayment}}
+		<input type="checkbox" ng-model="isNoRepayment"  >{{isNoRepayment | noRepayment}}
 		<input type="checkbox" ng-model="isNoMinistry" >{{isNoMinistry | noMinistry}}
 		
 	</header>
 	<section ng-repeat="bill in bills">
 	<!--- Start Loop Print-->	
 	<div class="noPrint">
-		ราคาประเมิน : {{bill.BasePrice}} ค่าปลอด : {{bill.Repayment}}
+		ราคาประเมิน : {{bill.EstimatePrice}} ค่าปลอด : {{bill.Repayment}}
 	</div>
 		<div class="row" >
 			<div class="span12" align="center" style="background-color: #F5F5F5;"><h5>ใบค่าใช้จ่ายสำหรับเดือน พฤศจิกายน 2556 เท่านั้น</h5></div>
 			<div class="span12" align="center"> <h6>โครงการ{{bill.ProjectName}} </h6>
 			</div>
 			<div  class="span12" align="center">
-				<strong><p>บริษัท อนันดา ดีเวลลอปเม้นท์ จำกัด(มหาชน)</p>
+				<p>บริษัท อนันดา ดีเวลลอปเม้นท์ จำกัด(มหาชน)</p>
 				<!--<p>{{bill.companyAddress}} {{bill.getName("companyPhone")}}.{{bill.companyPhone}} {{bill.getName("companyFax")}}.{{bill.companyFax}}</p>-->
 				
 				<p>เลขที่ 99/1 หมู่ที่ 14 ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ 10540 โทร. 02-3171155 ต่อ 102-109, 121 โทรสาร. 02-3160180-1</p>
-				</strong>
+				
 				
 			</div>
 		</div>
@@ -36,8 +36,8 @@
 			
 			<div class="offset6 span1">แบบบ้าน</div>
 			<div class="span2" style="border-bottom-style:groove;" align="center"> {{bill.HouseType | ifBlank}}.</div>
-			<div class="span1" style="font-size:12px;">พื้นที่ใช้สอย</div>
-			<div class="span2" style="border-bottom-style:groove;" align="center">{{bill.HouseSize}} ต.ร.ม</div>
+			<div class="span1" style="font-size:12px;display:none;">พื้นที่ใช้สอย</div>
+			<div class="span2" style="border-bottom-style:groove;display:none;" align="center">{{bill.HouseSize}} ต.ร.ม</div>
 		</font>
 		</div>
 		
@@ -49,7 +49,7 @@
 					<div class="span1"><b>วันที่แจ้ง</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.DocumentDate | date:'short' }}</div>
 					<div class="span1"><b>จาก</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.SaleName | saleNamePrint}}</div><br>
+					<div class="span5" style="border-bottom: groove;">{{bill.ResponsibleName}} {{bill.ResponsibleMobile}}  &nbsp;</div><br>
 					<div class="span1"><b>วันนัดโอน</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.PayDate}}</div>
 					<div class="span1"><b>เวลา :</b></div>
@@ -57,7 +57,7 @@
 					<div class="span1"><b>เรียน</b></div>
 					<div class="span5" style="border-bottom: groove;">{{bill.CustomerName}}</div>
 					<div class="span1"><b>โทร. :</b></div>
-					<div class="span5" style="border-bottom: groove;">{{bill.CustomerTel}}</div><br><br>
+					<div class="span5" style="border-bottom: groove;">{{bill.CustomerTel}}&nbsp;</div><br><br>
 					<div class="span12" style="border-bottom-style:groove;"></div>
 				</font>
 				</div>
@@ -178,8 +178,7 @@
 		                                    
 		                                    
 		                          
-		                        
-					<br>
+		             
 					<div class="row">
 					<div class="span12" style="border-bottom-style:groove;"></div>
 					</div>
@@ -188,7 +187,7 @@
 						
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
 						<div class="span7" align="right">-</div>
-						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.RepaymentBank}}"</b> </div>
+						<div class="offset1 span8">3.1.1. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.RepaymentBank }}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowBankPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="offset1 span8">3.1.2. แคชเชียร์เช็กสั่งจ่าย <b>"{{bill.CompanyName}}"</b> </div>
 						<div class="span3" align="right">{{bill.getShowCompanyPayment(bill.variables, bill.payments) | zeroDash}}</div>
@@ -202,7 +201,7 @@
 						<div class="span8">3.4 ชำระค่าธรรมเนียมโอน 1% กรณีกู้+ ค่าอากรสำหรับโอนกรรมสิทธิ์ และจำนอง เป็นแคชเชียร์เช็คสั่งจ่าย </div>
 						<div class="span2" style="text-align:right"><b>"กระทรวงการคลัง"</b></div>
 						<div class="span2" style="text-align:right">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</div>
-						<div class="span10" align="right"><b>และแบ่งเป็นเงินสด</b></div>
+						<div class="span10" >3.5 ชำระค่าธรรมเนียม หรือ ค่าบริการนิติกรรมเป็นเงินสด</div>
 						<div class="span2" align="right" style="border-bottom-style:groove;">{{bill.getCashPayment(bill.variables, bill.payments) | zeroDash}}</div>
 						<div class="span10" align="right"><b>รวมเป็นเงินที่ลูกค้าต้องชำระ</b></div>
 						<div class="span2" align="right" style="border-bottom-style:double"><b>{{
@@ -210,8 +209,8 @@
 						
 		                </div>
 					
-						<br><b><u>*หมายเหตุ</u></b> ขอเป็นแคชเชียร์เช็คที่ทำให้ในกรุงเทพหรือปริมณฑลเท่านั้น ถ้าเป็นต่างจังหวัดต้องเป็นดร๊าฟ ที่่สามารถขึ้นเงินได้ทุกสาขาทั่วประเทศ เท่านั้น
-						<p align ="center">***********************************************</p>
+						<br><b><u>*หมายเหตุ</u></b> ขอเป็นแคชเชียร์เช็คที่ทำให้ในกรุงเทพหรือปริมณฑลเท่านั้น ถ้าเป็นต่างจังหวัดต้องเป็นดร๊าฟ ที่สามารถขึ้นเงินได้ทุกสาขาทั่วประเทศ เท่านั้น
+						<p align ="center" style="margin-bottom:0px;">***********************************************</p>
 						<u><b>เอกสารที่ใช้ในการโอนกรรมสิทธิ์</b></u><br>
 						1. สำเนาบัตรประจำตัวประชาชน และสำเนาทะเบียนบ้าน จำนวน 4 ชุด<br>
 						2. สำเนาใบทะเบียนสมรส / สำเนาหนังสือยินยอมคู่สมรส / สำเนาใบหย่า /สำเนาใบมรณะบัตร (ถ้ามี)<br>
@@ -219,13 +218,13 @@
 			
 						<strong style="font-size:13px;">
 							บัญชี &nbsp;"{{bill.CompanyName}}" {{bill.CompanyBankName}}/{{bill.CompanyBankInfo}} <br>
-							หรือ &nbsp;&nbsp;&nbsp;"{{bill.CompanyName}} " {{bill.CompanyBankName}}/{{bill.CompanyBankInfo}} <br>
+							หรือ &nbsp;&nbsp;&nbsp;"{{bill.CompanyName}} " {{bill.CompanyBankName2}}/{{bill.CompanyBankInfo2}} <br>
 							บัญชี:&nbsp; "{{bill.Regulation}}" ธนาคาร...................สาขา.........................................(ออมทรัพย์)เลขที่....................................<br><br>
 
 						</strong>
 			</div>
-		<div class="page-break"></div>	
-
+			
+		<div class="page-break"></div>
 		<!-- Checqueue Area-->
 
 		<div class="container"  >
@@ -240,7 +239,7 @@
 				
 				
 				<div class="span1" align="right">From :</div>
-				<div class="span5" style=" border-bottom-style:groove;">{{bill.SaleName | saleNamePrint}}</div>
+				<div class="span5" style=" border-bottom-style:groove;">{{bill.ResponsibleName}} {{bill.ResponsibleMobile}}  &nbsp;</div>
 				<div class="span1" align="right">Tel :</div>
 				<div class="span2" style="border-bottom-style:groove;">02-317-1155 ตอ่ 114 &nbsp;</div>
 				<div class="span1" align="right">Fax :&nbsp;</div>
@@ -294,36 +293,36 @@
 				
 			<div class="row">
 				<div class="offset1 span8">ทั้งนี้ ได้รับทราบจากท่านว่าในวัดนัดโอนกรรมสิทธิ์  ธนาคารฯ อนุมัติจ่ายวงเงินค่าห้องชุดจำนวน</div>
-				<div class="span2" align="center"  style="text-align:right;"><b>{{bill.BankLoanRoom -bill.PromotionCo | zeroDash}}</b> </div>
+				<div class="span2" align="center"  style="text-align:right;"><b>{{bill.BankLoanRoom| zeroDash}}</b> </div>
 				<div class="span1">บาท</div>
 				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเช็ค ดังต่อไปนี้</div>
 				
 				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.RepaymentBank}}"</b></div>
-				<div class="span2" align="center" style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.Repayment| zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center" style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getChequeRepayment(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.CompanyName}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment + bill.getPaymentBase(bill.variables, bill.payments).add_up_for_ministry_payment - bill.Repayment - bill.PromotionCo| zeroDash}} </span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getChequeAnanda(bill.variables, bill.payments)| zeroDash}} </span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.Regulation}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getPaymentBase(bill.variables, bill.payments).share_payment | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getChequeRegulation(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.Regulation}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getChequeRegulation2(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>"{{bill.CustomerName}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.bank_pay_back | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getChequeCustomer(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div><br><br><br>
 				
 				<div class="span9">6. เช็คสั่งจ่าย <b>"&CO"</b> <b></b></div>
-				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}"> {{bill.PromotionCo| zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}"> {{bill.getChequeCo(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div><br><br><br>
 				
 				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
-				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getChequeMinistry(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 			
 				
@@ -344,7 +343,7 @@
 				<div class="span12">Ananda Devlopment Co.,ltd</div>
 				<div class="span12">Tel : {{bill.Responsible}}</div>
 				<div class="span12">Fax : {{bill.ResponsibleFax}}</div>
-				<div class="span12">Mobile : (66) {{bill.ResponsibleMobile}}</div>
+				<div class="span12">Mobile :{{bill.ResponsibleMobile}}</div>
 				<div class="span12">Email : {{bill.ResponsibleEmail}}</div>
 			<div>
 			</font>
