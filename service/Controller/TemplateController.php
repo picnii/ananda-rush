@@ -37,6 +37,11 @@
 		return deleteTemplate($reqBody->id);
 	}
 
+	function actionFindTemplateByProject($project_id)
+	{
+		return findTemplateByProjectId($project_id);
+	}
+
 	function getSampleTemplate()
 	{
 		$template = new StdClass;

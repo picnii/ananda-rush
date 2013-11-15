@@ -12,8 +12,8 @@ angular.module('dataServices', ['ngResource']).
     updateTemplate:{method:'POST'},
     deleteTemplate:{method:'POST'},
     deleteTemplatePayment:{method:'POST'},
-    createTemplatePayment:{method:'POST'}
-
+    createTemplatePayment:{method:'POST'},
+    findTemplateByProject:{method:'GET'}
   });
 }).factory('Print', function($resource){
   return $resource('service/index.php', {}, {

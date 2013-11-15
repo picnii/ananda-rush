@@ -462,16 +462,33 @@ function findMatchPromotion($condition, $join = false)
 	}else
 	{
 		$conditions = array();
-		$sql = "SELECT promotion_condition_unit.*, promotion_condition.project_id, master_project.proj_name_th, Sale_Transection.SO , promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name FROM promotion_condition_unit LEFT JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id LEFT JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id LEFT JOIN  master_project ON project_id = master_project.proj_id LEFT JOIN master_transaction ON master_transaction.transaction_id = unit_id LEFT JOIN Sale_Transection ON Sale_Transection.ItemID = master_transaction.ItemId";
+		if(isset($condition->units))
+		{
+			$sqlWhere = getWhereSqlFromUnitForPromotions($condition->units);
+		}else
+			$sqlWhere = "";
+		$sql = "SELECT promotion_condition_unit.*, promotion_condition.project_id, master_project.proj_name_th, master_project.proj_code, Sale_Transection.SO , promotion_master.reward_id as type_id, promotion_master.option1, promotion_master.option2, promotion_master.name, promotion_condition_unit_user.is_issue as user_issue ,promotion_condition_unit_user.create_time, master_transaction.ItemId as item_id
+		FROM promotion_condition_unit 
+		INNER JOIN promotion_condition ON promotion_condition.id = promotion_condition_unit.condition_id 
+		INNER JOIN promotion_master ON promotion_master.id = promotion_condition.promotion_id 
+		INNER JOIN  master_project ON project_id = master_project.proj_id 
+		INNER JOIN master_transaction ON master_transaction.transaction_id = unit_id 
+		INNER JOIN Sale_Transection ON Sale_Transection.ItemID = master_transaction.ItemId 
+		INNER JOIN promotion_condition_unit_user ON promotion_condition_unit_user.condition_unit_id = promotion_condition_unit.id  AND promotion_condition_unit_user.invoice_account = Sale_Transection.InvoiceAccount";
 
-		$result = DB_query($GLOBALS['connect'], converttis620($sql));
+		//echo $sql.$sqlWhere;
+
+		$result = DB_query($GLOBALS['connect'], converttis620($sql.$sqlWhere));
+		$phases = getPhases();
 		while($row = DB_fetch_array($result))
 		{
 			$row['name'] = convertutf8($row['name']);
+			$row['phase'] =$phases['tranfer']->id;
+			$row['issue'] = $row['user_issue'];
 			//print_r($row);
 			array_push($answers, $row);
 		}
-		echo "row count:".count($answers);
+		
 		return $answers;
 	}
 }
@@ -618,7 +635,9 @@ function findAllPromotionFromUnitId($id,  $invoice_account)
 
 function findAllPromotionPreapproveFromItemId($itemId, $invoiceAccount)
 {
-	$sql = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}' AND InvoiceAccount = '{$invoiceAccount}'";
+		$sql = "SELECT * FROM PreapPromo WHERE ItemID = '{$itemId}' AND InvoiceAccount = '{$invoiceAccount}'";
+
+
 	//echo $sql;
 	$result = DB_query($GLOBALS['connect'], converttis620($sql));
 	
@@ -782,12 +801,21 @@ function getPromotionRewardTypes($is_array = false)
 	return $types;
 }
 
-function getReportPromotions()
+function getReportPromotions($units = null)
 {
 	//
 	$condition  = new stdClass;
+	if($units != null)
+		$condition->units = $units;
 
-	return findMatchPromotion($condition);	
+	$tranfer_promotions =  findMatchPromotion($condition);	
+
+	$preapprove_promotions = findPrePromotionReport($units);
+
+	$ax_promotions = findAxPromotionReport($units);
+	$answer = array_merge($tranfer_promotions , $preapprove_promotions );
+	$answer = array_merge($answer, $ax_promotions);
+	return $answer;
 }
 
 function getPhases($is_array = false)
@@ -908,6 +936,94 @@ function deletePromotionConditionUnitUser($condition_unit_id, $invoiceAccount)
 	return $result;
 }
 
+
+
+function findPrePromotionReport($units)
+{
+	
+	 if(!isset($units))
+	 	$sqlWhere = "";
+	 else
+	 {
+	 	$sqlWhere = getWhereSqlFromUnitForPromotions($units);
+
+	 }
+
+
+	$sql = "SELECT PreapPromo.* , master_project.proj_id , master_project.proj_code, Sale_Transection.SO, promotion_master.name
+		FROM PreapPromo 
+		INNER JOIN promotion_master ON promotion_master.id = id_promotion
+		LEFT JOIN Sale_Transection ON Sale_Transection.ItemID =  PreapPromo.itemID 	
+		LEFT JOIN master_transaction ON master_transaction.ItemId = PreapPromo.itemID 
+		LEFT JOIN  master_project ON master_project.proj_code = Sale_Transection.ProjID 
+
+		";
+	$result = DB_query($GLOBALS['connect'], $sql.$sqlWhere);
+	$types = getPromotionRewardTypes();
+	$phases = getPhases();
+	$promotions = array();
+	while($row = DB_fetch_array($result))
+	{
+		$promo = array();
+		$promo['proj_code'] = $row['proj_code'];
+		$promo['phase'] = $phases['preapprove']->id;
+		$promo['SO'] = $row['SO'];
+		$promo['item_id'] = $row['itemID'];
+		$promo['type_id'] = $types['stuff']->id;
+		$promo['id'] = $row['id_pro_pre'];
+		$promo['name'] = $row['name'];
+		$promo['amount'] = $row['amount'];
+		$promo['issue'] = $row['issue'];
+		$promo['create_time'] = "-";
+		array_push($promotions, $promo);
+	}
+
+	return $promotions;
+}
+
+function findAxPromotionReport($units)
+{
+	$sqlWhere = getWhereSqlFromUnitForPromotions($units);
+	$sql = "SELECT Promotion_AX.* ,promotion_ax_type.type_id, promotion_ax_type.issue, promotion_ax_type.option1, promotion_ax_type.option2
+		, master_project.proj_id , master_project.proj_code, master_transaction.ItemId
+
+		FROM Promotion_AX
+		INNER JOIN promotion_ax_type ON promotion_ax_type.id = RECID
+		LEFT JOIN Sale_Transection ON Sale_Transection.SO =  Promotion_AX.SO 	
+		LEFT JOIN master_transaction ON master_transaction.ItemId = Sale_Transection.ItemID 
+		LEFT JOIN  master_project ON master_project.proj_code = Sale_Transection.ProjID 
+	";
+	$result = DB_query($GLOBALS['connect'], $sql.$sqlWhere);
+	$types = getPromotionRewardTypes();
+	$phases = getPhases();
+	$promotions = array();
+	while($row = DB_fetch_array($result))
+	{
+		$promo = array();
+		$promo['proj_code'] = $row['proj_code'];
+		$promo['phase'] = $phases['preapprove']->id;
+		$promo['SO'] = $row['SO'];
+		$promo['item_id'] = $row['ItemId'];
+		$promo['type_id'] = $row['type_id'];
+
+		$promo['option1'] = $row['option1'];
+		$promo['option2'] = $row['option2'];
+		$promo['id'] = $row['RECID'];
+		$promo['name'] = convertutf8($row['ITEMNAME']);
+		//if($promo['option1'] == $types['stuff']->id)
+		//	$promo['amount'] = $row['QTY'];
+		//else
+			$promo['amount'] = $row['Promotion Amount (Total)'];
+		$promo['issue'] = $row['issue'];
+		$promo['qty'] = $row['QTY'];
+		$promo['phase'] = $phases['ax']->id;
+		$promo['create_time'] = "-";
+		array_push($promotions, $promo);
+	}
+
+	return $promotions;
+}
+
 function convertPromotionData($row)
 {
 	$promotion = new stdClass;
@@ -945,6 +1061,24 @@ function convertPromotionData($row)
 		$promotion->payment_id = null;
 
 	return $promotion;
+}
+
+function getWhereSqlFromUnitForPromotions($units)
+{
+	$sqlWhere = " WHERE ";
+
+			for($i = 0 ; $i < count($units); $i++)
+			{
+
+				if($i > 0)
+					$sqlWhere.= "OR ";
+				$sqlWhere.= "master_transaction.transaction_id = {$units[$i]->id} ";
+				//echo $sqlWhere.',';
+			}
+	if(!isset($units) || count($units) <= 0)
+		return "";
+	else
+		return $sqlWhere;
 }
 
 ?>

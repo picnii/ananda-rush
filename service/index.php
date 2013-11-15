@@ -35,10 +35,10 @@
 	}else
 	{
 
-		//header('Content-type: application/msexcel');
+		header('Content-type: application/msexcel; charset=utf-8');
 
 		// It will be called downloaded.pdf
-		//header('Content-Disposition: attachment; filename="report.xls"');
+		header('Content-Disposition: attachment; filename="report.xls"');
 
 		echo $response_header;
 

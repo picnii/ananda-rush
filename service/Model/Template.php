@@ -132,4 +132,13 @@
 		return true;
 	}
 
+	function findTemplateByProjectId($project_id)
+	{
+		$SQL = "SELECT * FROM tranfer_template_project WHERE project_id = {$project_id}";
+		//echo $SQL;
+		$result = DB_query($GLOBALS['connect'],$SQL);
+		$row = DB_fetch_array($result);
+		return $row;
+	}
+
 ?>

@@ -286,7 +286,7 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 
 		var payment_base = $scope.getPaymentBase();
 		var estimate_payment = 0.01 * payment_base.tranfer_payment;
-		var answer = estimate_payment + (payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment;
+		var answer = estimate_payment + (payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;
 		return answer - $scope.getCashPayment();
 	}
 
@@ -393,7 +393,8 @@ function BillListCtrl($scope, $rootScope, $routeParams, $http, $location, Templa
 
 function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill, Type)
 {
-	
+	$scope.isNoRepayment = false;
+	$scope.isNoMinistry = false;
 	$scope.url = 'service/index.php';
 
 	$scope.billPayment = Type.getBillPayment(function(data){
@@ -856,7 +857,11 @@ function convertBillPrint($scope, data)
 		var payments = $scope.bills[i].payments;
 		var bill =$scope.bills[i];
 		
+	
 		var bill_vars = bill.variables;
+
+
+
 
 		bill.getFormulaValue  = function(formula)
 		{
@@ -935,6 +940,8 @@ function convertBillPrint($scope, data)
 			var payment_base = bill.getPaymentBase(variables, payments);
 			//var A = payment_base.meter_payment + payment_base.room_payment;
 			//return Math.max(0, bill.getRealBankPayment(variables, payments) );
+			if($scope.isNoRepayment)
+				return 0;
 			return Math.max(0, bill.getReductRepayment(variables, payments) );
 		}
 
@@ -945,8 +952,38 @@ function convertBillPrint($scope, data)
 				//console.log(bill);
 			var A = payment_base.customer_room_payment + payment_base.customer_meter_payment;
 			//console.log("A:"+A);
-			return A - bill.getShowBankPayment(variables, payments); 
-			var payment_base = $scope.getPaymentBase();
+			if(!$scope.isNoMinistry)
+				return A - bill.getShowBankPayment(variables, payments) + payment_base.niti_payment; 
+			else
+			{
+				var old = A - bill.getShowBankPayment(variables, payments);
+				var estimate = bill.getVar("EstimatePrice", variables);
+				//var estimate = bill.EstimatePrice;
+				var payment_base = bill.getPaymentBase(variables, payments);
+				var estimate_payment = payment_base.tranfer_payment;
+				
+				var answer = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;
+				
+				return old + answer;
+			}
+			
+
+		}
+
+		bill.cashTranferClass = function()
+		{
+			if(bill.isCashTranfer)
+				return "hide";
+			else
+				return "";
+		}
+
+		bill.cashTranferClass2 = function()
+		{
+			if(bill.isCashTranfer)
+				return "";
+			else
+				return "hide";
 		}
 
 		 bill.getReductRepayment = function(variables, payments)
@@ -978,6 +1015,8 @@ function convertBillPrint($scope, data)
 			var meter_payment = 0;
 			var customer_meter_payment = 0;
 			var customer_room_payment = 0;
+
+			//var shouldbe_ministry_payment = 0;
 			for(var i = 0; i < $scope.meter_ids.length ;i++)
 			{
 				var id = $scope.meter_ids[i];
@@ -1012,7 +1051,7 @@ function convertBillPrint($scope, data)
 				room_payment += Number(room_payment_def[BANK_INDEX]);
 			}
 
-
+		
 
 			var share_payment = bill.getPaymentByPaymentId($scope.billPayment.share_payment_id, variables, payments);	
 			if(isNaN(share_payment[CUSTOMER_INDEX]))
@@ -1053,6 +1092,24 @@ function convertBillPrint($scope, data)
 				tax_loan_payment = Number(tax_loan_payment[CUSTOMER_INDEX]);
 			 
 
+				var niti_payment = 0;
+			if(typeof($scope.billPayment.niti_payment_id) != 'undefined')
+				var niti_payment_def =  bill.getPaymentByPaymentId($scope.billPayment.niti_payment_id, variables, payments);
+			else
+				var niti_payment_def = "no";
+			if(niti_payment_def !=null && isNaN(niti_payment_def[CUSTOMER_INDEX]))
+				niti_payment = 0;
+			else if(niti_payment_def!= null)
+			{
+				niti_payment = Number(niti_payment_def[CUSTOMER_INDEX]);
+				console.log('got niti');
+			//	def_loan_payment = bill.getPaymentByPaymentId($scope.billPayment.tax_loan_payment_id, variables, payments);
+				setPaymentByPaymentId($scope.billPayment.tax_loan_payment_id, payments, variables, ["","",0]);
+				setPaymentByPaymentId($scope.billPayment.tax_payment_id, payments, variables, ["","",0]);
+
+			}
+
+
 
 			if(typeof(sum_bank_loan) == 'undefined' || sum_bank_loan == null || sum_bank_loan == '-')
 				sum_bank_loan = 0;
@@ -1071,6 +1128,8 @@ function convertBillPrint($scope, data)
 			cur_month = month_th[cur_month];
 			bill.currentDate = (cur_date.getDate()) + ' ' + cur_month + ' ' +cur_year;
 
+
+
 			//ค่าห้อง
 			var payment_base = {
 				meter_payment:meter_payment,
@@ -1083,8 +1142,19 @@ function convertBillPrint($scope, data)
 				customer_meter_payment:customer_meter_payment,
 				customer_sum_bank_loan:Number(customer_sum_bank_loan),
 				tax_loan_payment:tax_loan_payment,
-				tax_payment:tax_payment
+				tax_payment:tax_payment,
+				niti_payment:niti_payment
 			};
+
+
+
+		//	var payment_base = bill.getPaymentBase(variables, payments);
+			var estimate_payment = payment_base.tranfer_payment;
+			if($scope.isNoMinistry)
+				payment_base.add_up_for_ministry_payment = estimate_payment + ( payment_base.customer_sum_bank_loan) + payment_base.tax_payment + payment_base.tax_loan_payment + payment_base.niti_payment;// - bill.getCashPayment(variables, payments);
+			else
+				payment_base.add_up_for_ministry_payment = 0;
+				
 			if(sum_bank_loan >= 4093716.09)
 			{
 				console.log('payment base')
@@ -1120,7 +1190,11 @@ function convertBillPrint($scope, data)
 			}else
 			{
 			//	bill.ministryMinus = 0;
-				return real_answer;
+
+				if($scope.isNoMinistry)
+					return 0;
+				else
+					return real_answer;
 			}
 
 			//return answer - bill.getCashPayment(variables, payments);
@@ -1129,7 +1203,10 @@ function convertBillPrint($scope, data)
 
 		bill.getCashPayment = function(variables, payments)
 		{
-			return 1000 + bill.ministryMinus ;
+			if($scope.isNoMinistry)
+				return 0;
+			else
+				return 1000 + bill.ministryMinus ;
 		}	
 
 		/**/

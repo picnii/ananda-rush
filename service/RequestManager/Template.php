@@ -1,5 +1,5 @@
 <?php
-$templateActions = array('templates', 'template', 'updateTemplate', 'createTemplate', 'deleteTemplate', 'deleteTemplatePayment', 'createTemplatePayment');
+$templateActions = array('templates', 'template', 'updateTemplate', 'createTemplate', 'deleteTemplate', 'deleteTemplatePayment', 'createTemplatePayment', 'findTemplateByProject');
 /* Template Service */
 	if(isset($_GET['action']))
 	{
@@ -10,6 +10,8 @@ $templateActions = array('templates', 'template', 'updateTemplate', 'createTempl
 			$response = actionTemplates();
 		if($action == 'template')
 			$response = actionTemplate($_GET['template_id']);
+		if($action == 'findTemplateByProject')
+			$response = actionFindTemplateByProject($_GET['project_id']);
 
 	}
 

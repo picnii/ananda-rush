@@ -57,92 +57,50 @@
 		return $data;
 	}
 
-    function getLandInfo($bill){
-        $landInfo = new stdClass;
-
-        $landInfo->deedNumber = isset($bill->deedNumber) ? $bill->deedNumber : '?';
-        $landInfo->landNumber = isset($bill->landNumber) ? $bill->landNumber : '?';
-        $landInfo->surveyNumber = isset($bill->surveyNumber) ? $bill->surveyNumber : '?';
-        $landInfo->landSize = getAreaOnContractFromSaleData($bill);
-        $landInfo->estimateLandPricePerUnit = isset($bill->estimateLandPricePerUnit) ? $bill->estimateLandPricePerUnit : '?';
-        $landInfo->estimateLandPriceSum = isset($bill->estimateLandPriceSum) ? $bill->estimateLandPriceSum : '?';
-
-        return $landInfo;
-    }
-
-    function getHouseInfo($bill){
-        $houseInfo = new stdClass;
-
-        $houseInfo->number = isset($bill->IVZ_PROJSALESTITLEDEEDNUMBER) ? $bill->IVZ_PROJSALESTITLEDEEDNUMBER : '?';
-        $houseInfo->type = getItemTypeFromSaleData($bill);
-        $houseInfo->area =  getAreaFromSaleData($bill);
-        $houseInfo->pricePerArea =  5850;
-        $houseInfo->estimatePriceSum = $houseInfo->area * $houseInfo->pricePerArea;
-        $houseInfo->depreciate = $houseInfo->estimatePriceSum * 0.01;
-        $houseInfo->priceSum = $houseInfo->estimatePriceSum - $houseInfo->depreciate;
-
-        return $houseInfo;
-    }
-
-    function getFenceInfo($bill){
-        $fenceInfo = new stdClass;
-
-        $fenceInfo->area = 30;
-        $fenceInfo->pricePerArea = 1400;
-        $fenceInfo->estimatePriceSum = $fenceInfo->area * $fenceInfo->pricePerArea;
-        $fenceInfo->depreciate = $fenceInfo->estimatePriceSum * 0.01;
-        $fenceInfo->priceSum = $fenceInfo->estimatePriceSum - $fenceInfo->depreciate;
-
-        return $fenceInfo;
-    }
-
-    function getCompanyPaymentInfo($data){
-        $paymentInfo = new stdClass;
-
-        $paymentInfo->transferFee = $data->land->estimateLandPriceSum * 0.01;
-        $paymentInfo->tax = $data->salePrice * 0.01;
-        $paymentInfo->businessFee = $data->salePrice * 0.033;
-        $paymentInfo->summationFee = $paymentInfo->transferFee + $paymentInfo->tax + $paymentInfo->businessFee;
-
-        $paymentInfo->waterMeter = 7020;
-        $paymentInfo->powerMeter = 6550;
-        $paymentInfo->contribution = 3000;
-        $paymentInfo->powerMeterNet = $paymentInfo->powerMeter - $paymentInfo->contribution;
-
-        return $paymentInfo;
-    }
-
-    function getPromotionInfo($bill){
-        $promotionInfo = new stdClass;
-
-        print_r($bill->promotions);
-
-        return $promotionInfo;
-    }
 
     function actionReportTranfer()
     {
-        
+
     }
 
 
 
-    function actionReportPromotions()
+    function actionReportPromotions($q = "*")
     {
-        
-        return convertToPromotionTable(getReportPromotions());
+        if($q != "*")
+        {
+          $params = getParamsFromSearchQuery($q, 'master_transaction', array(
+                'SalesName' => 'Sale_Transection',
+                'SQM' => 'Sale_Transection',
+                'Period' => 'appointment'
+            ));
+            $operators = array(
+                'Sale_Transection.SalesName' => 'LIKE',
+                'Sale_Transection.SQM' => 'BETWEEN',
+                'appointment.Period' => 'PERIOD'
+            );
+            //print_r($params);
+             $units = findAllUnitsByQuery($params, $operators);
+             //print_r($units);
+        }else
+            $units = null;
+        return convertToPromotionTable(getReportPromotions($units));
+        //return "<table></table>";
     }
 
     function convertToPromotionTable($response)
     {
-        $header = array('Project', 'So No.', 'Project', 'CreateDate ');
+        $promotion_types = getPromotionRewardTypes();
+        $promotion_phases = getPhases();
+        $promotion_discount_types = getDiscountTypes();
+        $header = array('Project', 'So No.',  'CreateDate ', 'Item ID', 'ID', "Name", "Qty", "Amount", "Phase", "หักค่าอช", "issue");
         //print_r($response);
         //create table tag
 
         $table = "<table>";
         //create tr in head using header
         $table = $table."<thead>";
-        $table = $table."<tr>";
+        $table = $table."<tr style='background:#333'>";
         foreach ($header as $key => $value) {
             # code...
             $table = $table."<td>";
@@ -153,6 +111,8 @@
         $table = $table."</thead>";
         //create content using response
         $table = $table."<tbody>";
+
+        //print_r($response);
         foreach ($response as $key => $row) {
             # code...
 
@@ -161,25 +121,70 @@
             $table = $table."<tr>";
          
             $table = $table."<td>";
-            $table = $table.$row['id'];
-            $table = $table."</td>";
-
-            $table = $table."<td>";
-            $table = $table.$row['amount'];
-            $table = $table."</td>";
-
-             $table = $table."<td>";
-            $table = $table.$row['name'];
-            $table = $table."</td>";
-
-            $table = $table."<td>";
-            $table = $table."hi jack";// $table.convertutf8($row['proj_name_th']);
+            $table = $table.$row['proj_code'];
             $table = $table."</td>";
 
             $table = $table."<td>";
             $table = $table.$row['SO'];
             $table = $table."</td>";
-                   
+
+            $table = $table."<td>";
+            $table = $table.$row['create_time'];
+            $table = $table."</td>";
+
+            //item_id
+            $table = $table."<td>";
+            $table = $table.$row['item_id'];
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row['id'];
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row['name'];
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            if($row['phase'] == $promotion_phases['ax']->id)
+                 $table = $table.$row['qty'];
+            else if($row['type_id'] == $promotion_types['stuff']->id)
+                $table = $table.$row['amount'];
+            else
+                $table = $table."1";
+
+
+            $table = $table."</td>";
+
+             $table = $table."<td>";
+             if($row['phase'] == $promotion_phases['ax']->id)
+                $table = $table.$row['amount'];
+             else if($row['type_id'] == $promotion_types['stuff']->id)
+                $table = $table." ";
+            else if($row['option2'] == $promotion_discount_types['percent']->id)
+                $table = $table.$row['amount']."%";
+            else
+                $table = $table.$row['amount'];
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$promotion_phases[$row['phase']]->name;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            if($row['type_id'] == $promotion_types['spacial']->id )
+                $table = $table."Yes";
+            else
+                $table = $table."No";
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            if($row['issue'] != 1)
+               $table = $table."No";
+            else
+                $table = $table."Yes";
+            $table = $table."</td>";
+
             $table = $table."</tr>";
         }
 

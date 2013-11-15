@@ -6,7 +6,7 @@ xmlns:x=\"urn:schemas-microsoft-com:office:excel\"
 xmlns=\"http://www.w3.org/TR/REC-html40\">
  
 <head>
-<meta http-equiv=Content-Type content=\"text/html; charset=windows-1252\"/>
+<meta http-equiv=Content-Type content=\"text/html; charset=utf8\"/>
 <meta name=ProgId content=Excel.Sheet/>
 <meta name=Generator content=\"Microsoft Excel 11\"/>
  
@@ -72,7 +72,7 @@ xmlns=\"http://www.w3.org/TR/REC-html40\">
 
 		if($action == 'reportPromotions')
 		{
-			$response = actionReportPromotions();
+			$response = actionReportPromotions($_GET['q']);
 		}
 
     if($action == 'reportTranfer')

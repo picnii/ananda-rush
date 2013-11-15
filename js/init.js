@@ -105,6 +105,21 @@ function getPaymentByPaymentId(id, payments, varset)
 	return null;
 }
 
+function setPaymentByPaymentId(id, payments, varset, newFormulas)
+{
+	for(var i =0; i < payments.length; i++)
+	{
+		if(payments[i].id == id)
+		{
+			payments[i].formulas = newFormulas;
+
+			
+			return payments[i];
+		}
+	}
+	return null;
+}
+
 
 function getPostData()
 {

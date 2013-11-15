@@ -42,7 +42,11 @@ function fetchBillInformation($transaction_ids)
         */
         //if(isset($data['main_appointment_log_id']))
         $invoice_account = $data['InvoiceAccount'];
+        $item_id =  $rs["ItemId"];
         $data['promotions'] = findAllPromotionFromUnitId($transaction_id, $invoice_account);
+
+        $data['responsible_user_info'] = findResponsibleUser($item_id);
+
        //$data['promotions_should'] = $data['promotions'][0];
       //  $data['promotions'] = $data['promotions'][0];
             //$data['promotions'] = findAllPromotionPreapproveFromAppoinmentId($data['main_appointment_log_id']);
@@ -1375,7 +1379,31 @@ function findAllBill($q)
         $variable = getBillVariable("CompanyBankInfo", "-", convertutf8($data->bank_info));
         array_push($bill->variables, $variable);
 
-        
+        $variable = getBillVariable("ResponsibleName", "-", convertutf8($data->responsible_user_info['name_th']) );
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("ResponsibleLastName", "-", convertutf8($data->responsible_user_info['surname_th']) );
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("ResponsibleNameEn", "-", convertutf8($data->responsible_user_info['name_en']) );
+        array_push($bill->variables, $variable);
+
+         $variable = getBillVariable("ResponsibleLastNameEn", "-", convertutf8($data->responsible_user_info['surname_en']) );
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("ResponsibleTel", "-", convertutf8($data->responsible_user_info['tel']) );
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("ResponsibleFax", "-", convertutf8($data->responsible_user_info['fax']) );
+        array_push($bill->variables, $variable);
+
+         $variable = getBillVariable("ResponsibleMobile", "-", convertutf8($data->responsible_user_info['mobile']) );
+        array_push($bill->variables, $variable);
+
+        $variable = getBillVariable("ResponsibleEmail", "-", convertutf8($data->responsible_user_info['email']) );
+        array_push($bill->variables, $variable);
+
+
 
 
         $promotions = array();
@@ -1422,5 +1450,13 @@ function findAllBill($q)
         return $row;
     }
 
+    function findResponsibleUser($item_id)
+    {
+
+        $sql = "SELECT userprofile.* FROM cs_responsible_room LEFT JOIN userprofile ON userprofile.userid = cs_responsible_room.id_userprofile WHERE itemid = '{$item_id}'";
+         $result = DB_query($GLOBALS['connect'],$sql);
+        $row = DB_fetch_array($result);
+        return $row;
+    }
 
 ?>

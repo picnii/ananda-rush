@@ -7,6 +7,7 @@ var app = angular.module('ananda', ['dataServices','areaFilters','$strap.directi
           when('/promotions', {templateUrl: 'template/promotion-management.html',   controller: PromotionCtrl}).
           when('/promotions/create', {templateUrl: 'template/promotion-create.html',   controller: PromotionCreateCtrl}).
           when('/promotions/update/:pid', {templateUrl: 'template/promotion-create.html',   controller: PromotionUpdateCtrl}).
+          when('/promotions/report', {templateUrl: 'template/report-promotion.html',   controller: ReportPromotionCtrl}).
           when('/units', {templateUrl: 'template/units.html',   controller: UnitListCtrl}).
 		  	  when('/bills/print/:tid', {templateUrl: 'template/print.html',   controller: BillPrintCtrl}).
           when('/bills/print/:tid/:uid', {templateUrl: 'template/print.html',   controller: BillPrintCtrl}).
@@ -232,6 +233,22 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
       return 'ชิ้น';
     return 'บาท' ;
   };
+
+}).filter('noRepayment', function(){
+  return function(isNoRepayment) {
+    if(isNoRepayment)
+      return "No Repayment"
+    else
+      return "Include Repayment"
+  }
+
+}).filter('noMinistry', function(){
+  return function(isNoMinistry) {
+    if(isNoMinistry)
+      return "No Ministry"
+    else
+      return "Include Ministry"
+  }
 
 })
 

@@ -557,6 +557,7 @@ function AppointCtrl($scope, $filter, $rootScope, $location, $routeParams, Appoi
 			$scope.people = data.appointUser.name;
 			$scope.calldate = new Date();
 			$scope.calltime = '';
+
 			console.log('fetch transaction');
 			console.log({unit_id:$scope.unit.id});
 			$scope.transaction = Bill.viewTransaction({unit_id:$scope.unit.id}, function(data){
@@ -1340,6 +1341,42 @@ function PromotionMatchCtrl($scope, $rootScope, $location, $routeParams, $filter
 
 }
 
+function ReportPromotionCtrl($scope, Type)
+{
+	var post_data =  getPostData();
+	$scope.room_types = Type.getRoomType();
+	$scope.project_types = Type.getProjectsList();
+	$scope.company_types = Type.getCompaniesList();
+	var base_url = "http://58.97.74.26/tms/npop/service/index.php?action=reportPromotions"
+	$scope.updateDw = function()
+	{
+		var ss= $scope.search;
+		var query = "";
+		var params_name = ['ItemId', 'ProjID', 'room_type', 'Floor', 'CompanyCode','SalesName'];
+		//ss.company = ss.company.toLowerCase();
+		var check_params = [ss.unit, ss.project, ss.type, ss.floor, ss.company, ss.customer_name];
+		var params_count = 0;
+		for(var i =0; i < params_name.length; i++)
+		{
+			
+			if(check_params[i] != "" && check_params[i] != "*" && typeof(check_params[i]) == "string")
+			{
+				//console.log('check' + typeof(check_params[i]));
+				//console.log(check_params[i]);
+				if(params_count > 0)
+					query += ".";
+				query += params_name[i] + "=" + check_params[i];
+				
+				params_count++;
+			}
+		}
+		if(params_count == 0)
+			query = "*";
+		console.log(query);
+		$scope.downloadUrl = base_url+"&q="+query;
+
+	}
+}
 
 var doOnceCount = 0;
 function doOnce(callback)

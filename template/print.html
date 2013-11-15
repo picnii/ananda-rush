@@ -2,7 +2,9 @@
 <section class="container">
 	<header class="noPrint">
 		<button ng-click="save()">Save</button>
-
+		<input type="checkbox" ng-model="isNoRepayment" >{{isNoRepayment | noRepayment}}
+		<input type="checkbox" ng-model="isNoMinistry" >{{isNoMinistry | noMinistry}}
+		
 	</header>
 	<section ng-repeat="bill in bills">
 	<!--- Start Loop Print-->	
@@ -10,8 +12,8 @@
 		ราคาประเมิน : {{bill.BasePrice}} ค่าปลอด : {{bill.Repayment}}
 	</div>
 		<div class="row" >
-			<div class="span12" align="center" style="background-color: #F5F5F5;"><h4>ใบค่าใช้จ่ายสำหรับเดือน พฤศจิกายน 2556 เท่านั้น</h4></div>
-			<div class="span12" align="center"> <h5>โครงการ{{bill.ProjectName}} </h5>
+			<div class="span12" align="center" style="background-color: #F5F5F5;"><h5>ใบค่าใช้จ่ายสำหรับเดือน พฤศจิกายน 2556 เท่านั้น</h5></div>
+			<div class="span12" align="center"> <h6>โครงการ{{bill.ProjectName}} </h6>
 			</div>
 			<div  class="span12" align="center">
 				<strong><p>บริษัท อนันดา ดีเวลลอปเม้นท์ จำกัด(มหาชน)</p>
@@ -59,7 +61,7 @@
 					<div class="span12" style="border-bottom-style:groove;"></div>
 				</font>
 				</div>
-			<div><h5>1.ราคาและวิธีโอนกรรมสิทธิ์</h5></div>
+			<div><h6>1.ราคาและวิธีโอนกรรมสิทธิ์</h6></div>
 				<div class="container" >
 					<div class="row" >
 						<font size="2">
@@ -144,7 +146,7 @@
 				</div>
 				
 				
-			   <div><h5>2.ค่าใช้จ่าย ณ วันโอน</h5></div>
+			   <div><h6>2.ค่าใช้จ่าย ณ วันโอน</h6></div>
 					<table border = "1" align="center" width ="100%" hight ="30%"  cellspacing = "0"  style="font-size:13px" >
              			 
                     	 <thead>
@@ -181,7 +183,7 @@
 					<div class="row">
 					<div class="span12" style="border-bottom-style:groove;"></div>
 					</div>
-					<div><h5>3.วิธีการชำระเงิน</h5></div>
+					<div><h6>3.วิธีการชำระเงิน</h6></div>
 						<div class="row" style="font-size:13px;">
 						
 						<div class="span5">3.1 ชำระค่าห้องชุดและมิเตอร์ไฟฟ้า/น้ำประปา(ถ้ามี) ชำระเป็น</div>
@@ -215,20 +217,18 @@
 						2. สำเนาใบทะเบียนสมรส / สำเนาหนังสือยินยอมคู่สมรส / สำเนาใบหย่า /สำเนาใบมรณะบัตร (ถ้ามี)<br>
 						3. สำเนาใบเปลี่ยนชื่อ , สกุล(ถ้ามี)<br>
 			
-						<strong>
+						<strong style="font-size:13px;">
 							บัญชี &nbsp;"{{bill.CompanyName}}" {{bill.CompanyBankName}}/{{bill.CompanyBankInfo}} <br>
 							หรือ &nbsp;&nbsp;&nbsp;"{{bill.CompanyName}} " {{bill.CompanyBankName}}/{{bill.CompanyBankInfo}} <br>
 							บัญชี:&nbsp; "{{bill.Regulation}}" ธนาคาร...................สาขา.........................................(ออมทรัพย์)เลขที่....................................<br><br>
 
 						</strong>
-
-			
 			</div>
 		<div class="page-break"></div>	
 
 		<!-- Checqueue Area-->
 
-		<div class="container"  style="margin-top:50px;" >
+		<div class="container"  >
 		<font size="2">
 			<div class="row" >
 				<div class="span1" align="right">To.</div>
@@ -299,31 +299,31 @@
 				<div class="span12">ซึ่งลูกค้าต้องนำมาชำระให้แก่โครงการฯ เป็นค่าห้องชุด จึงใคร่ขอให้ธนาคารฯ แบ่งจ่ายเช็ค ดังต่อไปนี้</div>
 				
 				<div class="span9">1. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.RepaymentBank}}"</b></div>
-				<div class="span2" align="center" style="text-align:right;">{{bill.Repayment| zeroDash}}</div>
+				<div class="span2" align="center" style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.Repayment| zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">2. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.CompanyName}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment - bill.Repayment - bill.PromotionCo| zeroDash}} </div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getPaymentBase(bill.variables, bill.payments).meter_payment + bill.getPaymentBase(bill.variables, bill.payments).room_payment + bill.getPaymentBase(bill.variables, bill.payments).add_up_for_ministry_payment - bill.Repayment - bill.PromotionCo| zeroDash}} </span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">3. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.Regulation}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).share_payment | zeroDash}}</div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getPaymentBase(bill.variables, bill.payments).share_payment | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">4. แคชเชียร์เช็คสั่งจ่าย<b> "{{bill.Regulation}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment | zeroDash}}</div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getPaymentBase(bill.variables, bill.payments).share_fund_payment | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 				
 				<div class="span9">5. เช็คสั่งจ่ายลูกค้าในนาม <b>"{{bill.CustomerName}}"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.bank_pay_back | zeroDash}}</div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.bank_pay_back | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div><br><br><br>
 				
 				<div class="span9">6. เช็คสั่งจ่าย <b>"&CO"</b> <b></b></div>
-				<div class="span2" align="center"  style="text-align:right;"> {{bill.PromotionCo| zeroDash}}</div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}"> {{bill.PromotionCo| zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div><br><br><br>
 				
 				<div class="span9">7. เช็คสั่งจ่ายในนาม <b> "กระทรวงการคลัง"</b></div>
-				<div class="span2" align="center"  style="text-align:right;">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</div>
+				<div class="span2" align="center"  style="text-align:right;"><span class="{{bill.cashTranferClass()}}">{{bill.getMinistryPayment(bill.variables, bill.payments) | zeroDash}}</span><span class="{{bill.cashTranferClass2()}}">-</span></div>
 				<div class="span1">บาท</div>
 			
 				
@@ -334,19 +334,18 @@
 				<br><br>
 				<div class="offset6 span4" align="center">ขอแสดงความนับถือ</div>
 				<br><br><br><br>
-				<div class="offset6 span4" align="center" style="border-bottom-style:groove">(คุณสุกัญญา สุยากรรม)
-</div>
-				<div class="offset6 span4" align="center">Manager/Directer</div>
+				<div class="offset6 span4" align="center" style="border-bottom-style:groove">
+				</div>
 				
 			</div>
 			
 			<div class="row">
-				<div class="span12">Sukanya  Phonpattana</div>
+				<div class="span12">{{bill.ResponsibleNameEn}}  {{bill.ResponsibleLastNameEn}}</div>
 				<div class="span12">Ananda Devlopment Co.,ltd</div>
-				<div class="span12">Tel : (66) 02-317-1155 ext 114</div>
-				<div class="span12">Fax : (66) 02-316-0180-81</div>
-				<div class="span12">Mobile : (66) 087-592-8658</div>
-				<div class="span12">Email : Sukanyap@ananda.co.th</div>
+				<div class="span12">Tel : {{bill.Responsible}}</div>
+				<div class="span12">Fax : {{bill.ResponsibleFax}}</div>
+				<div class="span12">Mobile : (66) {{bill.ResponsibleMobile}}</div>
+				<div class="span12">Email : {{bill.ResponsibleEmail}}</div>
 			<div>
 			</font>
 			
