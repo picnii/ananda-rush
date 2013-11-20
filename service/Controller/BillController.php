@@ -286,6 +286,7 @@
 		$tax_payment = 48;
 		$tax_loan_payment = 41;
 		$niti_payment = 91;
+		$loan_rama9_payment = 92;
 		return array(
 			"meters"=>$meters,
 			"share_payment_id" => $share_payment_id,
@@ -295,7 +296,8 @@
 			"loan_payment_id" => $loan_payment,
 			"tax_payment_id" => $tax_payment,
 			"tax_loan_payment_id" => $tax_loan_payment,
-			"niti_payment_id" => $niti_payment
+			"niti_payment_id" => $niti_payment,
+			"loan_rama9_id" => $loan_rama9_payment,
 		);
 	}
 	

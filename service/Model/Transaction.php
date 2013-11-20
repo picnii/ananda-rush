@@ -1,4 +1,3 @@
-
 <?php
 /*
 * $args = array(
@@ -533,8 +532,6 @@ function updateTransaction($transaction_id, $args)
                 $sql.=", tranfer_time = '".$args['tranfer_time']."'";
             }
 
-
-            $sql.="create_time= GETDATE() ";
             $sql.="WHERE id='".$transaction_id."' ";
             $rs = DB_query($GLOBALS['connect'],$sql); 
             if($rs){
@@ -794,6 +791,11 @@ function findAllBill($q)
          //   print_r($promotion);
             if($promotion['type_id'] == $types['spacial']->id)
                 $sum += $promotion['amount'];
+            if($promotion['type_id'] == $types['spacialarea']->id)
+            {
+                $discount = getAreaDiffFromSaleData($bill);
+                $sum +=  $discount * ($promotion['amount'] / 100);
+            }
         }
         return $sum;
     }

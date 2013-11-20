@@ -16,6 +16,7 @@ function BillCtrl($scope, $rootScope, $routeParams, $location, Npop, Print, Type
 	$scope.datas = Npop.get({uid: $routeParams.uid, tid: $routeParams.tid}, function(data) {
    	 //$scope.mainImageUrl = phone.images[0];
    	 	$scope.loading = false;
+   	 	$scope.template_id = $routeParams.tid;
    	 	for(var i =0; i < data.payments.length;i++)
 		{
 			var payment = data.payments[i];
@@ -439,6 +440,7 @@ function BillPrintCtrl($scope, $rootScope, $routeParams, $location, $http, Bill,
                 url: 'service/index.php?'+'action=bills&template_id='+$routeParams.tid+'&'+ids_str,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function(data, status) {
+            	$scope.template_id = $routeParams.tid;
             	$scope.bills = convertBillPrint($scope, data)          
        for(var i=0; i < $scope.bills.length;i++)
 		{
@@ -586,7 +588,7 @@ function TransactionCtrl($scope, $filter, $rootScope, $routeParams, $location, B
 				var args ={is_tranfer:this.is_tranfer, tranfer_time:convertDateTimeToSqlFormat(this.tranfer_date)};
 				console.log('tranfer id '+ this.id);
 				console.log(args)
-				Bill.updateBill({transaction_id:this.id, args:args},function(data){
+				Bill.updateBill({action:"updateBill" ,transaction_id:this.id, args:args},function(data){
 					console.log(data);
 				});
 			}
@@ -940,8 +942,13 @@ function convertBillPrint($scope, data)
 			var payment_base = bill.getPaymentBase(variables, payments);
 			//var A = payment_base.meter_payment + payment_base.room_payment;
 			//return Math.max(0, bill.getRealBankPayment(variables, payments) );
+
 			if($scope.isNoRepayment)
+			{
+				//console.log('no repayment mode');
 				return 0;
+			}
+			//console.log(' repay from reduct payment')
 			return Math.max(0, bill.getReductRepayment(variables, payments) );
 		}
 
@@ -992,6 +999,9 @@ function convertBillPrint($scope, data)
 	    {
 	        var payment_base = bill.getPaymentBase(variables, payments) ;
 	        var repayment = bill.Repayment;
+	      //  console.log('getReductRepayment')
+	       // console.log('repayment' + repayment)
+	        //console.log('sum bank loan' + payment_base.sum_bank_loan)
 	        if(isNaN(repayment))
 				repayment = 0;
 			//case roompayment > repayment
@@ -1072,10 +1082,10 @@ function convertBillPrint($scope, data)
 				share_fund_payment = 0;
 			else
 				share_fund_payment = Number(share_fund_payment[CUSTOMER_INDEX]);
-		
 			var sum_bank_loan = bill.getVar('BankLoanRoom', variables);
-			//console.log(bill);
 			var sum_bank_loan_payment =  bill.getPaymentByPaymentId($scope.billPayment.loan_payment_id, variables, payments);
+			//console.log(bill);
+			
 			var customer_sum_bank_loan = 0;
 			if(!isNaN(sum_bank_loan_payment[CUSTOMER_INDEX]))
 				customer_sum_bank_loan += Number(sum_bank_loan_payment[CUSTOMER_INDEX]);

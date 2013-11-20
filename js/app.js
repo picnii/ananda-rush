@@ -232,6 +232,8 @@ angular.module('areaFilters', ['dataServices']).filter('up2area', function() {
       return '%';
     if(promotion.type_id == 0)
       return 'ชิ้น';
+    if(promotion.type_id == 5)
+      return "%";
     return 'บาท' ;
   };
 

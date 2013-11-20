@@ -295,7 +295,7 @@
                 $table = $table.$row['amount'];
              else if($row['type_id'] == $promotion_types['stuff']->id)
                 $table = $table." ";
-            else if($row['option2'] == $promotion_discount_types['percent']->id)
+            else if($row['option2'] == $promotion_discount_types['percent']->id || $row['type_id'] ==  $promotion_types['spacialarea']->id )
                 $table = $table.$row['amount']."%";
             else
                 $table = $table.$row['amount'];
@@ -306,7 +306,7 @@
             $table = $table."</td>";
 
             $table = $table."<td>";
-            if($row['type_id'] == $promotion_types['spacial']->id )
+            if($row['type_id'] == $promotion_types['spacial']->id || $row['type_id'] ==  $promotion_types['spacialarea']->id )
                 $table = $table."Yes";
             else
                 $table = $table."No";
@@ -317,6 +317,16 @@
                $table = $table."No";
             else
                 $table = $table."Yes";
+            $table = $table."</td>";
+
+             $table = $table."<td>";
+                $table = $table.$promotion_types[$row['type_id']]->name;
+            $table = $table."</td>";
+
+             $table = $table."</td>";
+
+             $table = $table."<td>";
+                $table = $table.$row['is_select'];
             $table = $table."</td>";
 
             $table = $table."</tr>";

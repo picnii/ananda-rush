@@ -77,7 +77,7 @@
 						<div class="span2">โอนสด</div>
 						<div class="span4">{{ bill.isCashTranfer | isCashFilter}}</div>
 						<div class="offset1 span2">หัก ส่วนลดพิเศษ</div>
-						<div class="span2" align="right">{{ bill.SpacialDiscount | currency:"" | zeroDash}}</div>
+						<div class="span2" align="right">{{ bill.SpacialDiscount  | zeroDash}}</div>
 						<div class="span1" align="center">บาท</div>
 						<div class="span2">ใช้สินเชื่อ  ธนาคาร/สาขา</div>
 						<div class="span4">{{bill.BankLoanName | zeroDash}}</div>
