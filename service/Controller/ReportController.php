@@ -2,20 +2,23 @@
 	require_once('util.php');
     $isReport = true;
 	
-    function actionReportTranfer($unitID=null)
+    function actionReportTranfer($unitIds = null)
     {
-        return convertToTranferTable(getReportTranfer($unitID));
+        return convertToTranferTable(getReportTranfer($unitIds));
     }
 
     function convertToTranferTable($response)
     {
-        $header = array('ลำดับ', 'Item no.', 'แปลงขายเลขที่', 'ชื่อลูกค้า', 'กรรมสิทธิ์', 'โฉนด', 'เลขที่ดิน', 'หน้าสำรวจ', 'เนื้อที่ดิน ตรว.', 'ตรว. ละ', 'รวม (ที่ดิน)', 
-            'บ้านเลขที่', 'แบบบ้าน', 'พื้นที่ใช้สอย (ตรม.)', 'ตรม. ละ', 'ราคาประเมิณ', 'หักค่าเสื่อม', 'รวม', 'ออกเมื่อวันที่', 'ปี', 
+        print_r('test');
+        $header = array('ลำดับ', 'Item no.', 'แปลงขายเลขที่', 'ชื่อลูกค้า', 'กรรมสิทธิ์', 'โฉนด', 'เลขที่ดิน', 'หน้าสำรวจ', 'เนื้อที่ดิน(ตรว.)', 'ตรว. ละ', 'รวม', 
+            'บ้านเลขที่', 'แบบบ้าน', 'พื้นที่ใช้สอย (ตรม.)', 'ตรม. ละ', 'ราคาประเมิณ', 'หักค่าเสื่อม', 'รวม', 'ออกเมื่อปี', 'อายุ(ปี)', 
             'พื้นที่รั้ว (ตรม.)', 'ตรม. ละ', 'ราคาประเมิณ', 'หักค่าเสื่อม', 'รวม', 
-            'รวมราคาประเมิณ', 'ราคาขาย (ที่ดิน + บ้าน)', 'ค่าปลอด KK', 'ค่าโอน', 'ภาษี', 'ธุรกิจเฉพาะ', 'รวมค่าใช้จ่าย', 'ค่ามิเตอร์น้ำ', 'ค่ามิเตอร์ไฟ', 'หักสมทบ', 'หลังหักเงินค่าสมทบ', 
-            'ส่วนลดพิเศษ', 'มูลค่า', 'รวมสุทธิ', 'สำนักงานที่ดิน', 'วันที่นัดโอนกรรมสิทธิ์', 'สถานะการปลอดโฉนด', 'เวลา', 'จำนวน', 'วันที่โอนจริง', 
+            'รวมราคาประเมิณ', 'ราคาขาย (ที่ดิน + บ้าน)', 'ค่าปลอด KK', 'ค่าโอน', 'ภาษี', 'ธุรกิจเฉพาะ', 'รวมค่าใช้จ่าย', 'ค่ามิเตอร์น้ำ', 'ค่ามิเตอร์ไฟ', 'หักสมทบ', 'หลังหักเงินค่าสมทบ');
+        $header = array_merge($header, getPromotionsHeader());
+        $headerAfterPromo = array('รวมสุทธิ', 'สำนักงานที่ดิน', 'วันที่นัดโอนกรรมสิทธิ์', 'สถานะการปลอดโฉนด', 'เวลา', 'จำนวน', 'วันที่โอนจริง',
             'สถานะลูกค้า', 'สถานะรับโอน', 'ธนาคาร', 'สาขา', 'วงเงินค่าห้อง', 'วงเงินอื่น', 'วงเงินจำนองรวม', 'มอบ/ไปเอง', 'CS BU', 'remark');
-        print_r($response);
+        $header = array_merge($header, $headerAfterPromo);
+        //print_r($header);
 
         //create table tag
         $table = "<table>";
@@ -184,6 +187,72 @@
             $table = $table.$row->companyPayment->powerMeterNet;
             $table = $table."</td>";
 
+            $table = $table.addPromotionsInfo($row->promotion);
+
+            $table = $table."<td>";
+            $table = $table.$row->transferInfo->landOfficeName;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->transferInfo->appointmentDate;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->transferInfo->status;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->transferInfo->appointmentTime;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->transferInfo->amount;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->transferInfo->transferDate;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->maritalStatus;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->transferMethod;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->bank;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->branch;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->bankLoanRoom;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->bankLoanOther;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->bankLoanSum;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->howToTransfer;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->csbu;
+            $table = $table."</td>";
+
+            $table = $table."<td>";
+            $table = $table.$row->customerInfo->remark;
+            $table = $table."</td>";
+
             /*
             $table = $table."<td>";
             $table = $table.$row->promotion;
@@ -197,6 +266,25 @@
         //end table tag
         $table = $table."</table>";
         return $table;
+    }
+
+    function addPromotionsInfo($promotion)
+    {
+        $t = "";
+        $sum = 0;
+        foreach ($promotion as $key => $value) {
+            $t = $t."<td>";
+            $t = $t.$value;
+            $t = $t."</td>";
+
+            $sum += $value;
+        }
+        
+        $t = $t."<td>";
+        $t = $t.$sum;
+        $t = $t."</td>";
+
+        return $t;
     }
 
     function actionReportPromotions($q = "*")

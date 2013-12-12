@@ -2,20 +2,38 @@
     require_once('util.php');
     //$isReport = true;    
     //use for preview what bills will be liked
-	function getReportTranfer($unitID)
+
+    function getPromotionsHeader()
+    {
+
+        $promotions = findAllPromotion();
+        $cashPromos = array('Cashback AX', 'ส่วนลด AX', 'ส่วนลดพิเศษ AX');
+        foreach ($promotions as $key => $value) {
+            # code...
+            if($value['reward_id'] > 0)
+            {
+                array_push($cashPromos, $value['name']);
+            }
+        }
+        //print_r('======================================================================================\n');
+        //print_r($cashPromos);
+        //print_r('======================================================================================\n');
+        return $cashPromos;
+    }
+
+	function getReportTranfer($unitIds)
 	{
-		/*
-		$data = array(
-			'unit'=>'1',
-			'appoint'=>'asd',
-			'logs'=> 'cool'
-		);
-		*/
-		$bills = getSaleDatas(array(1302, 1303, 1304));
+        if(!isset($unitIds))
+            $unitIds = array(1302, 1303, 1304, 3094, 3095, 3096);
+		$bills = getSaleDatas($unitIds);
+        //$bills = getSaleDatas(getAllTransactionIds(20));
+        //print_r(getAllTransactionIds());
+
+        $promoHeaders = getPromotionsHeader();
 
         $datas = array();
-        foreach ($bills as $key => $value) {
-            # code...
+        foreach ($bills as $key => $value)
+        {
             $data = new stdClass;
 
             //print_r($bills);
@@ -23,10 +41,10 @@
             $bill = $value;
 
             // id & owner section
-            $data->id = $key;
+            $data->id = $key + 1;
 
             if(isset($bill->ItemID))
-                $data->itemNumber = $bill->ItemID;
+                $data->itemNumber = $bill->ItemID; //ok
             else
                 $data->itemNumber = '?';
 
@@ -38,9 +56,9 @@
             $data->customerName = convertUTF8(getCustomerNameFromSaleData($bill));
 
             if(isset($bill->people))
-                $data->owner = $bill->people;
+                $data->owner = $bill->people; // ok
             else
-                $data->owner = '?';
+                $data->owner = $data->customerName;
 
             $data->land = getLandInfo($bill);
             $data->house = getHouseInfo($bill);
@@ -56,7 +74,9 @@
             $data->salePrice = getPriceOnContractFromSaleData($bill);
             $data->loanRepayment = isset($bill->IVZ_LOANREPAYMENTMINIMUNAMT) ? $bill->IVZ_LOANREPAYMENTMINIMUNAMT : '?';
             $data->companyPayment = getCompanyPaymentInfo($data);
-            $data->promotion = getPromotionInfo($bill);
+            $data->promotion = getPromotionInfo($bill, $promoHeaders);
+            $data->transferInfo = getTransferInfo($bill);
+            $data->customerInfo = getCustomerInfo($bill);
 
             array_push($datas, $data);
         }
@@ -70,9 +90,9 @@
         $landInfo->deedNumber = isset($bill->deedNumber) ? $bill->deedNumber : '?';
         $landInfo->landNumber = isset($bill->landNumber) ? $bill->landNumber : '?';
         $landInfo->surveyNumber = isset($bill->surveyNumber) ? $bill->surveyNumber : '?';
-        $landInfo->landSize = getAreaOnContractFromSaleData($bill);
-        $landInfo->estimateLandPricePerUnit = isset($bill->estimateLandPricePerUnit) ? $bill->estimateLandPricePerUnit : '?';
-        $landInfo->estimateLandPriceSum = isset($bill->estimateLandPriceSum) ? $bill->estimateLandPriceSum : '?';
+        $landInfo->landSize = getAreaOnContractFromSaleData($bill) / 4;
+        $landInfo->estimateLandPriceSum = isset($bill->estimateLandPriceSum) ? $bill->estimateLandPriceSum : 0;
+        $landInfo->estimateLandPricePerUnit = isset($bill->estimateLandPricePerUnit) ? $bill->estimateLandPricePerUnit : $landInfo->estimateLandPriceSum / $landInfo->landSize;
 
         return $landInfo;
     }
@@ -85,10 +105,10 @@
         $houseInfo->area =  getAreaFromSaleData($bill);
         $houseInfo->pricePerArea =  5850;
         $houseInfo->estimatePriceSum = $houseInfo->area * $houseInfo->pricePerArea;
-        $houseInfo->priceSum = $houseInfo->estimatePriceSum - $houseInfo->depreciate;
         $houseInfo->built = 2555;
         $houseInfo->old = 2556 - $houseInfo->built;
         $houseInfo->depreciate = $houseInfo->estimatePriceSum * 0.01 * $houseInfo->old;
+        $houseInfo->priceSum = $houseInfo->estimatePriceSum - $houseInfo->depreciate;
 
         return $houseInfo;
     }
@@ -96,7 +116,7 @@
     function getFenceInfo($bill){
         $fenceInfo = new stdClass;
 
-        $fenceInfo->area = 30;
+        $fenceInfo->area = 0;
         $fenceInfo->pricePerArea = 1400;
         $fenceInfo->estimatePriceSum = $fenceInfo->area * $fenceInfo->pricePerArea;
         $fenceInfo->depreciate = $fenceInfo->estimatePriceSum * 0.01;
@@ -108,7 +128,7 @@
     function getCompanyPaymentInfo($data){
         $paymentInfo = new stdClass;
 
-        $paymentInfo->transferFee = $data->land->estimateLandPriceSum * 0.01;
+        $paymentInfo->transferFee = $data->estimatePriceSum * 0.01;
         $paymentInfo->tax = $data->salePrice * 0.01;
         $paymentInfo->businessFee = $data->salePrice * 0.033;
         $paymentInfo->summationFee = $paymentInfo->transferFee + $paymentInfo->tax + $paymentInfo->businessFee;
@@ -121,12 +141,53 @@
         return $paymentInfo;
     }
 
-    function getPromotionInfo($bill){
-        $promotionInfo = new stdClass;
+    function getPromotionInfo($bill, $headers){
+        $promotionInfo = array();
 
-        //print_r($bill->promotions);
+        foreach ($headers as $h => $header) {
+            $promotionInfo[$header] = 0;
+            foreach ($bill->promotions as $k => $promo) {
+                if($promo['name'] == $header)
+                    $promotionInfo[$header] += $promo['amount'];
+                else if ($promo['type_id'] == $h)
+                    $promotionInfo[$header] += $promo['amount'];
+            }
+        }
+        //print_r($bill);
 
         return $promotionInfo;
+    }
+
+    function getTransferInfo($bill)
+    {
+        $transferInfo = new stdClass;
+
+        $transferInfo->landOfficeName = '?';
+        $transferInfo->appointmentDate = getAppointDate($bill);
+        $transferInfo->status = '?';
+        $transferInfo->appointmentTime = getAppointTime($bill);
+        $transferInfo->amount = '?';
+        $transferInfo->transferDate = '?';
+
+        return $transferInfo;
+    }
+
+    function getCustomerInfo($bill)
+    {
+        $customerInfo = new stdClass;
+
+        $customerInfo->maritalStatus = '?';
+        $customerInfo->transferMethod = '?';
+        $customerInfo->bank = '?';
+        $customerInfo->branch = '?';
+        $customerInfo->bankLoanRoom = '?';
+        $customerInfo->bankLoanOther = '?';
+        $customerInfo->bankLoanSum = '?';
+        $customerInfo->howToTransfer = '?';
+        $customerInfo->csbu = '?';
+        $customerInfo->remark = '?';
+
+        return $customerInfo;
     }
 
 ?>

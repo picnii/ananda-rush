@@ -1449,6 +1449,18 @@ function findAllBill($q)
         return $bill;
     }
 
+    function getAllTransactionIds($limit = 50)
+    {
+        $sql = "SELECT TOP ".$limit." transaction_id FROM master_transaction";
+        $result = DB_query($GLOBALS['connect'],$sql);
+        $transactions = array();
+        while($row = DB_fetch_array($result))
+        {
+            array_push($transactions, $row['transaction_id']);
+        }
+        return $transactions;
+    }
+
     function getSampleBill($template_id)
     {
         $sample = new stdClass;
